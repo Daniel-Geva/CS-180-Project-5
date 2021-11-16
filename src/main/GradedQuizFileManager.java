@@ -2,7 +2,6 @@ package main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.StringJoiner;
 
 /**
@@ -20,7 +19,6 @@ public class GradedQuizFileManager implements Manager {
 
     LearningManagementSystem lms;
     private ArrayList<GradedQuiz> gradedQuizzes;
-    private FileWrapper fw = new FileWrapper();
 
     public GradedQuizFileManager(LearningManagementSystem lms) {
         this.lms = lms;
@@ -45,7 +43,7 @@ public class GradedQuizFileManager implements Manager {
     public ArrayList<GradedQuiz> readGradedQuizzes() {
         ArrayList<GradedQuiz> tempGradQuiz = new ArrayList<>();
         String path = "./data/gradedQuizzes.txt";
-        ArrayList<String> contents = fw.readFile(path);
+        ArrayList<String> contents = FileWrapper.readFile(path);
 
         if (contents == null) {
             return tempGradQuiz;
@@ -93,7 +91,7 @@ public class GradedQuizFileManager implements Manager {
             //formats the graded quiz to written and adds it to the arraylist of strings to written
         }
 
-        return fw.writeFile(path, writableGradedQuizzes);
+        return FileWrapper.writeFile(path, writableGradedQuizzes);
     }
 
     public String formatHashmap(HashMap<Integer, Integer> map) { //Used to format the Hashmap to be written

@@ -1,7 +1,5 @@
 package ui;
 
-import java.util.Scanner;
-
 import main.UIManager;
 
 /**

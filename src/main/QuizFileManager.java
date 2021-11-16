@@ -1,7 +1,7 @@
 package main;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
+
 /**
  * Reads and writes files with quiz information for initialization and storage
  * <p>
@@ -18,32 +18,33 @@ public class QuizFileManager implements Manager {
 
 	LearningManagementSystem lms;
 	private ArrayList<Quiz> quizzes;
-	private FileWrapper fw = new FileWrapper();
 	
 	public QuizFileManager(LearningManagementSystem lms) {
 		this.lms = lms;
 		this.quizzes = this.readQuizzes();
 	}
 
+	/// Sets the QuizManager's arraylist of quizzes after reading the saved data
 	@Override
 	public void init() {
 		lms.getQuizManager().setQuizList(quizzes);
-	} //Sets the QuizManager's arraylist of quizzes after reading the saved data
+	} 
 
 	@Override
 	public void exit() {
 		this.save();
 	}
 
+	/// Gets the altered list of quizzes and writes them to a file
 	public void save() {
 		quizzes = lms.getQuizManager().getQuizList();
 		this.writeQuizzes();
-	} //gets the altered list of quizzes and writes them to a file
+	}
 
 	public ArrayList<Quiz> readQuizzes() {
 		ArrayList<Quiz> tempQuizzes = new ArrayList<>();
 		String path = "./data/quizzes.txt";
-		ArrayList<String> contents = fw.readFile(path);
+		ArrayList<String> contents = FileWrapper.readFile(path);
 
 		if (contents == null) {
 			return tempQuizzes;
@@ -129,7 +130,7 @@ public class QuizFileManager implements Manager {
 			//add a string that is formatted for storage to the arraylist that will be written to the file
 		}
 
-		return fw.writeFile(path, writableQuizzes);
+		return FileWrapper.writeFile(path, writableQuizzes);
 	} //Writes the arraylist of quizzes "quizzes" to a file for storage
 
 	public String formatQuestions(ArrayList<Question> questions) {
@@ -168,7 +169,7 @@ public class QuizFileManager implements Manager {
 		String user = lms.getUIManager().getCurrentUser().getName();
 		int quizId = lms.getQuizManager().getUniqueID();
 
-		ArrayList<String> contents = fw.readImportFile(path);
+		ArrayList<String> contents = FileWrapper.readImportFile(path);
 
 		if (contents == null) {
 			return null;

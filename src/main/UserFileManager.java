@@ -1,6 +1,7 @@
 package main;
-import java.io.File;
+
 import java.util.ArrayList;
+
 /**
  * Reads and writes files with user information for initialization and storage
  * <p>
@@ -17,7 +18,6 @@ public class UserFileManager implements Manager {
 
     LearningManagementSystem lms;
     private ArrayList<User> users;
-    private FileWrapper fw = new FileWrapper();
 
     public UserFileManager(LearningManagementSystem lms) {
         this.lms = lms;
@@ -60,7 +60,7 @@ public class UserFileManager implements Manager {
     public ArrayList<User> readUsers() {
         ArrayList<User> tempUsers = new ArrayList<>();
         String path = "./data/users.txt";
-        ArrayList<String> contents = fw.readFile(path);
+        ArrayList<String> contents = FileWrapper.readFile(path);
 
         if (contents == null) {
             return tempUsers;
@@ -104,7 +104,7 @@ public class UserFileManager implements Manager {
                     users.get(i).getPassword(), users.get(i).getName());
             writableUsers.add(write);
         }
-        boolean success = fw.writeFile(path, writableUsers);
+        boolean success = FileWrapper.writeFile(path, writableUsers);
         return success;
     }
 

@@ -1,7 +1,7 @@
 package main;
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.Map;
+
 /**
  *
  * Graded Quiz that contains the information of a quiz that has been graded
@@ -11,9 +11,8 @@ import java.util.Map;
  * @see GradedQuizManager
  */
 public class GradedQuiz { // should students be able to take quiz multiple times
-    private Quiz quiz;
-    private Student student;
-    private String submissionTime;
+
+	private String submissionTime;
     private int quizID;
     private int studentID;
     private HashMap<Integer, Integer> map = new HashMap<>();
