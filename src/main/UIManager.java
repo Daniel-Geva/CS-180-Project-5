@@ -75,7 +75,7 @@ public class UIManager implements Manager {
 		this.scanner = new Scanner(System.in);
 		this.currentUser = null;
 	}
-
+	
 	/**
 	 * Initializes all the static {@link Menu}'s and all of their relevant headers, options, inputs, and callbacks.
 	 * <p>
@@ -1241,6 +1241,16 @@ public class UIManager implements Manager {
 	public void run() {
 		System.out.print(ANSICodes.CLEAR_SCREEN);
 		System.out.print(ANSICodes.CURSOR_TO_HOME);
+		
+		/*
+		Panel panel = (new Panel())
+			.add(new JButton("Test"))
+			.add(new JLabel("Press that button!"))
+			.add((new Panel())
+				.add(new JLabel("Test"))
+			);
+		panel.open();
+		*/
 		
 		menuStart.open();
 	}
