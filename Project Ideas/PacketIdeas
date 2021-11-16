@@ -1,0 +1,28 @@
+Create User -> Returns Success
+Login -> Returns User
+
+Get Course List -> Course List
+Get Quiz List By Course (Search) - course -> Quiz List
+
+? Get Quiz Info - id -> String
+
+Create Quiz -> Quiz ID Created
+Get Quiz - id -> Quiz
+Add Question - question -> Success
+Remove Question - question id -> Success
+Save Question - question -> Success
+Set Quiz Name - name -> Success
+Set Quiz Course - course -> Success
+
+Submit quiz - GradedQuiz -> Success
+Get User - id -> User
+Get Quiz - id -> Quiz
+Crossreference quiz to gradedquiz to get submission score.
+
+
+Overall project ideas
+---
+Course object
+Dual network stream (read, write at same time), for push notifications
+- Actually, are push notifications needed? I think so! You need to update data real time, without refresh button!
+
