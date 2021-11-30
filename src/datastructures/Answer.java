@@ -34,9 +34,7 @@ public class Answer {
      * @return {@link #isCorrect}
      */
     public boolean isCorrect() {
-        synchronized (correctLock) {
             return isCorrect;
-        }
     }
 
     /**
@@ -45,9 +43,7 @@ public class Answer {
      * @return {@link #points}
      */
     public int getPoints() {
-        synchronized (pointLock) {
             return points;
-        }
     }
     /**
      * Sets a new answer
@@ -85,9 +81,7 @@ public class Answer {
      * @return id - the unique id for the question
      */
     public int getId() {
-        synchronized (idLock) {
             return id;
-        }
     }
     /**
      * Returns answer string
@@ -95,9 +89,7 @@ public class Answer {
      * @return {@link #answer}
      */
     public String getAnswer() {
-        synchronized (answerLock) {
             return answer;
-        }
     }
     /**
      * Returns the answer as a string for the answer class's toString

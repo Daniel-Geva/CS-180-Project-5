@@ -71,9 +71,7 @@ public class Quiz implements Listable {
      * @return id - quiz-specific identifier
      */
     public int getId() {
-        synchronized (idLock) {
             return id;
-        }
     }
     /**
      * Returns name of the quiz
@@ -81,9 +79,7 @@ public class Quiz implements Listable {
      * @return name - name given to the quiz by a teacher
      */
     public String getName() {
-        synchronized (nameLock) {
             return name;
-        }
     }
     /**
      * Returns author of the quiz
@@ -91,9 +87,7 @@ public class Quiz implements Listable {
      * @return author - the name of the teacher who created the quiz
      */
     public String getAuthor() {
-        synchronized (authorLock) {
             return author;
-        }
     }
     /**
      * Sets quiz name
@@ -141,9 +135,7 @@ public class Quiz implements Listable {
      * @return scrambled - whether the quiz questions should be in random order
      */
     public boolean isScrambled() {
-        synchronized (scrambledLock) {
             return scrambled;
-        }
     }
     /**
      * Randomized the order of questions in the questions arrayList
@@ -163,9 +155,7 @@ public class Quiz implements Listable {
      * @return name - a string containing the quiz's name
      */
     public String getListName() {
-        synchronized (nameLock) {
             return name;
-        }
     }
     /**
      * Returns the name of the course the quiz is a part of
@@ -173,9 +163,7 @@ public class Quiz implements Listable {
      * @return course - A string containing the course name
      */
     public String getCourse() {
-        synchronized (courseLock) {
             return course;
-        }
     }
     /**
      * Sets the course name for the quiz

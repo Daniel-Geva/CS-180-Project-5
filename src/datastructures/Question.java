@@ -81,9 +81,7 @@ public class Question implements Listable {
      * @return answers - the list of answers to this question
      */
     public ArrayList<Answer> getAnswers() {
-        synchronized (lockAnswer) {
             return answers;
-        }
     }
     /**
      * Returns the String representation of the question
@@ -91,9 +89,7 @@ public class Question implements Listable {
      * @return question - The question string
      */
     public String getQuestion() {
-        synchronized (lockQuestion) {
             return question;
-        }
     }
     /**
      * Changes the quiz ID to a new ID
@@ -111,9 +107,7 @@ public class Question implements Listable {
      * @return id - the unique id for the quiz
      */
     public int getId() {
-        synchronized (lockId) {
             return id;
-        }
     }
     /**
      * Returns the question type
@@ -121,9 +115,7 @@ public class Question implements Listable {
      * @return questionType - the type of question
      */
     public String getQuestionType() {
-        synchronized (lockQuestionType) {
             return questionType;
-        }
     }
     /**
      * Returns the question type
