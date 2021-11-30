@@ -1,6 +1,7 @@
 package datastructures;
 import java.util.ArrayList;
 
+import server.LearningManagementSystemServer;
 import server.QuizManager;
 
 import java.util.*;
@@ -37,9 +38,10 @@ public class Quiz implements Listable {
         this.questions = questions;
         this.course = course;
     }
-    public Quiz(LearningManagementSystem lms, String name, String course) {
+    public Quiz(LearningManagementSystemServer lms, String name, String course) {
         this.name = name;
-        this.author = lms.getUIManager().getCurrentUser().getName();
+        //this.author = lms.getUIManager().getCurrentUser().getName();
+        //TODO: request Network Packet
         this.id = lms.getQuizManager().getUniqueID();
         this.scrambled = false;
         this.questions = new ArrayList<>();
