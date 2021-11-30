@@ -1,3 +1,3 @@
-javac -cp ./junit4.jar ./src/**/*.java
-java -cp src main.LearningManagementSystem
+javac ./src/**/*.java
+java -cp src server.LearningManagementSystemServer
 rm -rf ./src/**/*.class
