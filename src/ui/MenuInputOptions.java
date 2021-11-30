@@ -1,6 +1,6 @@
 package ui;
 
-import main.UIManager;
+import client.UIManager;
 
 /**
  * Datastructure used by {@link InputMenu} for menu inputs where an option is desired.

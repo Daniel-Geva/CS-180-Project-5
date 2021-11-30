@@ -1,4 +1,6 @@
-package main;
+package datastructures;
+
+import server.LearningManagementSystemServer;
 
 /**
  * 
@@ -17,7 +19,7 @@ public class ListableGradedQuiz implements Listable {
 	private String nameQuiz;
 	private GradedQuiz gradedQuiz;
 	
-	public ListableGradedQuiz(LearningManagementSystem lms, GradedQuiz gradedQuiz) {
+	public ListableGradedQuiz(LearningManagementSystemServer lms, GradedQuiz gradedQuiz) {
 		try {
 			this.nameUser = lms.getUserManager().getUserById(gradedQuiz.getStudentID()).getName();
 			this.nameQuiz = lms.getQuizManager().searchQuizByID(gradedQuiz.getQuizID()).getName();

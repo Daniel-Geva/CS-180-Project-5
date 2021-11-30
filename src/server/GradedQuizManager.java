@@ -1,6 +1,9 @@
-package main;
+package server;
 
 import java.util.ArrayList;
+
+import datastructures.GradedQuiz;
+import datastructures.Manager;
 
 /**
  * Manager for the Graded Quizzes

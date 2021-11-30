@@ -3,11 +3,11 @@ package ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.LearningManagementSystem;
-import main.Listable;
-import main.Quiz;
-import main.QuizManager;
-import main.UIManager;
+import client.UIManager;
+import datastructures.Listable;
+import datastructures.Quiz;
+import server.LearningManagementSystemServer;
+import server.QuizManager;
 
 /**
  * {@link OptionMenu} for selecting an item from a arraylist.
@@ -17,7 +17,7 @@ import main.UIManager;
  * <p>
  * Item type must implement {@link Listable} in order to be used.
  * <p>
- * See {@link OptionListMenu#OptionListMemu(LearningManagementSystem, RunnableSelectListItem)} for creating the menu.
+ * See {@link OptionListMenu#OptionListMemu(LearningManagementSystemServer, RunnableSelectListItem)} for creating the menu.
  * <p>
  * Runs {@link RunnableSelectListItem#selectItem(T)} whenever the item is selected.
  * <p>

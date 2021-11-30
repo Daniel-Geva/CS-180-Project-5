@@ -1,6 +1,11 @@
-package main;
+package server;
 
 import java.util.ArrayList;
+
+import datastructures.Answer;
+import datastructures.Manager;
+import datastructures.Question;
+import datastructures.Quiz;
 
 /**
  * Reads and writes files with quiz information for initialization and storage
@@ -16,12 +21,12 @@ import java.util.ArrayList;
  */
 public class QuizFileManager implements Manager {
 
-	LearningManagementSystem lms;
+	LearningManagementSystemServer lms;
 	private ArrayList<Quiz> quizzes;
 
 	private static Object writeLock = new Object();
 	
-	public QuizFileManager(LearningManagementSystem lms) {
+	public QuizFileManager(LearningManagementSystemServer lms) {
 		this.lms = lms;
 		this.quizzes = this.readQuizzes();
 	}
@@ -176,7 +181,7 @@ public class QuizFileManager implements Manager {
 
 	///Creates and returns a quiz object generated from a file, with some values provided by UI
 	public synchronized Quiz importQuiz(String path, String name, String course) {
-		String user = lms.getUIManager().getCurrentUser().getName();
+		String user = "stuff"; // TODO Old code lms.getUIManager().getCurrentUser().getName();
 		int quizId = lms.getQuizManager().getUniqueID();
 
 		ArrayList<String> contents = FileWrapper.readImportFile(path);

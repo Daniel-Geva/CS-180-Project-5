@@ -2,7 +2,7 @@ package ui;
 
 import java.util.StringJoiner;
 
-import main.UIManager;
+import client.UIManager;
 
 /**
  * Menu to show the user information without the need

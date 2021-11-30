@@ -1,4 +1,4 @@
-package main;
+package datastructures;
 /**
  * Manager interface for CS 180 Project 4
  * All managers will come from this

@@ -1,4 +1,7 @@
-package main;
+package datastructures;
+
+import server.UserManager;
+
 /**
  *
  * Super class that contains the details of a particular user

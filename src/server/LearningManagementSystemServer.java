@@ -1,4 +1,4 @@
-package main;
+package server;
 
 /**
  * 
@@ -10,9 +10,8 @@ package main;
  * @author Isaac Fleetwood
  * @version 1.0.0
  */
-public class LearningManagementSystem {
+public class LearningManagementSystemServer {
 
-	private UIManager uiManager;
 	private UserFileManager userFileManager;
 	private QuizFileManager quizFileManager;
 	private GradedQuizFileManager gradedQuizFileManager;
@@ -25,10 +24,8 @@ public class LearningManagementSystem {
 	 * and runs the program.
 	 */
 	public static void main(String[] args) {
-		LearningManagementSystem lms = new LearningManagementSystem();
+		LearningManagementSystemServer lms = new LearningManagementSystemServer();
 		lms.init();
-		lms.run();
-		lms.exit();
 	}
 	
 	/**
@@ -36,14 +33,13 @@ public class LearningManagementSystem {
 	 * an instance of LMS to be able to access 
 	 * all other managers.
 	 */
-	public LearningManagementSystem() {
+	public LearningManagementSystemServer() {
 		userManager = new UserManager(this);
 		userFileManager = new UserFileManager(this);
 		quizManager = new QuizManager(this);
 		quizFileManager = new QuizFileManager(this);
 		gradedQuizManager = new GradedQuizManager(this);
 		gradedQuizFileManager = new GradedQuizFileManager(this);
-		uiManager = new UIManager(this);
 	}
 
 	/**
@@ -57,34 +53,6 @@ public class LearningManagementSystem {
 		quizFileManager.init();
 		gradedQuizManager.init();
 		gradedQuizFileManager.init();
-		uiManager.init();
-	}
-	
-	/**
-	 * Runs the program. UIManager will
-	 * run the UI loop here until the UI
-	 * exits.
-	 */
-	public void run() {
-		uiManager.run();
-	}
-	
-	/**
-	 * Notifies all the managers that
-	 * the program is exiting.
-	 */
-	public void exit() {
-		uiManager.exit();
-		gradedQuizManager.exit();
-		gradedQuizFileManager.exit();
-		quizManager.exit();
-		quizFileManager.exit();
-		userManager.exit();
-		userFileManager.exit();
-	}
-	
-	public UIManager getUIManager() {
-		return uiManager;
 	}
 
 	public UserFileManager getUserFileManager() {

@@ -1,8 +1,10 @@
 //TODO: Gives reasons for why each part of the code is synchronized
-package main;
+package server;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import datastructures.Manager;
 
 /**
  * The UserManager of the application

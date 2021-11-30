@@ -1,4 +1,4 @@
-package main;
+package datastructures;
 /**
  * Stores one answer to a question
  * <p>

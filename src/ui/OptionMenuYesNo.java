@@ -1,6 +1,6 @@
 package ui;
 
-import main.UIManager;
+import client.UIManager;
 
 /**
  * Option menu for simple yes/no choices.

@@ -1,4 +1,4 @@
-package main;
+package client;
 
 
 import java.time.LocalDateTime;
@@ -11,6 +11,18 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import datastructures.Answer;
+import datastructures.GradedQuiz;
+import datastructures.Listable;
+import datastructures.ListableGradedQuiz;
+import datastructures.Manager;
+import datastructures.Question;
+import datastructures.Quiz;
+import datastructures.Student;
+import datastructures.Teacher;
+import datastructures.User;
+import server.FileWrapper;
+import server.LearningManagementSystemServer;
 import ui.ANSICodes;
 import ui.InformationMenu;
 import ui.InputMenu;
@@ -26,7 +38,7 @@ import ui.RunnableSelectListItem;
 /**
  * The manager for the UI of the application.
  * <p>
- * Is instantiated inside of {@link LearningManagementSystem} 
+ * Is instantiated inside of {@link LearningManagementSystemServer} 
  * and should not be instantiated anywhere else.
  * <p>
  * Initializes all the {@link Menu}s that are used in the UI,
@@ -35,12 +47,12 @@ import ui.RunnableSelectListItem;
  * @author Isaac Fleetwood
  * @author Aryan Jain
  * @version 1.0.0
- * @see LearningManagementSystem
+ * @see LearningManagementSystemServer
  * @see Manager
  */
 public class UIManager implements Manager {
 
-	private LearningManagementSystem lms;
+	private LearningManagementSystemClient lms;
 	
 	private Scanner scanner;
 	private User currentUser;
@@ -68,9 +80,9 @@ public class UIManager implements Manager {
 	 * All initialization is done in {@link #init()}, so the
 	 * constructor solely sets the {@link #lms} field.
 	 * 
-	 * @param lms The LearningManagementSystem instance used for accessing the rest of the managers.
+	 * @param learningManagementSystemClient The LearningManagementSystem instance used for accessing the rest of the managers.
 	 */
-	public UIManager(LearningManagementSystem lms) {
+	public UIManager(LearningManagementSystemClient lms) {
 		this.lms = lms;
 		this.scanner = new Scanner(System.in);
 		this.currentUser = null;
@@ -494,8 +506,8 @@ public class UIManager implements Manager {
 					importMenu.open();
 					return MenuState.CLOSE;
 				}
-				
-				Quiz quiz = new Quiz(lms, name, course);
+				// TODO PROBLEM!
+				Quiz quiz = new Quiz("author", 1, name, course);
 				lms.getQuizManager().addQuiz(quiz);
 				System.out.println("Successfully created the quiz.");
 				OptionMenu menu = getMenuModifyQuiz(quiz);
@@ -1235,7 +1247,7 @@ public class UIManager implements Manager {
 	 * <p>
 	 * Most (if not all) of the menus that are branched from here are initialized in {@link #init()}
 	 * 
-	 * @see LearningManagementSystem#run()
+	 * @see LearningManagementSystemServer#run()
 	 * @see Menu#open()
 	 */
 	public void run() {

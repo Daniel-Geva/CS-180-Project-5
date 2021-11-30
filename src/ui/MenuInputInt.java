@@ -1,6 +1,6 @@
 package ui;
 
-import main.UIManager;
+import client.UIManager;
 
 /**
  * Extension of {@link MenuInput} that requires the input to be an integer.

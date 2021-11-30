@@ -1,6 +1,9 @@
-package main;
+package server;
 import java.util.ArrayList;
 import java.util.Random;
+
+import datastructures.Manager;
+import datastructures.Quiz;
 /**
  * Stores a list of every created quiz, which is instantiated every time the program is run
  * <p>
@@ -13,9 +16,9 @@ import java.util.Random;
  */
 public class QuizManager implements Manager {
 	Random rand = new Random();
-	LearningManagementSystem lms;
+	LearningManagementSystemServer lms;
 	ArrayList<Quiz> quizList = new ArrayList<>();
-	public QuizManager(LearningManagementSystem lms) {
+	public QuizManager(LearningManagementSystemServer lms) {
 		this.lms = lms;
 	}
 	/**

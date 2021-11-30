@@ -1,5 +1,8 @@
-package main;
+package datastructures;
 import java.util.ArrayList;
+
+import server.QuizManager;
+
 import java.util.*;
 /**
  * A quiz, which contains an arraylist of questions along with various attributes of the quiz

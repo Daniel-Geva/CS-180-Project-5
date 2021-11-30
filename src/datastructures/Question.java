@@ -1,4 +1,4 @@
-package main;
+package datastructures;
 import java.util.ArrayList;
 /**
  * Stores one Question, including multiple answers

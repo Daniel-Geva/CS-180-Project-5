@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import main.UIManager;
+import client.UIManager;
 
 /**
  * Class extending {@link Menu} that adds the option of prompting the 

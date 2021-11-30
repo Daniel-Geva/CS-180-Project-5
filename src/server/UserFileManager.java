@@ -1,6 +1,11 @@
-package main;
+package server;
 
 import java.util.ArrayList;
+
+import datastructures.Manager;
+import datastructures.Student;
+import datastructures.Teacher;
+import datastructures.User;
 
 /**
  * Reads and writes files with user information for initialization and storage
@@ -16,12 +21,12 @@ import java.util.ArrayList;
  */
 public class UserFileManager implements Manager {
 
-    LearningManagementSystem lms;
+    LearningManagementSystemServer lms;
     private ArrayList<User> users;
 
     private static Object writeLock = new Object();
 
-    public UserFileManager(LearningManagementSystem lms) {
+    public UserFileManager(LearningManagementSystemServer lms) {
         this.lms = lms;
         this.users = this.readUsers();
     }

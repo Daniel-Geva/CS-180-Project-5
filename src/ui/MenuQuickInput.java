@@ -1,6 +1,6 @@
 package ui;
 
-import main.UIManager;
+import client.UIManager;
 
 /**
  * Menu for requesting a single of input from the user

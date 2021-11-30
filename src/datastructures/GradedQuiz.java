@@ -1,6 +1,8 @@
-package main;
+package datastructures;
 
 import java.util.HashMap;
+
+import server.GradedQuizManager;
 
 /**
  *

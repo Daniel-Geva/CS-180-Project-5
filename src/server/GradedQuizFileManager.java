@@ -1,8 +1,11 @@
-package main;
+package server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringJoiner;
+
+import datastructures.GradedQuiz;
+import datastructures.Manager;
 
 /**
  * Reads and writes files with graded quiz information for initialization and storage
@@ -17,12 +20,12 @@ import java.util.StringJoiner;
  */
 public class GradedQuizFileManager implements Manager {
 
-    LearningManagementSystem lms;
+    LearningManagementSystemServer lms;
     private ArrayList<GradedQuiz> gradedQuizzes;
 
     private static Object writeLock = new Object();
 
-    public GradedQuizFileManager(LearningManagementSystem lms) {
+    public GradedQuizFileManager(LearningManagementSystemServer lms) {
         this.lms = lms;
         this.gradedQuizzes = this.readGradedQuizzes();
     }

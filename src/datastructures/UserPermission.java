@@ -1,4 +1,4 @@
-package main;
+package datastructures;
 /**
  *
  * Enum that holds the two possible values of a user's permission:

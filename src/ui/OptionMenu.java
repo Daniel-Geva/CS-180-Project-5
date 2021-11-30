@@ -2,7 +2,7 @@ package ui;
 
 import java.util.ArrayList;
 
-import main.UIManager;
+import client.UIManager;
 
 /**
  * {@link Menu} in which options are given that the user can choose from.

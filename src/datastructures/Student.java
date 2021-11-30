@@ -1,4 +1,5 @@
-package main;
+package datastructures;
+
 /**
  *
  * Class that contains the detail of a student

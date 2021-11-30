@@ -1,4 +1,4 @@
-package main;
+package datastructures;
 
 /**
  * An interface used for items that wish to be able 
