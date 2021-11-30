@@ -51,7 +51,9 @@ public class UserManager implements Manager {
      * Set an ArrayList users of User objects
      */
     public void setUsers(ArrayList<User> users) {
-        this.users = users;
+        synchronized (obj) {
+            this.users = users;
+        }
     }
 
     /**
