@@ -1,9 +1,9 @@
 package client;
 
-import packets.response.ResponsePacket;
+import packets.response.ExampleResponsePacket;
 
 public interface RunnableHandleResponsePacket {
 
-	public void handlePacket(ResponsePacket responsePacket);
+	public void handlePacket(ExampleResponsePacket responsePacket);
 	
 }

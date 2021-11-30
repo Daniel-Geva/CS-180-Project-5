@@ -1,6 +1,6 @@
 package client;
 
-import packets.response.ResponsePacket;
+import packets.response.ExampleResponsePacket;
 
 public class ResponsePacketHandler {
 
@@ -14,7 +14,7 @@ public class ResponsePacketHandler {
 		this.onReceiveRunnable = runnable;
 	}
 	
-	public void handlePacket(ResponsePacket packet) {
+	public void handlePacket(ExampleResponsePacket packet) {
 		if(this.onReceiveRunnable != null) {
 			this.onReceiveRunnable.handlePacket(packet);
 		}

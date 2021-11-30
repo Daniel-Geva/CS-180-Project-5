@@ -1,6 +1,6 @@
 package packets.response;
 
-public class ResponsePacketSuccess extends ResponsePacket {
+public class ResponsePacketSuccess extends ExampleResponsePacket {
 	
 	// Empty because ResponsePacket defaults to 
 	// being successful

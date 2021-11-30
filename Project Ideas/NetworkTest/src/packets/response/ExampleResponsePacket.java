@@ -2,17 +2,17 @@ package packets.response;
 
 import java.io.Serializable;
 
-public class ResponsePacket implements Serializable {
+public class ExampleResponsePacket implements Serializable {
 
 	private static final long serialVersionUID = -5153672930902069453L;
 
 	boolean success;
 	
-	public ResponsePacket() {
+	public ExampleResponsePacket() {
 		this.success = true;
 	}
 	
-	public ResponsePacket(boolean success) {
+	public ExampleResponsePacket(boolean success) {
 		this.success = success;
 	}
 	

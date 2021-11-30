@@ -1,6 +1,6 @@
 package packets.response;
 
-public class ResponsePacketGetData extends ResponsePacket {
+public class ResponsePacketGetData extends packets.response.ExampleResponsePacket {
 
 	private static final long serialVersionUID = 195292918769341238L;
 	

@@ -7,8 +7,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import packets.request.RequestPacket;
-import packets.response.ResponsePacket;
+import packets.request.ExampleRequestPacket;
+import packets.response.ExampleResponsePacket;
 
 public class NetworkManagerServer {
 
@@ -34,13 +34,13 @@ public class NetworkManagerServer {
 						while(true) {
 							try {
 								Object obj = ois.readObject();
-								if(!(obj instanceof RequestPacket)) {
+								if(!(obj instanceof ExampleRequestPacket)) {
 									System.out.println("Error. Non-RequestPacket sent through stream.");
 									System.out.println("Not responding to that packet.");
 									continue;
 								}
-								RequestPacket requestPacket = (RequestPacket) obj;
-								ResponsePacket response = requestPacket.serverHandle(mainServer);
+								ExampleRequestPacket requestPacket = (ExampleRequestPacket) obj;
+								ExampleResponsePacket response = requestPacket.serverHandle(mainServer);
 								
 								oos.writeObject(response);
 							} catch (EOFException e) {

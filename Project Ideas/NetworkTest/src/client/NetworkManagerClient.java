@@ -10,13 +10,13 @@ import java.util.HashMap;
 
 import javax.swing.SwingUtilities;
 
-import packets.request.RequestPacket;
-import packets.response.ResponsePacket;
+import packets.request.ExampleRequestPacket;
+import packets.response.ExampleResponsePacket;
 
 public class NetworkManagerClient {
 
 	MainClient mainClient;
-	HashMap<RequestPacket, ResponsePacketHandler> packetQueue; 
+	HashMap<ExampleRequestPacket, ResponsePacketHandler> packetQueue;
 	
 	public NetworkManagerClient(MainClient mainClient) {
 		this.mainClient = mainClient;
@@ -43,17 +43,17 @@ public class NetworkManagerClient {
 				while(true) {
 					while(packetQueue.size() != 0) {
 						try {
-							RequestPacket request = packetQueue.keySet().iterator().next();
+							ExampleRequestPacket request = packetQueue.keySet().iterator().next();
 							ResponsePacketHandler handler = packetQueue.get(request);
 							packetQueue.remove(request);
 							oos.writeObject(request);
 							Object responseObj = ois.readObject();
-							if(!(responseObj instanceof ResponsePacket)) {
+							if(!(responseObj instanceof ExampleResponsePacket)) {
 								System.out.println("Error. Non-ResponsePacket received through stream.");
 								System.out.println("Not responding to that packet.");
 								continue;
 							}
-							ResponsePacket response = (ResponsePacket) responseObj;
+							ExampleResponsePacket response = (ExampleResponsePacket) responseObj;
 							SwingUtilities.invokeLater(new Runnable() {
 
 								@Override
@@ -78,7 +78,7 @@ public class NetworkManagerClient {
 		thread.start();
 	}
 
-	public ResponsePacketHandler sendPacket(RequestPacket requestPacket) {
+	public ResponsePacketHandler sendPacket(ExampleRequestPacket requestPacket) {
 		ResponsePacketHandler handler = new ResponsePacketHandler();
 		this.packetQueue.put(requestPacket, handler);
 		return handler;

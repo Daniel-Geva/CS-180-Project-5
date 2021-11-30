@@ -1,9 +1,9 @@
 package packets.request;
 
-import packets.response.ResponsePacket;
+import packets.response.ExampleResponsePacket;
 import server.MainServer;
 
-public class RequestPacketSaveData extends RequestPacket {
+public class RequestPacketSaveData extends ExampleRequestPacket {
 
 	private static final long serialVersionUID = 3299553115373290198L;
 	
@@ -14,10 +14,10 @@ public class RequestPacketSaveData extends RequestPacket {
 	}
 	
 	@Override
-	public ResponsePacket serverHandle(MainServer server) {
+	public ExampleResponsePacket serverHandle(MainServer server) {
 		server.getDataManager().setData(newData);
 		
-		return new ResponsePacket(true);
+		return new ExampleResponsePacket(true);
 	}
 	
 }
