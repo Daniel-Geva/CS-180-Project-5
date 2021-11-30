@@ -13,7 +13,6 @@ import datastructures.User;
  * Contains an ArrayList of users from storage that will be passed to UserManager.
  * <p>
  *
- *
  * @author Daniel Geva
  * @version 11/14/21
  * @see UserManager
@@ -23,8 +22,6 @@ public class UserFileManager implements Manager {
 
     LearningManagementSystemServer lms;
     private ArrayList<User> users;
-
-    private static Object writeLock = new Object();
 
     public UserFileManager(LearningManagementSystemServer lms) {
         this.lms = lms;
@@ -99,26 +96,24 @@ public class UserFileManager implements Manager {
     }
 
     ///writes the arraylist of users "users" to a file in order to store the data
-    public boolean writeUsers() {
+    private boolean writeUsers() {
         ArrayList<String> writableUsers = new ArrayList<>();
         String path = "./data/users.txt";
 
-        synchronized (writeLock) {
-            for (int i = 0; i < users.size(); i++) {
-                String write = "";
-                if (users.get(i) instanceof Teacher) { //differentiate between a teacher and a student
-                    write += "teacher::";
-                } else {
-                    write += "student::";
-                }
-                write += String.format("%d;;%s;;%s;;%s",
-                        users.get(i).getID(), users.get(i).getUsername(),
-                        users.get(i).getPassword(), users.get(i).getName());
-                writableUsers.add(write);
+        for (int i = 0; i < users.size(); i++) {
+            String write = "";
+            if (users.get(i) instanceof Teacher) { //differentiate between a teacher and a student
+                write += "teacher::";
+            } else {
+                write += "student::";
             }
-            boolean success = FileWrapper.writeFile(path, writableUsers);
-            return success;
+            write += String.format("%d;;%s;;%s;;%s",
+                    users.get(i).getID(), users.get(i).getUsername(),
+                    users.get(i).getPassword(), users.get(i).getName());
+            writableUsers.add(write);
         }
+        boolean success = FileWrapper.writeFile(path, writableUsers);
+        return success;
     }
 
 }

@@ -23,8 +23,6 @@ public class GradedQuizFileManager implements Manager {
     LearningManagementSystemServer lms;
     private ArrayList<GradedQuiz> gradedQuizzes;
 
-    private static Object writeLock = new Object();
-
     public GradedQuizFileManager(LearningManagementSystemServer lms) {
         this.lms = lms;
         this.gradedQuizzes = this.readGradedQuizzes();
@@ -88,22 +86,21 @@ public class GradedQuizFileManager implements Manager {
     }
 
     ///Writes the arraylist of graded quizzes to a file for storage
-    public boolean writeGradedQuizzes() {
+    private boolean writeGradedQuizzes() {
         ArrayList<String> writableGradedQuizzes = new ArrayList<>();
         String path = "./data/gradedQuizzes.txt";
 
-        synchronized (writeLock) {
-            for (int i = 0; i < gradedQuizzes.size(); i++) {
-                int quizId = gradedQuizzes.get(i).getQuizID();
-                int studentId = gradedQuizzes.get(i).getStudentID();
-                String mapList = this.formatHashmap(gradedQuizzes.get(i).getGradedQuizMap());
-                String submissionTime = gradedQuizzes.get(i).getSubmissionTime();
-                writableGradedQuizzes.add(String.format("%d;;%d;;%s;;%s", quizId, studentId, mapList, submissionTime));
-                //formats the graded quiz to written and adds it to the arraylist of strings to written
-            }
-
-            return FileWrapper.writeFile(path, writableGradedQuizzes);
+        for (int i = 0; i < gradedQuizzes.size(); i++) {
+            int quizId = gradedQuizzes.get(i).getQuizID();
+            int studentId = gradedQuizzes.get(i).getStudentID();
+            String mapList = this.formatHashmap(gradedQuizzes.get(i).getGradedQuizMap());
+            String submissionTime = gradedQuizzes.get(i).getSubmissionTime();
+            writableGradedQuizzes.add(String.format("%d;;%d;;%s;;%s", quizId, studentId, mapList, submissionTime));
+            //formats the graded quiz to written and adds it to the arraylist of strings to written
         }
+
+        return FileWrapper.writeFile(path, writableGradedQuizzes);
+
     }
 
     ///Used to format the Hashmap to be written
