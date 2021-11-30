@@ -20,26 +20,31 @@ public class GradedQuizFileManager implements Manager {
     LearningManagementSystem lms;
     private ArrayList<GradedQuiz> gradedQuizzes;
 
+    private static Object writeLock = new Object();
+
     public GradedQuizFileManager(LearningManagementSystem lms) {
         this.lms = lms;
         this.gradedQuizzes = this.readGradedQuizzes();
     }
 
+    ///Sets the GradedQuizManger's arraylist of graded quizzes
     @Override
     public void init() {
         lms.getGradedQuizManager().setGradedQuiz(gradedQuizzes);
-    } //Sets the GradedQuizManger's arraylist of graded quizzes
+    }
 
     @Override
     public void exit() {
         this.save();
     }
 
-    public void save() {
+    ///gets the altered arraylist of graded quizzes from GradedQuizManger and writes it to a file
+    public synchronized void save() {
         gradedQuizzes = lms.getGradedQuizManager().getGradedQuizList();
         this.writeGradedQuizzes();
-    } //gets the altered arraylist of graded quizzes from GradedQuizManger and writes it to a file
+    }
 
+    ///Reads the file that stores the graded quiz data and creates an arraylist of graded quizzes
     public ArrayList<GradedQuiz> readGradedQuizzes() {
         ArrayList<GradedQuiz> tempGradQuiz = new ArrayList<>();
         String path = "./data/gradedQuizzes.txt";
@@ -62,9 +67,10 @@ public class GradedQuizFileManager implements Manager {
             tempGradQuiz.add(new GradedQuiz(quizID, studentID, map, submissionTime));
         }
         return tempGradQuiz;
-    } //Reads the file that stores the graded quiz data and creates an arraylist of graded quizzes
+    }
 
-    public HashMap<Integer, Integer> createHashmap(String contents) { //Used to create the Hashmap
+    ///Used to create the Hashmap
+    public HashMap<Integer, Integer> createHashmap(String contents) {
         HashMap<Integer, Integer> map = new HashMap<>();
         String[] list = contents.split("//", -1);
         //Two "//" forward slashes are used to separate the key/value pairs from each other
@@ -78,23 +84,27 @@ public class GradedQuizFileManager implements Manager {
         return map;
     }
 
-    public boolean writeGradedQuizzes() { //Writes the arraylist of graded quizzes to a file for storage
+    ///Writes the arraylist of graded quizzes to a file for storage
+    public boolean writeGradedQuizzes() {
         ArrayList<String> writableGradedQuizzes = new ArrayList<>();
         String path = "./data/gradedQuizzes.txt";
 
-        for (int i = 0; i < gradedQuizzes.size(); i++) {
-            int quizId = gradedQuizzes.get(i).getQuizID();
-            int studentId = gradedQuizzes.get(i).getStudentID();
-            String mapList = this.formatHashmap(gradedQuizzes.get(i).getGradedQuizMap());
-            String submissionTime = gradedQuizzes.get(i).getSubmissionTime();
-            writableGradedQuizzes.add(String.format("%d;;%d;;%s;;%s", quizId, studentId, mapList, submissionTime));
-            //formats the graded quiz to written and adds it to the arraylist of strings to written
-        }
+        synchronized (writeLock) {
+            for (int i = 0; i < gradedQuizzes.size(); i++) {
+                int quizId = gradedQuizzes.get(i).getQuizID();
+                int studentId = gradedQuizzes.get(i).getStudentID();
+                String mapList = this.formatHashmap(gradedQuizzes.get(i).getGradedQuizMap());
+                String submissionTime = gradedQuizzes.get(i).getSubmissionTime();
+                writableGradedQuizzes.add(String.format("%d;;%d;;%s;;%s", quizId, studentId, mapList, submissionTime));
+                //formats the graded quiz to written and adds it to the arraylist of strings to written
+            }
 
-        return FileWrapper.writeFile(path, writableGradedQuizzes);
+            return FileWrapper.writeFile(path, writableGradedQuizzes);
+        }
     }
 
-    public String formatHashmap(HashMap<Integer, Integer> map) { //Used to format the Hashmap to be written
+    ///Used to format the Hashmap to be written
+    public String formatHashmap(HashMap<Integer, Integer> map) {
         StringJoiner joiner = new StringJoiner("//");
 
         for (Integer key : map.keySet()) {
