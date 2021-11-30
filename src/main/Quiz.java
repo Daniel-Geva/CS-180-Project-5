@@ -20,6 +20,11 @@ public class Quiz implements Listable {
     private int id;
     private boolean scrambled;
     private String course;
+    private Object idLock = new Object();
+    private Object nameLock = new Object();
+    private Object authorLock = new Object();
+    private Object scrambledLock = new Object();
+    private Object courseLock = new Object();
 
     public Quiz(String name, String author, int id, ArrayList<Question> questions,  boolean scrambled, String course) {
         this.name = name;
@@ -45,13 +50,15 @@ public class Quiz implements Listable {
      * @return max - a unique id for a new question object
      */
     public int generateUniqueQuestionId() {
-        int max = 0;
-        for (Question q: questions) {
-            if (q.getId() > max) {
-                max = q.getId();
+        synchronized (idLock) {
+            int max = 0;
+            for (Question q : questions) {
+                if (q.getId() > max) {
+                    max = q.getId();
+                }
             }
+            return max + 1;
         }
-        return max + 1;
     }
     /**
      * Returns id of the quiz
@@ -59,7 +66,9 @@ public class Quiz implements Listable {
      * @return id - quiz-specific identifier
      */
     public int getId() {
-        return id;
+        synchronized (idLock) {
+            return id;
+        }
     }
     /**
      * Returns name of the quiz
@@ -67,7 +76,9 @@ public class Quiz implements Listable {
      * @return name - name given to the quiz by a teacher
      */
     public String getName() {
-        return name;
+        synchronized (nameLock) {
+            return name;
+        }
     }
     /**
      * Returns author of the quiz
@@ -75,7 +86,9 @@ public class Quiz implements Listable {
      * @return author - the name of the teacher who created the quiz
      */
     public String getAuthor() {
-        return author;
+        synchronized (authorLock) {
+            return author;
+        }
     }
     /**
      * Sets quiz name
@@ -83,7 +96,9 @@ public class Quiz implements Listable {
      * @param name - the new name of the quiz
      */
     public void setName(String name) {
-        this.name = name;
+        synchronized (nameLock) {
+            this.name = name;
+        }
     }
     /**
      * Sets quiz author
@@ -91,7 +106,9 @@ public class Quiz implements Listable {
      * @param author - the new name of the author of the quiz
      */
     public void setAuthor(String author) {
-        this.author = author;
+        synchronized (authorLock) {
+            this.author = author;
+        }
     }
     /**
      * Sets quiz ID
@@ -99,7 +116,9 @@ public class Quiz implements Listable {
      * @param idParameter - the new ID of the quiz
      */
     public void setID(int idParameter) {
-        this.id = idParameter;
+        synchronized (idLock) {
+            this.id = idParameter;
+        }
     }
     /**
      * Sets quiz scrambled boolean
@@ -107,14 +126,20 @@ public class Quiz implements Listable {
      * @param scrambled - whether the teacher wants the quiz questions to be in random order
      */
     public void setScrambled(boolean scrambled) {
-        this.scrambled = scrambled;
+        synchronized (scrambledLock) {
+            this.scrambled = scrambled;
+        }
     }
     /**
      * Returns true if the quiz needs to be scrambled
      *
      * @return scrambled - whether the quiz questions should be in random order
      */
-    public boolean isScrambled() { return scrambled; }
+    public boolean isScrambled() {
+        synchronized (scrambledLock) {
+            return scrambled;
+        }
+    }
     /**
      * Randomized the order of questions in the questions arrayList
      * <p>
@@ -123,7 +148,9 @@ public class Quiz implements Listable {
      *
      */
     public void scrambleQuestions() {
-        Collections.shuffle(questions);
+        synchronized (scrambledLock) {
+            Collections.shuffle(questions);
+        }
     }
     /**
      * Returns the name of the quiz
@@ -131,7 +158,9 @@ public class Quiz implements Listable {
      * @return name - a string containing the quiz's name
      */
     public String getListName() {
-        return name;
+        synchronized (nameLock) {
+            return name;
+        }
     }
     /**
      * Returns the name of the course the quiz is a part of
@@ -139,7 +168,9 @@ public class Quiz implements Listable {
      * @return course - A string containing the course name
      */
     public String getCourse() {
-        return course;
+        synchronized (courseLock) {
+            return course;
+        }
     }
     /**
      * Sets the course name for the quiz
@@ -147,7 +178,9 @@ public class Quiz implements Listable {
      * @param course - String containing the name of the course the quiz is a part of
      */
     public void setCourse(String course) {
-        this.course = course;
+        synchronized (courseLock) {
+            this.course = course;
+        }
     }
     /**
      * Returns a synopsis of the attributes of a quiz
