@@ -15,6 +15,7 @@ public class User {
     private String username;
     private String password;
     private String name;
+    private static Object obj = new Object();
 
     public User(int id, String name, String username, String password) {
         this.id = id;
@@ -28,7 +29,9 @@ public class User {
      * @param name Name of user
      */
     public void setName(String name) {
-        this.name = name;
+        synchronized (obj) {
+            this.name = name;
+        }
     }
 
     /**
@@ -36,7 +39,9 @@ public class User {
      * @return Name of user
      */
     public String getName() {
-        return name;
+        synchronized (obj) {
+            return name;
+        }
     }
 
     /**
@@ -44,7 +49,9 @@ public class User {
      * @return ID of user
      */
     public int getID() {
-        return id;
+        synchronized (obj) {
+            return id;
+        }
     }
 
     /**
@@ -52,7 +59,9 @@ public class User {
      * @param inputID ID of user
      */
     public void setID(int inputID) {
-        this.id = inputID;
+        synchronized (obj) {
+            this.id = inputID;
+        }
     }
 
     /**
@@ -60,7 +69,9 @@ public class User {
      * @return username of user
      */
     public String getUsername() {
-        return username;
+        synchronized (obj) {
+            return username;
+        }
     }
 
     /**
@@ -68,7 +79,9 @@ public class User {
      * @param username Username of user
      */
     public void setUsername(String username) {
-        this.username = username;
+        synchronized (obj) {
+            this.username = username;
+        }
     }
 
     /**
@@ -76,7 +89,9 @@ public class User {
      * @return Password of user
      */
     public String getPassword() {
-        return password;
+        synchronized (obj) {
+            return password;
+        }
     }
 
     /**
@@ -84,7 +99,9 @@ public class User {
      * @param password Password of user
      */
     public void setPassword(String password) {
-        this.password = password;
+        synchronized (obj) {
+            this.password = password;
+        }
     }
 
     /**
@@ -93,6 +110,8 @@ public class User {
      */
     public String toString() {
         String format = "ID: %d, Username: %s, Password: %s";
-        return String.format(format, id, username, password);
+        synchronized (obj) {
+            return String.format(format, id, username, password);
+        }
     }
 }
