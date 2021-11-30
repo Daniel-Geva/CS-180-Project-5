@@ -80,8 +80,9 @@ public class UserManager implements Manager {
      * username matches its password
      */
     public boolean authenticator(String username, String password) {
-        for (User user : users) {
-            synchronized (obj) {
+        synchronized (obj) {
+            for (User user : users) {
+
                 if ((user.getUsername().equals(username)) && (user.getPassword().equals(password))) {
                     return true;
                 }
@@ -96,8 +97,9 @@ public class UserManager implements Manager {
      * on a search by username
      */
     public User getUser(String username) {
-        for (User user : users) {
-            synchronized (obj) {
+        synchronized (obj) {
+            for (User user : users) {
+
                 if (user.getUsername().equals(username)) {
                     return user;
                 }
@@ -111,8 +113,9 @@ public class UserManager implements Manager {
      * on a search by User ID
      */
     public User getUserById(int id) {
-        for (User user : users) {
-            synchronized (obj) {
+        synchronized (obj) {
+            for (User user : users) {
+
                 if (user.getID() == id) {
                     return user;
                 }
@@ -131,8 +134,9 @@ public class UserManager implements Manager {
         while (exists) {
             exists = false;
             id = rand.nextInt(999999);
-            for (int i = 0; i < users.size(); i++) {
-                synchronized (obj) {
+            synchronized (obj) {
+                for (int i = 0; i < users.size(); i++) {
+
                     if (users.get(i).getID() == i) {
                         exists = true;
                     }
