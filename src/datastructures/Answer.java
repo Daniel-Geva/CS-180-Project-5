@@ -16,6 +16,10 @@ public class Answer {
     boolean isCorrect;
     int points;
     int id;
+    private Object idLock = new Object();
+    private Object answerLock = new Object();
+    private Object correctLock = new Object();
+    private Object pointLock = new Object();
 
     public Answer(String answer, boolean correct, int points, int id) {
         this.answer = answer;
@@ -30,7 +34,9 @@ public class Answer {
      * @return {@link #isCorrect}
      */
     public boolean isCorrect() {
-        return isCorrect;
+        synchronized (correctLock) {
+            return isCorrect;
+        }
     }
 
     /**
@@ -39,7 +45,9 @@ public class Answer {
      * @return {@link #points}
      */
     public int getPoints() {
-        return points;
+        synchronized (pointLock) {
+            return points;
+        }
     }
     /**
      * Sets a new answer
@@ -47,7 +55,9 @@ public class Answer {
      * @param answer - the new answer String
      */
     public void setAnswer(String answer) {
-        this.answer = answer;
+        synchronized (answerLock) {
+            this.answer = answer;
+        }
     }
     /**
      * Sets a new point value for the question
@@ -55,7 +65,9 @@ public class Answer {
      * @param pointsParameter - the new point value
      */
     public void setPointValue(int pointsParameter) {
-        this.points = pointsParameter;
+        synchronized (pointLock) {
+            this.points = pointsParameter;
+        }
     }
     /**
      * Sets the new question id
@@ -63,7 +75,9 @@ public class Answer {
      * @param idParameter - the new unique id for the answer
      */
     public void setID(int idParameter) {
-        this.id = idParameter;
+        synchronized (idLock) {
+            this.id = idParameter;
+        }
     }
     /**
      * Returns the question's unique id
@@ -71,7 +85,9 @@ public class Answer {
      * @return id - the unique id for the question
      */
     public int getId() {
-        return id;
+        synchronized (idLock) {
+            return id;
+        }
     }
     /**
      * Returns answer string
@@ -79,7 +95,9 @@ public class Answer {
      * @return {@link #answer}
      */
     public String getAnswer() {
-        return answer;
+        synchronized (answerLock) {
+            return answer;
+        }
     }
     /**
      * Returns the answer as a string for the answer class's toString

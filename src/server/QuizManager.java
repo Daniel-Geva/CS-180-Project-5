@@ -18,6 +18,8 @@ public class QuizManager implements Manager {
 	Random rand = new Random();
 	LearningManagementSystemServer lms;
 	ArrayList<Quiz> quizList = new ArrayList<>();
+	private Object quizLock = new Object();
+	private Object idLock = new Object();
 	public QuizManager(LearningManagementSystemServer lms) {
 		this.lms = lms;
 	}
@@ -34,7 +36,9 @@ public class QuizManager implements Manager {
 	 * @param quiz - A new quiz to be added to the list
 	 */
 	public void addQuiz(Quiz quiz) {
-		quizList.add(quiz);
+		synchronized (quizLock) {
+			quizList.add(quiz);
+		}
 	}
 
 	/**
@@ -46,15 +50,17 @@ public class QuizManager implements Manager {
 	 * @param id - ID of the quiz that needs to be removed
 	 */
 	public void removeQuiz(int id) {
-		int startingListLength = quizList.size();
-		for (int i = 0; i < quizList.size(); i++) {
-			if (quizList.get(i).getId() == id) {
-				quizList.remove(i);
-				i--;
+		synchronized (quizLock) {
+			int startingListLength = quizList.size();
+			for (int i = 0; i < quizList.size(); i++) {
+				if (quizList.get(i).getId() == id) {
+					quizList.remove(i);
+					i--;
+				}
 			}
-		}
-		if (startingListLength == quizList.size()) {
-			System.out.println("No quizzes were found with that ID. Please try again");
+			if (startingListLength == quizList.size()) {
+				System.out.println("No quizzes were found with that ID. Please try again");
+			}
 		}
 	}
 
@@ -66,14 +72,16 @@ public class QuizManager implements Manager {
 	 * @return quizDescriptions - A String of all created quizzes
 	 */
 	public String listQuizzes() {
-		String quizDescriptions = "";
-		for (Quiz q : quizList) {
-			quizDescriptions += q.toString() + "\n";
+		synchronized (quizLock) {
+			String quizDescriptions = "";
+			for (Quiz q : quizList) {
+				quizDescriptions += q.toString() + "\n";
+			}
+			if (quizList.size() == 0) {
+				quizDescriptions += "No quizzes have been created";
+			}
+			return quizDescriptions;
 		}
-		if (quizList.size() == 0) {
-			quizDescriptions += "No quizzes have been created";
-		}
-		return quizDescriptions;
 	}
 	/**
 	 * Searches for quizzes matching a specified course
@@ -85,13 +93,15 @@ public class QuizManager implements Manager {
 	 * @param course - the quiz course to search for
 	 */
 	public ArrayList<Quiz> searchQuizByCourse(String course) {
-		ArrayList<Quiz> matchingQuizzes = new ArrayList<>();
-		for (Quiz q : quizList) {
-			if (q.getCourse().toLowerCase().equals(course.toLowerCase())) {
-				matchingQuizzes.add(q);
+		synchronized (quizLock) {
+			ArrayList<Quiz> matchingQuizzes = new ArrayList<>();
+			for (Quiz q : quizList) {
+				if (q.getCourse().toLowerCase().equals(course.toLowerCase())) {
+					matchingQuizzes.add(q);
+				}
 			}
+			return matchingQuizzes;
 		}
-		return matchingQuizzes;
 	}
 	/**
 	 * Searches for quizzes matching a specified name
@@ -103,16 +113,18 @@ public class QuizManager implements Manager {
 	 * @param name - the quiz name to search for
 	 */
 	public ArrayList<Quiz> searchQuizByName(String name) {
-		ArrayList<Quiz> matchingQuizzes = new ArrayList<>();
-		for (Quiz q : quizList) {
-			if (q.getName().toLowerCase().contains(name.toLowerCase())) {
-				matchingQuizzes.add(q);
+		synchronized (quizLock) {
+			ArrayList<Quiz> matchingQuizzes = new ArrayList<>();
+			for (Quiz q : quizList) {
+				if (q.getName().toLowerCase().contains(name.toLowerCase())) {
+					matchingQuizzes.add(q);
+				}
 			}
+			if (matchingQuizzes.size() == 0) {
+				return null;
+			}
+			return matchingQuizzes;
 		}
-		if (matchingQuizzes.size() == 0) {
-			return null;
-		}
-		return matchingQuizzes;
 	}
 	/**
 	 * Searches for quizzes matching a specified author
@@ -124,16 +136,18 @@ public class QuizManager implements Manager {
 	 * @param author - the author name to search for
 	 */
 	public ArrayList<Quiz> searchQuizByAuthor(String author) {
-		ArrayList<Quiz> matchingQuizzes = new ArrayList<>();
-		for (Quiz q : quizList) {
-			if (q.getAuthor().toLowerCase().contains(author.toLowerCase())) {
-				matchingQuizzes.add(q);
+		synchronized (quizLock) {
+			ArrayList<Quiz> matchingQuizzes = new ArrayList<>();
+			for (Quiz q : quizList) {
+				if (q.getAuthor().toLowerCase().contains(author.toLowerCase())) {
+					matchingQuizzes.add(q);
+				}
 			}
+			if (matchingQuizzes.size() == 0) {
+				return null;
+			}
+			return matchingQuizzes;
 		}
-		if (matchingQuizzes.size() == 0) {
-			return null;
-		}
-		return matchingQuizzes;
 	}
 	/**
 	 * Searches for quizzes matching a specified ID
@@ -144,12 +158,14 @@ public class QuizManager implements Manager {
 	 * @param id - the ID to search for
 	 */
 	public Quiz searchQuizByID(int id) {
-		for (Quiz q : quizList) {
-			if (q.getId() == id) {
-				return q;
+		synchronized (idLock) {
+			for (Quiz q : quizList) {
+				if (q.getId() == id) {
+					return q;
+				}
 			}
+			return null;
 		}
-		return null;
 	}
 	/**
 	 * Returns the list of all courses created
@@ -159,15 +175,19 @@ public class QuizManager implements Manager {
 	 * @return courses - an ArrayList of all created courses
 	 */
 	public ArrayList<String> getListOfCourses() {
-		ArrayList<String> courses = new ArrayList<>();
-		for (int i = 0; i < quizList.size(); i++) {
-			String course = quizList.get(i).getCourse();
-			if (!(courses.contains(course))) {
-				courses.add(course);
-			}
+		synchronized (quizLock) {
+			synchronized (quizLock) {
+				ArrayList<String> courses = new ArrayList<>();
+				for (int i = 0; i < quizList.size(); i++) {
+					String course = quizList.get(i).getCourse();
+					if (!(courses.contains(course))) {
+						courses.add(course);
+					}
 
+				}
+				return courses;
+			}
 		}
-		return courses;
 	}
 	/**
 	 * Sets the quizList to a different quizList
@@ -177,7 +197,9 @@ public class QuizManager implements Manager {
 	 * @param quizList - the new list of quizzes
 	 */
 	public void setQuizList(ArrayList<Quiz> quizList) {
-		this.quizList = quizList;
+		synchronized (quizLock) {
+			this.quizList = quizList;
+		}
 	}
 	/**
 	 * Creates a unique ID for instantiation of a new quiz
@@ -187,18 +209,20 @@ public class QuizManager implements Manager {
 	 * @return id - a unique id for a new quiz object
 	 */
 	public int getUniqueID() {
-		int id = 0;
-		boolean exists = true;
-		while (exists) {
-			exists = false;
-			id = rand.nextInt(999999);
-			for (int i = 0; i < quizList.size(); i++) {
-				if (quizList.get(i).getId() == i) {
-					exists = true;
+		synchronized (idLock) {
+			int id = 0;
+			boolean exists = true;
+			while (exists) {
+				exists = false;
+				id = rand.nextInt(999999);
+				for (int i = 0; i < quizList.size(); i++) {
+					if (quizList.get(i).getId() == i) {
+						exists = true;
+					}
 				}
 			}
+			return id;
 		}
-		return id;
 	}
 	/**
 	 * Returns the list of all quizzes
@@ -206,7 +230,9 @@ public class QuizManager implements Manager {
 	 * @return quizList - list of every created quiz
 	 */
 	public ArrayList<Quiz> getQuizList() {
-		return quizList;
+		synchronized (quizLock) {
+			return quizList;
+		}
 	}
 	/**
 	 * Run whenever the program is terminated

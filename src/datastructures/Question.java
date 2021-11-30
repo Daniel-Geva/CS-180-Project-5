@@ -16,6 +16,10 @@ public class Question implements Listable {
     String question;
     int id;
     String questionType;
+    private Object lockQuestionType = new Object();
+    private Object lockId = new Object();
+    private Object lockQuestion = new Object();
+    private Object lockAnswer = new Object();
 
     public Question(ArrayList<Answer> answers, String question, int id, String questionType) {
         this.answers = answers;
@@ -29,13 +33,15 @@ public class Question implements Listable {
      * @return max - a new unique id
      */
     public int generateUniqueAnswerId() {
-        int max = 0;
-        for (Answer a: answers) {
-            if (a.getId() > max) {
-                max = a.getId();
+        synchronized (lockId) {
+            int max = 0;
+            for (Answer a : answers) {
+                if (a.getId() > max) {
+                    max = a.getId();
+                }
             }
+            return max + 1;
         }
-        return max + 1;
     }
     /**
      * Returns the question string, with a limit of 20 characters
@@ -75,7 +81,9 @@ public class Question implements Listable {
      * @return answers - the list of answers to this question
      */
     public ArrayList<Answer> getAnswers() {
-        return answers;
+        synchronized (lockAnswer) {
+            return answers;
+        }
     }
     /**
      * Returns the String representation of the question
@@ -83,7 +91,9 @@ public class Question implements Listable {
      * @return question - The question string
      */
     public String getQuestion() {
-        return question;
+        synchronized (lockQuestion) {
+            return question;
+        }
     }
     /**
      * Changes the quiz ID to a new ID
@@ -91,7 +101,9 @@ public class Question implements Listable {
      * @param id - the new unique id for the quiz
      */
     public void setId(int id) {
-        this.id = id;
+        synchronized (lockId) {
+            this.id = id;
+        }
     }
     /**
      * Returns the unique quiz id
@@ -99,7 +111,9 @@ public class Question implements Listable {
      * @return id - the unique id for the quiz
      */
     public int getId() {
-        return id;
+        synchronized (lockId) {
+            return id;
+        }
     }
     /**
      * Returns the question type
@@ -107,7 +121,9 @@ public class Question implements Listable {
      * @return questionType - the type of question
      */
     public String getQuestionType() {
-        return questionType;
+        synchronized (lockQuestionType) {
+            return questionType;
+        }
     }
     /**
      * Returns the question type
@@ -115,7 +131,9 @@ public class Question implements Listable {
      * @param questionType - the type of question
      */
     public void setQuestionType(String questionType) {
-        this.questionType = questionType;
+        synchronized (lockQuestionType) {
+            this.questionType = questionType;
+        }
     }
     /**
      * Returns the question as it will be displayed to the user
