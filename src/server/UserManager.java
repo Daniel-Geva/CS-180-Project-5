@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import datastructures.Manager;
+import datastructures.User;
 
 /**
  * The UserManager of the application
@@ -24,7 +25,7 @@ public class UserManager implements Manager {
     //Arraylist called users that has user objects
     private ArrayList<User> users = new ArrayList<>();
 
-    LearningManagementSystem lms;
+    LearningManagementSystemServer lms;
 
     /**
      * Constructor for the UserManager.
@@ -32,7 +33,7 @@ public class UserManager implements Manager {
      * All initialization is done in {@link #init()}, so the
      * constructor solely sets the {@link #lms} field.
      */
-    public UserManager(LearningManagementSystem lms) {
+    public UserManager(LearningManagementSystemServer lms) {
         this.lms = lms;
     }
 
