@@ -18,6 +18,8 @@ public class QuizFileManager implements Manager {
 
 	LearningManagementSystem lms;
 	private ArrayList<Quiz> quizzes;
+
+	public static Object writeLock = new Object();
 	
 	public QuizFileManager(LearningManagementSystem lms) {
 		this.lms = lms;
@@ -36,11 +38,12 @@ public class QuizFileManager implements Manager {
 	}
 
 	/// Gets the altered list of quizzes and writes them to a file
-	public void save() {
+	public synchronized void save() {
 		quizzes = lms.getQuizManager().getQuizList();
 		this.writeQuizzes();
 	}
 
+	///reads the file that stores the quiz data and constructs an arraylist of quizzes out of it
 	public ArrayList<Quiz> readQuizzes() {
 		ArrayList<Quiz> tempQuizzes = new ArrayList<>();
 		String path = "./data/quizzes.txt";
@@ -66,8 +69,9 @@ public class QuizFileManager implements Manager {
 			tempQuizzes.add(new Quiz(name, author, id, questions, scrambled, course));
 		}
 		return tempQuizzes;
-	} //reads the file that stores the quiz data and constructs an arraylist of quizzes out of it
+	}
 
+	///Used to create the arraylist of questions that a quiz takes in its constructor
 	public ArrayList<Question> readQuestions(String questionList) {
 		ArrayList<Question> questions = new ArrayList<>();
 
@@ -89,8 +93,9 @@ public class QuizFileManager implements Manager {
 		}
 
 		return questions;
-	} //Used to create the arraylist of questions that a quiz takes in its constructor
+	}
 
+	///Used to create the arraylist of answers that a question takes in its constructor
 	public ArrayList<Answer> readAnswers(String answerList) {
 		ArrayList<Answer> answers = new ArrayList<>();
 
@@ -111,28 +116,31 @@ public class QuizFileManager implements Manager {
 			answers.add(new Answer(answer, correct, points, id));
 		}
 		return answers;
-	} //Used to create the arraylist of answers that a question takes in its constructor
+	}
 
+	///Writes the arraylist of quizzes "quizzes" to a file for storage
 	public boolean writeQuizzes() {
 		ArrayList<String> writableQuizzes = new ArrayList<>();
 		String path = "./data/quizzes.txt";
 
-		for (int i = 0; i < quizzes.size(); i++) {
-			String name = quizzes.get(i).getName();
-			String author = quizzes.get(i).getAuthor();
-			String questions = formatQuestions(quizzes.get(i).getQuestions());
-			int id = quizzes.get(i).getId();
-			boolean scrambled = quizzes.get(i).isScrambled();
-			String course = quizzes.get(i).getCourse();
-			String addon = String.format("%s;;%s;;%s;;%s;;%s;;%s", name, author, questions, id, scrambled, course);
-			//formats the quiz to be written
-			writableQuizzes.add(addon);
-			//add a string that is formatted for storage to the arraylist that will be written to the file
+		synchronized (writeLock) {
+			for (int i = 0; i < quizzes.size(); i++) {
+				String name = quizzes.get(i).getName();
+				String author = quizzes.get(i).getAuthor();
+				String questions = formatQuestions(quizzes.get(i).getQuestions());
+				int id = quizzes.get(i).getId();
+				boolean scrambled = quizzes.get(i).isScrambled();
+				String course = quizzes.get(i).getCourse();
+				String addon = String.format("%s;;%s;;%s;;%s;;%s;;%s", name, author, questions, id, scrambled, course);
+				//formats the quiz to be written
+				writableQuizzes.add(addon);
+				//add a string that is formatted for storage to the arraylist that will be written to the file
+			}
+			return FileWrapper.writeFile(path, writableQuizzes);
 		}
+	}
 
-		return FileWrapper.writeFile(path, writableQuizzes);
-	} //Writes the arraylist of quizzes "quizzes" to a file for storage
-
+	///Used to format the arraylist of questions to be written
 	public String formatQuestions(ArrayList<Question> questions) {
 		String retVal = "";
 		for (int i = 0; i < questions.size(); i++) {
@@ -147,8 +155,9 @@ public class QuizFileManager implements Manager {
 			}
 		}
 		return retVal;
-	} //Used to format the arraylist of questions to be written
+	}
 
+	///Used to format the arraylist of answers to be written
 	public String formatAnswers(ArrayList<Answer> answers) {
 		String retVal = "";
 		for (int i = 0; i < answers.size(); i++) {
@@ -163,9 +172,10 @@ public class QuizFileManager implements Manager {
 			}
 		}
 		return retVal;
-	} //Used to format the arraylist of answers to be written
+	}
 
-	public Quiz importQuiz(String path, String name, String course) {
+	///Creates and returns a quiz object generated from a file, with some values provided by UI
+	public synchronized Quiz importQuiz(String path, String name, String course) {
 		String user = lms.getUIManager().getCurrentUser().getName();
 		int quizId = lms.getQuizManager().getUniqueID();
 
@@ -201,7 +211,7 @@ public class QuizFileManager implements Manager {
 		Quiz quiz = new Quiz(name, user, quizId, questions, false, course);
 
 		return quiz;
-	} //Creates and returns a quiz object generated from a file, with some values provided by UI
+	}
 
 	public void setQuizzes(ArrayList<Quiz> quizzes) {
 		this.quizzes = quizzes;
