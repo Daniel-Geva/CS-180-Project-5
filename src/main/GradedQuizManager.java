@@ -13,6 +13,7 @@ public class GradedQuizManager implements Manager {
 
     private LearningManagementSystem lms;
     private ArrayList<GradedQuiz> gradedQuizList = new ArrayList<>();
+    private static Object obj = new Object();
 
     public GradedQuizManager(LearningManagementSystem lms) {
         this.lms = lms;
@@ -39,7 +40,9 @@ public class GradedQuizManager implements Manager {
      * @param gradedQuiz The graded quiz that needs to be added
      */
     public void addGradedQuiz(GradedQuiz gradedQuiz) {
-        gradedQuizList.add(gradedQuiz);
+        synchronized (obj) {
+            gradedQuizList.add(gradedQuiz);
+        }
     }
 
     public void deleteAllByStudentID(int studentID) {

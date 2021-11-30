@@ -16,6 +16,7 @@ public class GradedQuiz { // should students be able to take quiz multiple times
     private int quizID;
     private int studentID;
     private HashMap<Integer, Integer> map = new HashMap<>();
+    private static Object obj = new Object();
 
     public GradedQuiz(int quizID, int studentID) {
         this.quizID = quizID;
@@ -33,7 +34,9 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @return Hash Map of Graded Quizzes
      */
     public HashMap<Integer, Integer> getGradedQuizMap() {
-        return this.map;
+        synchronized (obj) {
+            return this.map;
+        }
     }
 
     /**
@@ -41,7 +44,9 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @return Quiz ID
      */
     public int getQuizID() {
-        return this.quizID;
+        synchronized (obj) {
+            return this.quizID;
+        }
     }
 
     /**
@@ -49,7 +54,9 @@ public class GradedQuiz { // should students be able to take quiz multiple times
     * @return Student ID
      */
     public int getStudentID() {
-        return this.studentID;
+        synchronized (obj) {
+            return this.studentID;
+        }
     }
 
     /**
@@ -58,7 +65,9 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @param answer Answer that will be added
      */
     public void addQuestion(Question question, Answer answer) {
-        map.put(question.getId(), answer.getId());
+        synchronized (obj) {
+            map.put(question.getId(), answer.getId());
+        }
     }
 
     /**
@@ -75,7 +84,9 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @param answerID ID of answer that will be added to hash map
      */
     public void addQuestion(int questionID, int answerID) {
-        map.put(questionID, answerID);
+        synchronized (obj) {
+            map.put(questionID, answerID);
+        }
     }
 
     /**
@@ -83,7 +94,9 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @return Submission time of quiz
      */
     public String getSubmissionTime() {
-        return submissionTime;
+        synchronized (obj) {
+            return submissionTime;
+        }
     }
 
     /**
@@ -91,6 +104,8 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @param submissionTime Submission time of quiz
      */
     public void setSubmissionTime(String submissionTime) {
-        this.submissionTime = submissionTime;
+        synchronized (obj) {
+            this.submissionTime = submissionTime;
+        }
     }
 }
