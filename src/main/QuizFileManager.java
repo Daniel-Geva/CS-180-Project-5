@@ -19,7 +19,7 @@ public class QuizFileManager implements Manager {
 	LearningManagementSystem lms;
 	private ArrayList<Quiz> quizzes;
 
-	public static Object writeLock = new Object();
+	private static Object writeLock = new Object();
 	
 	public QuizFileManager(LearningManagementSystem lms) {
 		this.lms = lms;

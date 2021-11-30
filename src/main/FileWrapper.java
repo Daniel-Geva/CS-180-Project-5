@@ -14,9 +14,9 @@ import java.util.ArrayList;
  */
 public class FileWrapper {
 
-    public static Object readLock = new Object();
-    public static Object writeLock = new Object();
-    public static Object importLock = new Object();
+    private static Object readLock = new Object();
+    private static Object writeLock = new Object();
+    private static Object importLock = new Object();
 
     ///reads a given file and returns an arraylist of strings, where one element corresponds to one line
     public static ArrayList<String> readFile(String path) {
