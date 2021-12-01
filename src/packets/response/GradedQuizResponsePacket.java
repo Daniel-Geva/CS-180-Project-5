@@ -1,20 +1,19 @@
 package packets.response;
 
+import datastructures.GradedQuiz;
+import datastructures.Quiz;
+import server.LearningManagementSystemServer;
+
 import java.io.Serializable;
 
 public class GradedQuizResponsePacket implements Serializable {
-    boolean success;
-    public GradedQuizResponsePacket() {
-        this.success = true;
+    GradedQuiz gradedQuiz;
+
+    public GradedQuizResponsePacket(LearningManagementSystemServer lms, int id) {
+        //TODO
     }
 
-    public GradedQuizResponsePacket(boolean success) {
-        this.success = success;
+    public GradedQuiz getQuizResponse() {
+        return gradedQuiz;
     }
-
-    public boolean wasSuccess() {
-        return success;
-    }
-
-
 }
