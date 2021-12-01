@@ -115,7 +115,6 @@ public class UserManager implements Manager {
     public User getUserById(int id) {
         synchronized (obj) {
             for (User user : users) {
-
                 if (user.getID() == id) {
                     return user;
                 }
