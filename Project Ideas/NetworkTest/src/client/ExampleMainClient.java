@@ -1,12 +1,12 @@
-package client;
+package Project Ideas.client;
 
-public class MainClient {
+public class ExampleMainClient {
 
-	UIManager uiManager;
-	NetworkManagerClient networkManagerClient;
+	ExampleUIManager uiManager;
+	ExampleNetworkManagerClient networkManagerClient;
 	
 	public static void main(String[] args)  {
-		MainClient mainClient = new MainClient();
+		ExampleMainClient mainClient = new ExampleMainClient();
 		mainClient.init();
 		mainClient.run();
 	}
@@ -20,16 +20,16 @@ public class MainClient {
 		this.uiManager.run();
 	}
 
-	public MainClient() {
-		this.uiManager = new UIManager(this);
-		this.networkManagerClient = new NetworkManagerClient(this);
+	public ExampleMainClient() {
+		this.uiManager = new ExampleUIManager(this);
+		this.networkManagerClient = new ExampleNetworkManagerClient(this);
 	}
 
-	public UIManager getUIManager() {
+	public ExampleUIManager getExampleUIManager() {
 		return this.uiManager;
 	}
 
-	public NetworkManagerClient getNetworkManagerClient() {
+	public ExampleNetworkManagerClient getExampleNetworkManagerClient() {
 		return this.networkManagerClient;
 	}
 	
