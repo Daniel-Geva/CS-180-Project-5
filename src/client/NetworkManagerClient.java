@@ -31,7 +31,7 @@ public class NetworkManagerClient {
                 ObjectOutputStream oos = null;
 
                 try {
-                    socket = new Socket("localHost", 8080);
+                    socket = new Socket("localHost", 4040);
                     oos = new ObjectOutputStream(socket.getOutputStream());
                     ois = new ObjectInputStream(socket.getInputStream());
                 } catch (UnknownHostException e) {
