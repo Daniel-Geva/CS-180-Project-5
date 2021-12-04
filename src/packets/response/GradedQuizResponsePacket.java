@@ -1,7 +1,6 @@
 package packets.response;
 
 import datastructures.GradedQuiz;
-import datastructures.Quiz;
 import server.LearningManagementSystemServer;
 
 import java.io.Serializable;
@@ -10,7 +9,8 @@ public class GradedQuizResponsePacket implements Serializable {
     GradedQuiz gradedQuiz;
 
     public GradedQuizResponsePacket(LearningManagementSystemServer lms, int id) {
-        //TODO
+        // if gradedQuiz is null the entered id is not valid
+        gradedQuiz = lms.getGradedQuizManager().searchGradedQuizByID(id);
     }
 
     public GradedQuiz getQuizResponse() {

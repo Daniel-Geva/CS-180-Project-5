@@ -59,6 +59,15 @@ public class GradedQuizManager implements Manager {
         }
     }
 
+    public GradedQuiz searchGradedQuizByID(int id) {
+        for (int i = 0; i <gradedQuizList.size(); i++) {
+            if (gradedQuizList.get(i).getID().equals(Integer.toString(id))) {
+                return gradedQuizList.get(i);
+            }
+        }
+        return null;
+    }
+
     /**
      * Removes a graded quiz from the list of graded quiz
      * @param id The ID of the Graded Quiz that is to be removed
