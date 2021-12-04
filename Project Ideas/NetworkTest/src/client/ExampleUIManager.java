@@ -1,4 +1,4 @@
-package client;
+package Project Ideas.NetworkTest.src.client;
 
 import java.util.Scanner;
 
@@ -7,12 +7,12 @@ import packets.request.RequestPacketSaveData;
 import packets.response.ExampleResponsePacket;
 import packets.response.ResponsePacketGetData;
 
-public class UIManager {
+public class ExampleUIManager {
 
-	MainClient mainClient;
+	ExampleMainClient mainClient;
 	Scanner scanner;
 	
-	public UIManager(MainClient mainClient) {
+	public ExampleUIManager(ExampleMainClient mainClient) {
 		this.mainClient = mainClient;
 	}
 
@@ -27,7 +27,7 @@ public class UIManager {
 	
 	public void requestData() {
 		System.out.println("Requesting data!");
-		this.mainClient.getNetworkManagerClient()
+		this.mainClient.getExampleNetworkManagerClient()
 		.sendPacket(new RequestPacketGetData())
 		.onReceiveResponse((ExampleResponsePacket response) -> {
 			ResponsePacketGetData responseGetData = (ResponsePacketGetData) response;
@@ -40,7 +40,7 @@ public class UIManager {
 	}
 	
 	public void sendData(String newData) {
-		this.mainClient.getNetworkManagerClient()
+		this.mainClient.getExampleNetworkManagerClient()
 		.sendPacket(new RequestPacketSaveData(newData))
 		.onReceiveResponse((ExampleResponsePacket response) -> {
 			if(response.wasSuccess()) {

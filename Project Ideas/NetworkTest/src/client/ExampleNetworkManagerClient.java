@@ -13,12 +13,12 @@ import javax.swing.SwingUtilities;
 import packets.request.ExampleRequestPacket;
 import packets.response.ExampleResponsePacket;
 
-public class NetworkManagerClient {
+public class ExampleNetworkManagerClient {
 
-	MainClient mainClient;
-	HashMap<ExampleRequestPacket, ResponsePacketHandler> packetQueue;
+	ExampleMainClient mainClient;
+	HashMap<ExampleRequestPacket, ExampleResponsePacketHandler> packetQueue;
 	
-	public NetworkManagerClient(MainClient mainClient) {
+	public ExampleNetworkManagerClient(ExampleMainClient mainClient) {
 		this.mainClient = mainClient;
 		this.packetQueue = new HashMap<>();
 	}
@@ -44,7 +44,7 @@ public class NetworkManagerClient {
 					while(packetQueue.size() != 0) {
 						try {
 							ExampleRequestPacket request = packetQueue.keySet().iterator().next();
-							ResponsePacketHandler handler = packetQueue.get(request);
+							ExampleResponsePacketHandler handler = packetQueue.get(request);
 							packetQueue.remove(request);
 							oos.writeObject(request);
 							Object responseObj = ois.readObject();
@@ -78,8 +78,8 @@ public class NetworkManagerClient {
 		thread.start();
 	}
 
-	public ResponsePacketHandler sendPacket(ExampleRequestPacket requestPacket) {
-		ResponsePacketHandler handler = new ResponsePacketHandler();
+	public ExampleResponsePacketHandler sendPacket(ExampleRequestPacket requestPacket) {
+		ExampleResponsePacketHandler handler = new ExampleResponsePacketHandler();
 		this.packetQueue.put(requestPacket, handler);
 		return handler;
 	}

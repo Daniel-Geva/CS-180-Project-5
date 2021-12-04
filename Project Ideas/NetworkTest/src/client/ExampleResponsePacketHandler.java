@@ -2,15 +2,15 @@ package client;
 
 import packets.response.ExampleResponsePacket;
 
-public class ResponsePacketHandler {
+public class ExampleResponsePacketHandler {
 
-	public ResponsePacketHandler() {
+	public ExampleResponsePacketHandler() {
 		
 	}
 	
-	RunnableHandleResponsePacket onReceiveRunnable;
+	ExampleRunnableHandleResponsePacket onReceiveRunnable;
 	
-	public void onReceiveResponse(RunnableHandleResponsePacket runnable) {
+	public void onReceiveResponse(ExampleRunnableHandleResponsePacket runnable) {
 		this.onReceiveRunnable = runnable;
 	}
 	
