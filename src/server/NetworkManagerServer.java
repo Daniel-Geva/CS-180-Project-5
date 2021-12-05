@@ -1,15 +1,16 @@
 package server;
 
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import packets.request.*;
+import packets.response.*;
 
-import packets.request.ExampleRequestPacket;
-import packets.response.ExampleResponsePacket;
-import
+
 
 public class NetworkManagerServer {
 
@@ -29,19 +30,19 @@ public class NetworkManagerServer {
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Thread thread = new Thread(new Runnable() {
-                    //TODO: Everything Below hasn't been altered to work for lms
+
                     @Override
                     public void run() {
                         while(true) {
                             try {
                                 Object obj = ois.readObject();
-                                if(!(obj instanceof ExampleRequestPacket)) {
+                                if(!(obj instanceof RequestPacket)) {
                                     System.out.println("Error. Non-RequestPacket sent through stream.");
                                     System.out.println("Not responding to that packet.");
                                     continue;
                                 }
-                                RequestPacket requestPacket = (ExampleRequestPacket) obj;
-                                ExampleResponsePacket response = requestPacket.serverHandle(lmsServer);
+                                RequestPacket requestPacket = (RequestPacket) obj;
+                                ResponsePacket response = requestPacket.serverHandle(lmsServer);
 
                                 oos.writeObject(response);
                             } catch (EOFException e) {
