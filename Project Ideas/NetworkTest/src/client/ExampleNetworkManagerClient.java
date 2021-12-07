@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class NetworkManagerClient {
 	LearningManagementSystemClient lmsc;
 	HashMap<RequestPacket, ResponsePacketHandler> packetQueue;
-	NameSetter nameSetter;
+	final NameSetter nameSetter;
 	Runnable onExit;
 
 	Socket socket;
@@ -36,12 +36,12 @@ public class NetworkManagerClient {
 				boolean success = false;
 				do {
 					try {
-						nameSetter.wait();
+						synchronized (nameSetter) {
+							nameSetter.wait();
+						}
 						socket = new Socket(nameSetter.getName(), 4040);
 						oos = new ObjectOutputStream(socket.getOutputStream());
 						success = true;
-					} catch (UnknownHostException e) {
-						nameSetter.getErrorRunnable().run();
 					} catch (IOException e) {
 						nameSetter.getErrorRunnable().run();
 					} catch (InterruptedException e) {
@@ -53,21 +53,8 @@ public class NetworkManagerClient {
 					while (packetQueue.size() != 0) {
 						try {
 							RequestPacket request = packetQueue.keySet().iterator().next();
-							ResponsePacketHandler handler = packetQueue.get(request);
-							packetQueue.remove(request);
 							oos.writeObject(request);
-							Object responseObj = ois.readObject();
-							if (!(responseObj instanceof ResponsePacket)) {
-								continue;
-							}
-							ResponsePacket response = (ResponsePacket) responseObj;
-							SwingUtilities.invokeLater(new Runnable() {
-								@Override
-								public void run() {
-									handler.handlePacket(response);
-								}
-							});
-						} catch (ClassNotFoundException | IOException e) {
+						} catch (IOException e) {
 							return;
 						}
 					}
@@ -90,29 +77,26 @@ public class NetworkManagerClient {
 				} while (!success);
 
 				while (true) {
-					while (packetQueue.size() != 0) {
-						try {
-							RequestPacket request = packetQueue.keySet().iterator().next();
-							ResponsePacketHandler handler = packetQueue.get(request);
-							packetQueue.remove(request);
-							oos.writeObject(request);
-							Object responseObj = ois.readObject();
-							if (!(responseObj instanceof ResponsePacket)) {
-								continue;
-							}
-							ResponsePacket response = (ResponsePacket) responseObj;
-							SwingUtilities.invokeLater(new Runnable() {
-								@Override
-								public void run() {
-									handler.handlePacket(response);
-								}
-							});
-						} catch (ClassNotFoundException | IOException e) {
-							return;
+					try {
+						Object responseObj = ois.readObject();
+						if (!(responseObj instanceof ResponsePacket)) {
+							continue;
 						}
+						ResponsePacket response = (ResponsePacket) responseObj;
+						ResponsePacketHandler handler = packetQueue.get(request);
+						packetQueue.remove(request);
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								handler.handlePacket(response);
+							}
+						});
+					} catch (IOException e) {
+						return;
+					} catch (ClassNotFoundException e) {
+
 					}
 				}
-
 			}
 		});
 
