@@ -16,7 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
-public class Panel extends JLayeredPane {
+public class Panel extends JPanel {
 	
 	private static final long serialVersionUID = -5199098153231935544L;
 	
@@ -36,7 +36,7 @@ public class Panel extends JLayeredPane {
 	
 	public Panel(LayoutManager layout) {
 		this();
-		this.setLayout(layout);
+		mainPanel.setLayout(layout);
 	}
 	
 	public Panel() {
@@ -92,7 +92,7 @@ public class Panel extends JLayeredPane {
 		} else if(component instanceof Dropdown) {
 			this.dropdowns.add((Dropdown) component);
 		}
-		super.add(component);
+		mainPanel.add(component);
 		// TODO Debug
 		component.addMouseListener(DebugListener.INST);
 		return this;
@@ -112,7 +112,7 @@ public class Panel extends JLayeredPane {
 		} else if(component instanceof Dropdown) {
 			this.dropdowns.add((Dropdown) component);
 		}
-		super.add(component, constraints);
+		mainPanel.add(component, constraints);
 		// TODO Debug
 		component.addMouseListener(DebugListener.INST);
 		return this;

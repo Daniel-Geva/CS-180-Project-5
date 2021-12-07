@@ -32,11 +32,12 @@ public class NetworkManagerClient {
                 Socket socket;
                 ObjectInputStream ois = null;
                 ObjectOutputStream oos = null;
-
+                
                 boolean success = false;
                 do {
                     try {
                         nameSetter.wait();
+                        
                         socket = new Socket(nameSetter.getName(), 4040);
                         oos = new ObjectOutputStream(socket.getOutputStream());
                         ois = new ObjectInputStream(socket.getInputStream());

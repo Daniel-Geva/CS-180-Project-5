@@ -16,6 +16,7 @@ public enum GridBagPosition {
 	public GridBagConstraints get() {
 		GridBagConstraints obj = new GridBagConstraints();
 		obj.anchor = this.pos;
+		
 		return obj;
 	}
 	

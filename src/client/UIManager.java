@@ -76,6 +76,7 @@ public class UIManager implements Manager {
 		);
 		
 		Panel panel = (new Panel());
+		/*
 		panel.addModal("Create User", (new Panel())
 			.add(new Heading("Create User"))
 			.add(new TextField("Name"))
@@ -108,7 +109,7 @@ public class UIManager implements Manager {
 						).onReceiveResponse((ResponsePacket response) -> {
 							if(response.wasSuccess()) {
 								JOptionPane.showMessageDialog(
-									null, 
+									null,
 									"Successfully created the user.",
 									"Create User",
 									JOptionPane.INFORMATION_MESSAGE
@@ -127,12 +128,11 @@ public class UIManager implements Manager {
 				)
 			)
 		);
-		
+		*/
 		panel
 			.add(new TextField("Username"))
 			.add(new TextField("Password"))
 			.add(new GapComponent(20))
-				.compSetSize(100, 20)
 			.add((new Panel(new GridBagLayout()))
 				.add((new Button("Create User"))
 						.onClick((Panel p) -> {
@@ -158,12 +158,18 @@ public class UIManager implements Manager {
 								NewUserResponsePacket resp = (NewUserResponsePacket) response;
 								this.setCurrentUser(resp.getUser());
 								// TODO Open main menu.
+								JOptionPane.showMessageDialog(
+										null,
+										"You have successfully logged into Darkspace.",
+										"Login In Validation",
+										JOptionPane.INFORMATION_MESSAGE
+								);
 								loginFrame.setVisible(false);
 								mainFrame.setVisible(true);
 							}
 						});
 					}), GridBagPosition.RIGHT.get())
-				.setPanelSize(600, 20)
+				.setPanelSize(400, 50)
 			)
 			.setPanelSize(400, 300);
 		
