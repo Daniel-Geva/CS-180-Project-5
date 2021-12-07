@@ -52,8 +52,6 @@ public class NetworkManagerServer {
                             try {
                                 Object obj = ois.readObject();
                                 if(!(obj instanceof RequestPacket)) {
-                                    System.out.println("Error. Non-RequestPacket sent through stream.");
-                                    System.out.println("Not responding to that packet.");
                                     continue;
                                 }
                                 RequestPacket requestPacket = (RequestPacket) obj;
@@ -64,10 +62,8 @@ public class NetworkManagerServer {
                                 // Client disconnected.
                                 return;
                             } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
                                 continue;
                             } catch (IOException e) {
-                                e.printStackTrace();
                                 continue;
                             }
 
@@ -78,7 +74,6 @@ public class NetworkManagerServer {
                 thread.start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
         }
 
     }
