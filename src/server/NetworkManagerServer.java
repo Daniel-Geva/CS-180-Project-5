@@ -71,6 +71,20 @@ public class NetworkManagerServer {
                     }
 
                 });
+                Thread pushThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+
+                        }
+                        catch (EOFException e) {
+                            // Client disconnected.
+                            return;
+                        } catch (ClassNotFoundException e) {
+                        } catch (IOException e) {
+                        }
+                    }
+                });
                 thread.start();
             }
         } catch (IOException e) {
