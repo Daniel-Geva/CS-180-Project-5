@@ -89,7 +89,7 @@ public class UIManager implements Manager {
 					.onClick((Panel p) -> {
 						panel.closeModal();
 					}), GridBagPosition.LEFT.get())
-				.add((new Button("Login"))
+				.add((new Button("Create User"))
 					.onClick((Panel p) -> {
 						Map<String, String> result = p.getResultMap();
 						String name = result.get("Name");
@@ -172,6 +172,7 @@ public class UIManager implements Manager {
 		
 		loginFrame.setSize(600, 400);
 		loginFrame.setVisible(true);
+
 	}
 	
 	public Scanner getScanner() {
