@@ -16,7 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
-public class Panel extends JPanel {
+public class Panel extends JLayeredPane {
 	
 	private static final long serialVersionUID = -5199098153231935544L;
 	
@@ -42,6 +42,7 @@ public class Panel extends JPanel {
 	public Panel() {
 		this.mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(0, 1));
+		this.setLayout(new GridLayout(0, 1));
 		super.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
 		this.textFields = new ArrayList<TextField>();
 		this.buttons = new ArrayList<Button>();
