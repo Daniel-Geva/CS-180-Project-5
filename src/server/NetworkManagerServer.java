@@ -38,7 +38,7 @@ public class NetworkManagerServer {
     public void init() {
         try {
             @SuppressWarnings("resource")
-            ServerSocket ss = new ServerSocket(8080);
+            ServerSocket ss = new ServerSocket(4040);
 
             while(true) {
                 final Socket socket = ss.accept();
