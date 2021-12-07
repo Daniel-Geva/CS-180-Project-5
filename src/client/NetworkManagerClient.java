@@ -1,5 +1,6 @@
 package client;
 
+import datastructures.PushPacketHandler;
 import packets.request.RequestPacket;
 import client.ResponsePacketHandler;
 import packets.response.ResponsePacket;
@@ -11,13 +12,23 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class NetworkManagerClient {
     LearningManagementSystemClient lmsc;
     HashMap<RequestPacket, ResponsePacketHandler> packetQueue;
-    NameSetter nameSetter;
+    final NameSetter nameSetter;
     Runnable onExit;
+
+    Socket socket;
+    ObjectInputStream ois = null;
+    ObjectOutputStream oos = null;
+
+    Queue<ResponsePacketHandler> queue = new LinkedList();
+    ArrayList<PushPacketHandler> pushPacketHandlers = new ArrayList<>();
 
     public NetworkManagerClient (LearningManagementSystemClient lmsc) {
         this.lmsc = lmsc;
@@ -26,24 +37,18 @@ public class NetworkManagerClient {
     }
 
     public void init() {
-        Thread thread = new Thread(new Runnable() {
+        Thread outputThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Socket socket;
-                ObjectInputStream ois = null;
-                ObjectOutputStream oos = null;
-                
                 boolean success = false;
                 do {
                     try {
-                        nameSetter.wait();
-                        
+                        synchronized (nameSetter) {
+                            nameSetter.wait();
+                        }
                         socket = new Socket(nameSetter.getName(), 4040);
                         oos = new ObjectOutputStream(socket.getOutputStream());
-                        ois = new ObjectInputStream(socket.getInputStream());
                         success = true;
-                    } catch (UnknownHostException e) {
-                        nameSetter.getErrorRunnable().run();
                     } catch (IOException e) {
                         nameSetter.getErrorRunnable().run();
                     } catch (InterruptedException e) {
@@ -54,22 +59,11 @@ public class NetworkManagerClient {
                 while (true) {
                     while (packetQueue.size() != 0) {
                         try {
-                           RequestPacket request = packetQueue.keySet().iterator().next();
-                           ResponsePacketHandler handler = packetQueue.get(request);
-                           packetQueue.remove(request);
-                           oos.writeObject(request);
-                           Object responseObj = ois.readObject();
-                           if (!(responseObj instanceof ResponsePacket)) {
-                               continue;
-                           }
-                           ResponsePacket response = (ResponsePacket) responseObj;
-                           SwingUtilities.invokeLater(new Runnable() {
-                               @Override
-                               public void run() {
-                                   handler.handlePacket(response);
-                               }
-                           });
-                        } catch (ClassNotFoundException | IOException e) {
+                            RequestPacket request = packetQueue.keySet().iterator().next();
+                            queue.add(packetQueue.get(request));
+                            oos.writeObject(request);
+                            packetQueue.remove(request);
+                        } catch (IOException e) {
                             return;
                         }
                     }
@@ -77,7 +71,55 @@ public class NetworkManagerClient {
 
             }
         });
-        thread.start();
+
+        Thread inputThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean success = false;
+                do {
+                    try {
+                        ois = new ObjectInputStream(socket.getInputStream());
+                        success = true;
+                    } catch (IOException e) {
+                        nameSetter.getErrorRunnable().run();
+                    }
+                } while (!success);
+
+                while (true) {
+                    try {
+                        Object responseObj = ois.readObject();
+                        if (!(responseObj instanceof ResponsePacket)) {
+                            continue;
+                        }
+                        ResponsePacket response = (ResponsePacket) responseObj;
+                        if (!response.getPush()) {
+                            ResponsePacketHandler handler = queue.remove();
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    handler.handlePacket(response);
+                                }
+                            });
+                        } else {
+                            for (PushPacketHandler handler : pushPacketHandlers) {
+                                if (handler.canHandle(response)) {
+                                    handler.handlePacket(response);
+                                    return;
+                                }
+                            }
+                        }
+
+                    } catch (IOException e) {
+                        return;
+                    } catch (ClassNotFoundException e) {
+
+                    }
+                }
+            }
+        });
+
+        inputThread.start();
+        outputThread.start();
     }
 
     public ResponsePacketHandler sendPacket(RequestPacket requestPacket) {
