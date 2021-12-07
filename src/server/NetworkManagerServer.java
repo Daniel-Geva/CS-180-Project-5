@@ -10,6 +10,16 @@ import java.net.Socket;
 import packets.request.*;
 import packets.response.*;
 
+/**
+ * Runs the server for the Learning Management System
+ * <p>
+ * Waits for the user to request or send objects and sends them to the client accordingly
+ *
+ * @author Liam Kelly
+ *
+ * @version December 7, 2021
+ *
+ */
 
 
 public class NetworkManagerServer {
@@ -19,7 +29,12 @@ public class NetworkManagerServer {
     public NetworkManagerServer(LearningManagementSystemServer lmsServer) {
         this.lmsServer = lmsServer;
     }
-
+    /**
+     * Runs when initialized
+     *
+     * Starts the server and waits for the user to send a request packet
+     *
+     */
     public void init() {
         try {
             @SuppressWarnings("resource")

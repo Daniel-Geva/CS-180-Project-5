@@ -4,8 +4,17 @@ import server.LearningManagementSystemServer;
 import datastructures.Quiz;
 import java.util.ArrayList;
 
+/**
+ * Gets the requested list of the quizzes to be returned to the client
+ *
+ * @author Liam Kelly
+ *
+ * @version October 7, 2021
+ *
+ **/
+
 public class QuizListResponsePacket extends ResponsePacket {
-    ArrayList<Quiz> quizzesToReturn = new ArrayList<Quiz>();
+    ArrayList<Quiz> quizzesToReturn;
     String searchTerm;
     public QuizListResponsePacket(LearningManagementSystemServer lms,  String requestType, String searchTerm) {
         this.searchTerm = searchTerm;
@@ -27,10 +36,14 @@ public class QuizListResponsePacket extends ResponsePacket {
         }
     }
 
+    /**
+     * Allows the client to get the requested list of quizzes
+     *
+     * @return quizzesToReturn - the requested list of quizzes
+     *
+     */
     public ArrayList<Quiz> getListOfQuizzesResponse() {
         return quizzesToReturn;
     }
-
-
 
 }
