@@ -26,7 +26,6 @@ public class LearningManagementSystemServer {
 	public static void main(String[] args) {
 		LearningManagementSystemServer lms = new LearningManagementSystemServer();
 		lms.init();
-		lms.run();
 	}
 	
 	/**
