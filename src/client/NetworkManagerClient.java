@@ -16,10 +16,13 @@ import java.util.HashMap;
 public class NetworkManagerClient {
     LearningManagementSystemClient lmsc;
     HashMap<RequestPacket, ResponsePacketHandler> packetQueue;
+    NameSetter nameSetter;
+    Runnable onExit;
 
     public NetworkManagerClient (LearningManagementSystemClient lmsc) {
         this.lmsc = lmsc;
         this.packetQueue = new HashMap<>();
+        this.nameSetter = new NameSetter();
     }
 
     public void init() {
@@ -30,15 +33,22 @@ public class NetworkManagerClient {
                 ObjectInputStream ois = null;
                 ObjectOutputStream oos = null;
 
-                try {
-                    socket = new Socket("localHost", 4040);
-                    oos = new ObjectOutputStream(socket.getOutputStream());
-                    ois = new ObjectInputStream(socket.getInputStream());
-                } catch (UnknownHostException e) {
-                    e.printStackTrace(); //TODO: change the error handling and host name
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                boolean success = false;
+                do {
+                    try {
+                        nameSetter.wait();
+                        socket = new Socket(nameSetter.getName(), 4040);
+                        oos = new ObjectOutputStream(socket.getOutputStream());
+                        ois = new ObjectInputStream(socket.getInputStream());
+                        success = true;
+                    } catch (UnknownHostException e) {
+                        nameSetter.getErrorRunnable().run();
+                    } catch (IOException e) {
+                        nameSetter.getErrorRunnable().run();
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                } while (!success);
 
                 while (true) {
                     while (packetQueue.size() != 0) {
@@ -48,9 +58,7 @@ public class NetworkManagerClient {
                            packetQueue.remove(request);
                            oos.writeObject(request);
                            Object responseObj = ois.readObject();
-                           if (!(responseObj instanceof ResponsePacket)) { //TODO: fix printlns
-                               System.out.println("Error. Non-response packet received through stream.");
-                               System.out.println("Not responding to that packet.");
+                           if (!(responseObj instanceof ResponsePacket)) {
                                continue;
                            }
                            ResponsePacket response = (ResponsePacket) responseObj;
@@ -60,13 +68,8 @@ public class NetworkManagerClient {
                                    handler.handlePacket(response);
                                }
                            });
-                        } catch (EOFException e) { //TODO: replace error handling
-                            System.out.println("The server disconnected");
+                        } catch (ClassNotFoundException | IOException e) {
                             return;
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
                     }
                 }
@@ -82,12 +85,34 @@ public class NetworkManagerClient {
         return handler;
     }
 
-    public String connect(String ip)  { //TODO: make it do something
-        return null;
+    public void setOnExit(Runnable onExit) {
+        this.onExit = onExit;
     }
 
-    public boolean connectionWasSuccess() { //TODO: make it do something
-        return false;
+    public Runnable getOnExit() {
+        return onExit;
     }
+
+    class NameSetter {
+        String name;
+        Runnable errorRunnable;
+
+        public void setErrorRunnable(Runnable errorRunnable) {
+            this.errorRunnable = errorRunnable;
+        }
+
+        public Runnable getErrorRunnable() {
+            return errorRunnable;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
 
 }
