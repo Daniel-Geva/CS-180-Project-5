@@ -1,10 +1,18 @@
 package packets.response;
-
 import datastructures.GradedQuiz;
 import server.LearningManagementSystemServer;
-
 import java.io.Serializable;
 
+/**
+ * Graded Quiz Response Packet
+ *
+ * Holds the Graded Quiz packet that is sent as a response
+ *
+ * @author Sean Lee
+ * @version 12/7/21
+ * @see GradedQuizResponsePacket
+ * @see datastructures.GradedQuiz
+ */
 public class GradedQuizResponsePacket implements Serializable {
     GradedQuiz gradedQuiz;
 
