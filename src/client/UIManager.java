@@ -158,6 +158,12 @@ public class UIManager implements Manager {
 								NewUserResponsePacket resp = (NewUserResponsePacket) response;
 								this.setCurrentUser(resp.getUser());
 								// TODO Open main menu.
+								JOptionPane.showMessageDialog(
+										null,
+										"You have successfully logged into Darkspace.",
+										"Login In Validation",
+										JOptionPane.INFORMATION_MESSAGE
+								);
 								loginFrame.setVisible(false);
 								mainFrame.setVisible(true);
 							}
