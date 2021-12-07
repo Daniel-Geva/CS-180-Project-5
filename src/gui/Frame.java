@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Component;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -13,6 +15,12 @@ public class Frame extends JFrame {
 	}
 	
 	public void open() {
+		for(Component comp: this.getComponents()) {
+			if(comp instanceof Panel) {
+				Panel p = (Panel) comp;
+				p.runOnOpen();
+			}
+		}
 		this.setVisible(true);
 	}
 	

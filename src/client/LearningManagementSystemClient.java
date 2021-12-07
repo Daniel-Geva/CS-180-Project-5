@@ -1,7 +1,5 @@
 package client;
 
-import client.UIManager;
-
 /**
  * 
  * Main class that ties all the systems together.
@@ -15,6 +13,7 @@ import client.UIManager;
 public class LearningManagementSystemClient {
 
 	private UIManager uiManager;
+	private NetworkManagerClient networkManagerClient;
 	
 	/**
 	 * Main method. Initializes the LMS instance
@@ -34,6 +33,7 @@ public class LearningManagementSystemClient {
 	 */
 	public LearningManagementSystemClient() {
 		uiManager = new UIManager(this);
+		networkManagerClient = new NetworkManagerClient(this);
 	}
 
 	/**
@@ -42,6 +42,7 @@ public class LearningManagementSystemClient {
 	 */
 	public void init() {
 		uiManager.init();
+		networkManagerClient.init();
 	}
 	
 	/**
@@ -59,10 +60,16 @@ public class LearningManagementSystemClient {
 	 */
 	public void exit() {
 		uiManager.exit();
+		//networkManagerClient.exit();
 	}
+	
 	
 	public UIManager getUIManager() {
 		return uiManager;
+	}
+	
+	public NetworkManagerClient getNetworkManagerClient() {
+		return networkManagerClient;
 	}
 		
 }
