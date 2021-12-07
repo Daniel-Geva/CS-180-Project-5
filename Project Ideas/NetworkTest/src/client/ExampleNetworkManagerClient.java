@@ -23,6 +23,8 @@ public class NetworkManagerClient {
 	ObjectInputStream ois = null;
 	ObjectOutputStream oos = null;
 
+
+
 	public NetworkManagerClient (LearningManagementSystemClient lmsc) {
 		this.lmsc = lmsc;
 		this.packetQueue = new HashMap<>();
