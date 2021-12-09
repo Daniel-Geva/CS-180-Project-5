@@ -1,11 +1,9 @@
 package client;
 
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import datastructures.Manager;
@@ -14,7 +12,7 @@ import datastructures.User;
 import gui.Button;
 import gui.Dropdown;
 import gui.GapComponent;
-import gui.GridBagPosition;
+import gui.GridBagBuilder;
 import gui.Heading;
 import gui.Panel;
 import gui.TextField;
@@ -32,23 +30,14 @@ public class UIManager implements Manager {
 		this.lms = lms;
 	}
 
+	Panel loginPanel;
+	Panel mainPanel;
+	
 	@Override
 	public void init() {
-		
-	}
+		this.loginPanel = new Panel();
+		this.mainPanel = new Panel(new GridBagLayout());
 
-	@Override
-	public void exit() {
-		
-	}
-	
-	public void run() {
-
-		JFrame mainFrame = new JFrame();
-		JFrame loginFrame = new JFrame();
-		
-		Panel mainPanel = new Panel();
-		
 		mainPanel.add((new Panel())
 			/*.add()*/ /* Icon */
 			.add((new Button("Quiz List"))
@@ -65,19 +54,17 @@ public class UIManager implements Manager {
 				}))
 			.add((new Button("Logout"))
 				.onClick((Panel p) -> {
-					mainFrame.setVisible(false);
-					loginFrame.setVisible(true);
+					mainPanel.close();
+					loginPanel.open();
 				}))
-		);
+		, GridBagBuilder.start().left().stretchY().build());
 		mainPanel.addTabPanel("Quiz List", (new Panel())
 			.onOpen((Panel p) -> {
 				
 			})
 		);
 		
-		Panel panel = (new Panel());
-		/*
-		panel.addModal("Create User", (new Panel())
+		loginPanel.addModal("Create User", (new Panel())
 			.add(new Heading("Create User"))
 			.add(new TextField("Name"))
 			.add(new TextField("Username"))
@@ -88,8 +75,8 @@ public class UIManager implements Manager {
 			.add((new Panel(new GridBagLayout()))
 				.add((new Button("Cancel"))
 					.onClick((Panel p) -> {
-						panel.closeModal();
-					}), GridBagPosition.LEFT.get())
+						loginPanel.closeModal();
+					}), GridBagBuilder.start().left().build())
 				.add((new Button("Create User"))
 					.onClick((Panel p) -> {
 						Map<String, String> result = p.getResultMap();
@@ -114,7 +101,7 @@ public class UIManager implements Manager {
 									"Create User",
 									JOptionPane.INFORMATION_MESSAGE
 								);
-								panel.closeModal();
+								loginPanel.closeModal();
 							} else {
 								JOptionPane.showMessageDialog(
 									null, 
@@ -125,60 +112,64 @@ public class UIManager implements Manager {
 							}
 						});
 					})
-				)
-			)
+				, GridBagBuilder.start().right().build())
+			).setPanelSize(300, 350)
 		);
-		*/
-		panel
-			.add(new TextField("Username"))
-			.add(new TextField("Password"))
-			.add(new GapComponent(20))
-			.add((new Panel(new GridBagLayout()))
-				.add((new Button("Create User"))
-						.onClick((Panel p) -> {
-							// Open Create User menu.
-							panel.openModal("Create User");
-						}), GridBagPosition.LEFT.get())
-				.add((new Button("Login"))
+		
+		loginPanel
+		.add(new Heading("Darkspace"))
+		.add(new GapComponent())
+		.add(new TextField("Username"))
+		.add(new TextField("Password"))
+		.add((new Panel(new GridBagLayout()))
+			.add((new Button("Create User"))
 					.onClick((Panel p) -> {
-						Map<String, String> result = p.getResultMap();
-						String username = result.get("Username");
-						String password = result.get("Password");
-						lms.getNetworkManagerClient().sendPacket(
-							new LoginUserRequestPacket(username, password)	
-						).onReceiveResponse((ResponsePacket response) -> {
-							if(!response.wasSuccess()) {
-								JOptionPane.showMessageDialog(
-									null, 
-									"Invalid Username or Password.\nPlease try again or create a new user.",
-									"Error",
-									JOptionPane.ERROR_MESSAGE
-								);
-							} else {
-								NewUserResponsePacket resp = (NewUserResponsePacket) response;
-								this.setCurrentUser(resp.getUser());
-								// TODO Open main menu.
-								JOptionPane.showMessageDialog(
-										null,
-										"You have successfully logged into Darkspace.",
-										"Login In Validation",
-										JOptionPane.INFORMATION_MESSAGE
-								);
-								loginFrame.setVisible(false);
-								mainFrame.setVisible(true);
-							}
-						});
-					}), GridBagPosition.RIGHT.get())
-				.setPanelSize(400, 50)
-			)
-			.setPanelSize(400, 300);
-		
-		loginFrame.setLayout(new GridBagLayout());
-		loginFrame.add(panel, new GridBagConstraints());
-		
-		loginFrame.setSize(600, 400);
-		loginFrame.setVisible(true);
+						// Open Create User menu.
+						System.out.println("Test");
+						loginPanel.openModal("Create User");
+					}), GridBagBuilder.start().left().build())
+			.add((new Button("Login"))
+				.onClick((Panel p) -> {
+					Map<String, String> result = p.getResultMap();
+					String username = result.get("Username");
+					String password = result.get("Password");
+					lms.getNetworkManagerClient().sendPacket(
+						new LoginUserRequestPacket(username, password)	
+					).onReceiveResponse((ResponsePacket response) -> {
+						if(!response.wasSuccess()) {
+							JOptionPane.showMessageDialog(
+								null, 
+								"Invalid Username or Password.\nPlease try again or create a new user.",
+								"Error",
+								JOptionPane.ERROR_MESSAGE
+							);
+						} else {
+							NewUserResponsePacket resp = (NewUserResponsePacket) response;
+							this.setCurrentUser(resp.getUser());
+							// TODO Open main menu.
+							JOptionPane.showMessageDialog(
+									null,
+									"You have successfully logged into Darkspace.",
+									"Login In Validation",
+									JOptionPane.INFORMATION_MESSAGE
+							);
+							loginPanel.close();
+							mainPanel.open();
+						}
+					});
+				}), GridBagBuilder.start().right().build())
+		)
+		.setPanelSize(500, 400)
+		.setMargin(100, 100);
+	}
 
+	@Override
+	public void exit() {
+		
+	}
+	
+	public void run() {
+		this.mainPanel.open();
 	}
 	
 	public Scanner getScanner() {

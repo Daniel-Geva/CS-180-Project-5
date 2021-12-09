@@ -12,4 +12,6 @@ public class GapComponent extends JComponent {
 		this.setSize(gapSize, gapSize);
 	}
 	
+	public GapComponent() {}
+	
 }

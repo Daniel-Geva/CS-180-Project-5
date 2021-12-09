@@ -1,5 +1,6 @@
 package gui;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
 public class Button extends JButton {
@@ -8,7 +9,23 @@ public class Button extends JButton {
 	
 	public Button(String label) {
 		super(label);
-		//super.setPreferredSize(new Dimension(1, 1));
+		
+		this.setBackground(Aesthetics.BUTTON_BACKGROUND);
+		this.setForeground(Aesthetics.BUTTON_FOREGROUND);
+		this.setBorder(
+			BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(Aesthetics.GENERAL_BACKGROUND, 5),
+				BorderFactory.createCompoundBorder(
+					BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+					BorderFactory.createEmptyBorder(
+						Aesthetics.BUTTON_BORDER_SIZE, 
+						Aesthetics.BUTTON_BORDER_SIZE, 
+						Aesthetics.BUTTON_BORDER_SIZE, 
+						Aesthetics.BUTTON_BORDER_SIZE
+					)
+				)
+			)
+		);
 	}
 	
 	PanelRunnable clickRunnable;

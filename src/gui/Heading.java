@@ -12,6 +12,7 @@ public class Heading extends JLabel {
 		this.setText(text);
 		Font f = new Font(this.getFont().getName(), Font.BOLD, 24);
 		this.setFont(f);
+		this.setForeground(Aesthetics.GENERAL_FOREGROUND);
 	}
 	
 }

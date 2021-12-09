@@ -3,12 +3,12 @@ package datastructures;
 import client.ResponsePacketHandler;
 import packets.response.ResponsePacket;
 
-public abstract class PushPacketHandler<T extends ResponsePacket> extends ResponsePacketHandler {
+public abstract class PushPacketHandler extends ResponsePacketHandler {
 
-	public boolean canHandle(ResponsePacket packet) {
-		return (packet instanceof ResponsePacket);
-	}
+	Class<?> clazz;
 	
-	public abstract void run(T packet);
+	public boolean canHandle(ResponsePacket packet) {
+		return clazz.isInstance(packet);
+	}
 	
 }

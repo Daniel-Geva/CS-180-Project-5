@@ -19,13 +19,16 @@ public class TextField extends JPanel {
 		this.jlabel = new JLabel(label);
 		this.resultKey = resultKey;
 		this.jtextField = new JTextField();
-		// TODO Debug
-		this.jlabel.addMouseListener(DebugListener.INST);
-		this.jtextField.addMouseListener(DebugListener.INST);
 		
 		this.setLayout(new GridLayout(2, 1));
 		this.add(this.jlabel);
 		this.add(jtextField);
+		
+		this.jlabel.setForeground(Aesthetics.GENERAL_FOREGROUND);
+		this.jtextField.setForeground(Aesthetics.TEXT_FIELD_FOREGROUND);
+		this.jtextField.setBackground(Aesthetics.TEXT_FIELD_BACKGROUND);
+		
+		this.setBackground(Aesthetics.GENERAL_BACKGROUND);
 	}
 	
 	public TextField(String label, String resultKey) {
