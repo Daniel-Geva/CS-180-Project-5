@@ -3,6 +3,7 @@ package gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -11,12 +12,16 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -25,6 +30,8 @@ public class Panel extends JLayeredPane {
 
 	private static final long serialVersionUID = -5199098153231935544L;
 
+	Frame frame;
+	
 	JComponent prevComponent;
 
 	int prefWidth;
@@ -45,6 +52,36 @@ public class Panel extends JLayeredPane {
 	public Panel(LayoutManager layout) {
 		this();
 		mainPanel.setLayout(layout);
+	}
+	
+	public void registerClick(Container c, MouseListener l) {
+		for(Component c2: c.getComponents()) {
+			if(c2 instanceof Container) {
+				registerClick((Container) c2, l);
+			}
+			c2.addMouseListener(l);
+		}
+	}
+	
+	public Panel onClick(PanelRunnable runnable) {
+		final Panel panel = this;
+		registerClick(this, new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				mainPanel.setBackground(Aesthetics.CLICKABLE_HOVER_BG_COLOR);
+				mainPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				mainPanel.setBackground(Aesthetics.GENERAL_BACKGROUND);
+				mainPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				runnable.run(panel);
+			}
+		});
+		return this;
 	}
 
 	@Override
@@ -108,8 +145,8 @@ public class Panel extends JLayeredPane {
 
 	public Panel() {
 		this.mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(0,1));
-		//this.setLayout(new GridLayout(1,1));
+		mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
+		
 		super.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
 		this.textFields = new ArrayList<TextField>();
 		this.buttons = new ArrayList<Button>();
@@ -120,15 +157,24 @@ public class Panel extends JLayeredPane {
 		
 		this.setBackground(Aesthetics.GENERAL_BACKGROUND);
 		this.setForeground(Aesthetics.GENERAL_FOREGROUND);
+		mainPanel.setBackground(Aesthetics.GENERAL_BACKGROUND);
+		mainPanel.setForeground(Aesthetics.GENERAL_FOREGROUND);
 		
 	}
 
 	public void selectPanel(String id) {
 		if (this.currentTabId != null) {
-			tabPanels.get(this.currentTabId).setVisible(false);
+			Panel p = tabPanels.get(this.currentTabId);
+			if(p != null)
+				tabPanels.get(this.currentTabId).setVisible(false);
 		}
 		this.currentTabId = id;
-		this.tabPanels.get(this.currentTabId).setVisible(true);
+		Panel p = tabPanels.get(this.currentTabId);
+		if(p == null) {
+			System.out.println("Tab " + this.currentTabId + " does not exist.");
+			return;
+		}
+		p.setVisible(true);
 	}
 
 	public void openTabPanel(String string) {
@@ -141,6 +187,10 @@ public class Panel extends JLayeredPane {
 		}
 		this.currentModalId = id;
 		Panel p = this.modals.get(this.currentModalId);
+		if(p == null) {
+			System.out.println("Modal " + currentModalId + " does not exist.");
+			return;
+		}
 		p.setBounds(0, 0, this.getWidth(), this.getHeight());
 		p.updateBounds();
 		p.setVisible(true);
@@ -156,36 +206,30 @@ public class Panel extends JLayeredPane {
 
 	public Panel add(JComponent component) {
 		prevComponent = component;
-		if (component instanceof Panel) {
-			Panel p = (Panel) component;
-			this.buttons.addAll(p.getButtons());
-			this.textFields.addAll(p.getTextFields());
-			this.dropdowns.addAll(p.getDropdowns());
-		} else if (component instanceof Button) {
-			this.buttons.add((Button) component);
-		} else if (component instanceof TextField) {
-			this.textFields.add((TextField) component);
-		} else if (component instanceof Dropdown) {
-			this.dropdowns.add((Dropdown) component);
-		}
+		searchContainer(component);
 		mainPanel.add(component);
 		return this;
 	}
 
-	public Panel add(JComponent component, Object constraints) {
-		prevComponent = component;
-		if (component instanceof Panel) {
-			Panel p = (Panel) component;
-			this.buttons.addAll(p.getButtons());
-			this.textFields.addAll(p.getTextFields());
-			this.dropdowns.addAll(p.getDropdowns());
-		} else if (component instanceof Button) {
+	public void searchContainer(Container component) {
+		if (component instanceof Button) {
 			this.buttons.add((Button) component);
 		} else if (component instanceof TextField) {
 			this.textFields.add((TextField) component);
 		} else if (component instanceof Dropdown) {
 			this.dropdowns.add((Dropdown) component);
+		} else {
+			for(Component c: component.getComponents()) {
+				if(c instanceof Container) {
+					searchContainer((Container) c);
+				}
+			}
 		}
+	}
+	
+	public Panel add(JComponent component, Object constraints) {
+		prevComponent = component;
+		searchContainer(component);
 		mainPanel.add(component, constraints);
 		return this;
 	}
@@ -197,6 +241,11 @@ public class Panel extends JLayeredPane {
 	}
 
 	public Panel addModal(String id, Panel panel) {
+		if(this.modals.containsKey(id)) {
+			Panel p = this.modals.get(id);
+			this.modals.remove(id);
+			super.remove(p);
+		}
 		panel.setVisible(true);
 		panel.mainPanel.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(Color.BLACK, 2),
@@ -245,9 +294,9 @@ public class Panel extends JLayeredPane {
 			if(c2 instanceof Container) {
 				this.registerDebug((Container) c2);
 			}
-			//c2.addMouseListener(DebugListener.INST);
-			c2.setForeground(Color.WHITE);
-			c2.setBackground(Color.DARK_GRAY);
+			c2.addMouseListener(DebugListener.INST);
+			//c2.setForeground(Color.WHITE);
+			//c2.setBackground(Color.DARK_GRAY);
 		}
 	}
 
@@ -256,15 +305,21 @@ public class Panel extends JLayeredPane {
 		this.updateBounds();
 		
 		Frame f = new Frame();
-		f.setLayout(new GridLayout(0,1));
+		this.frame = f;
+		f.setLayout(new GridLayout(1,1));
 		this.registerListeners();
 		f.setSize(prefWidth, prefHeight);
 		f.setBackground(Color.DARK_GRAY);
 		f.add(this); // , new GridBagConstraints()
+		f.setResizable(false);
 		f.setVisible(true);
 		//f.setBounds(0, 0, prefWidth+10, prefHeight+10);
 		this.setBounds(0, 0, prefWidth, prefHeight);
-		//registerDebug(this);
+		registerDebug(this);
+	}
+	
+	public void close() {
+		this.frame.setVisible(false);
 	}
 
 	public Map<String, String> getResultMap() {
@@ -305,10 +360,6 @@ public class Panel extends JLayeredPane {
 		return this;
 	}
 
-	public void close() {
-		this.setVisible(false);
-	}
-
 	public Panel onOpen(PanelRunnable panelRunnable) {
 		this.onOpenRunnable = panelRunnable;
 		return this;
@@ -323,6 +374,21 @@ public class Panel extends JLayeredPane {
 				p.runOnOpen();
 			}
 		}
+		for (Component comp : mainPanel.getComponents()) {
+			if (comp instanceof Panel) {
+				Panel p = (Panel) comp;
+				p.runOnOpen();
+			}
+		}
+	}
+
+	public JPanel getMainPanel() {
+		return this.mainPanel;
+	}
+	
+	public Panel boxLayout(int boxlayout) {
+		this.mainPanel.setLayout(new BoxLayout(this.mainPanel, boxlayout));
+		return this;
 	}
 
 	// TODO Click Event for Panel (clickable card)

@@ -44,9 +44,18 @@ public class GridBagBuilder {
 		return this;
 	}
 	
+	public GridBagBuilder weightY() {
+		this.con.weighty = 1;
+		return this;
+	}
+	
+	public GridBagBuilder weightX() {
+		this.con.weightx = 1;
+		return this;
+	}
+	
 	public GridBagConstraints build() {
 		return con;
 	}
-	
 	
 }

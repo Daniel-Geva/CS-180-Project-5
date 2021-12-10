@@ -23,6 +23,9 @@ public class TextField extends JPanel {
 		this.setLayout(new GridLayout(2, 1));
 		this.add(this.jlabel);
 		this.add(jtextField);
+		//this.jtextField.setMaximumSize(this.jtextField.getPreferredSize());
+		//System.out.println(this.jtextField.getPreferredSize());
+		//System.out.println(this.getPreferredSize());
 		
 		this.jlabel.setForeground(Aesthetics.GENERAL_FOREGROUND);
 		this.jtextField.setForeground(Aesthetics.TEXT_FIELD_FOREGROUND);

@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Dimension;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
@@ -18,9 +20,9 @@ public class Button extends JButton {
 				BorderFactory.createCompoundBorder(
 					BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
 					BorderFactory.createEmptyBorder(
-						Aesthetics.BUTTON_BORDER_SIZE, 
-						Aesthetics.BUTTON_BORDER_SIZE, 
-						Aesthetics.BUTTON_BORDER_SIZE, 
+						Aesthetics.BUTTON_BORDER_SIZE,
+						Aesthetics.BUTTON_BORDER_SIZE,
+						Aesthetics.BUTTON_BORDER_SIZE,
 						Aesthetics.BUTTON_BORDER_SIZE
 					)
 				)
@@ -33,6 +35,11 @@ public class Button extends JButton {
 	public Button onClick(PanelRunnable runnable) {
 		this.clickRunnable = runnable;
 		return this;
+	}
+
+	@Override
+	public Dimension getMaximumSize() {
+		return this.getPreferredSize();
 	}
 
 	public PanelRunnable getClickRunnable() {

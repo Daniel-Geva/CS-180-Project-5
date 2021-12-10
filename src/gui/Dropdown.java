@@ -21,7 +21,6 @@ public class Dropdown extends JPanel {
 		this.setLayout(new GridLayout(2, 1));
 		this.add(label);
 		this.add(jComboBox);
-		
 
 		this.label.setForeground(Aesthetics.GENERAL_FOREGROUND);
 		this.jComboBox.setForeground(Aesthetics.TEXT_FIELD_FOREGROUND);
