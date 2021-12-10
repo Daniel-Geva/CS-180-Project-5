@@ -44,11 +44,14 @@ public class NetworkManagerClient {
                 do {
                     try {
                         synchronized (nameSetter) {
+                            System.out.println("waiting");
                             nameSetter.wait();
                         }
+                        System.out.println("done waiting");
                         socket = new Socket(nameSetter.getName(), 4040);
                         oos = new ObjectOutputStream(socket.getOutputStream());
                         connected = true;
+                        System.out.println("connected");
                         SwingUtilities.invokeLater(nameSetter.getSuccessRunnable());
                     } catch (IOException e) {
                         SwingUtilities.invokeLater(nameSetter.getErrorRunnable());
@@ -89,10 +92,12 @@ public class NetworkManagerClient {
                     try {
                         while (!connected) {
                             synchronized(this) {
+                                System.out.println("thread 2 waiting");
                             	this.wait(5000);
                             }
                         }
                         ois = new ObjectInputStream(socket.getInputStream());
+                        System.out.println("thread 2 connected");
                         success = true;
                     } catch (IOException | InterruptedException e) {
                         nameSetter.getErrorRunnable().run();
@@ -122,9 +127,7 @@ public class NetworkManagerClient {
                             }
                         }
 
-                    } catch (IOException e) {
-                        return;
-                    } catch (ClassNotFoundException e) {
+                    } catch (IOException | ClassNotFoundException e) {
                         return;
                     }
                 }
