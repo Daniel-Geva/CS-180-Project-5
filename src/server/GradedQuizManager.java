@@ -43,26 +43,31 @@ public class GradedQuizManager implements Manager {
      * @param gradedQuiz The graded quiz that needs to be added
      */
     public void addGradedQuiz(GradedQuiz gradedQuiz) {
-        synchronized (obj) {
+        synchronized (gradedQuizList) {
             gradedQuizList.add(gradedQuiz);
         }
     }
 
     public void deleteAllByStudentID(int studentID) {
-        for (int i = gradedQuizList.size() - 1; i >= 0; i--) {  // iterates backwards to prevent
+        synchronized (gradedQuizList) {
+            int size = gradedQuizList.size() - 1;
+        }
+        for (int size = gradedQuizList.size() - 1; size >= 0; size--) {  // iterates backwards to prevent
             // array out of bounds exception
-            synchronized (obj) {
-                if (gradedQuizList.get(i).getStudentID() == studentID) {
-                    gradedQuizList.remove(gradedQuizList.get(i));
+            synchronized (gradedQuizList) {
+                if (gradedQuizList.get(size).getStudentID() == studentID) {
+                    gradedQuizList.remove(gradedQuizList.get(size));
                 }
             }
         }
     }
 
     public GradedQuiz searchGradedQuizByID(int id) {
-        for (int i = 0; i <gradedQuizList.size(); i++) {
-            if (gradedQuizList.get(i).getID().equals(Integer.toString(id))) {
-                return gradedQuizList.get(i);
+        synchronized (gradedQuizList) {
+            for (int i = 0; i <gradedQuizList.size(); i++) {
+                if (gradedQuizList.get(i).getID().equals(Integer.toString(id))) {
+                    return gradedQuizList.get(i);
+                }
             }
         }
         return null;
@@ -73,7 +78,7 @@ public class GradedQuizManager implements Manager {
      * @param id The ID of the Graded Quiz that is to be removed
      */
     public void removeQuiz(int id) {
-        synchronized (obj) {
+        synchronized (gradedQuizList) {
             int startingListLength = gradedQuizList.size();
             for (int i = 0; i < gradedQuizList.size(); i++) {
                 if (gradedQuizList.get(i).getID().equals(Integer.toString(id))) {
@@ -89,7 +94,7 @@ public class GradedQuizManager implements Manager {
      * @param inputGradedQuizList The list of graded quizzes
      */
     public void setGradedQuiz(ArrayList<GradedQuiz> inputGradedQuizList) {
-        synchronized (obj) {
+        synchronized (gradedQuizList) {
             this.gradedQuizList = inputGradedQuizList;
         }
     }
@@ -100,7 +105,7 @@ public class GradedQuizManager implements Manager {
      */
     public String listGradedQuizzes() {
         StringBuilder quizDescriptions = new StringBuilder();
-        synchronized (obj) {
+        synchronized (gradedQuizList) {
             for (GradedQuiz q : gradedQuizList) {
                 quizDescriptions.append(q.toString()).append("\n");
             }
@@ -118,7 +123,7 @@ public class GradedQuizManager implements Manager {
      */
     public ArrayList<GradedQuiz> searchGradedQuizzesByCourse(String course) {
         ArrayList<GradedQuiz> matchingQuizzes = new ArrayList<>();
-        synchronized (obj) {
+        synchronized (gradedQuizList) {
             for (GradedQuiz gradedQuiz : gradedQuizList) {
                 if (lms.getQuizManager().searchQuizByID(Integer.getInteger(
                         gradedQuiz.getID().substring(1))).getCourse().equals(course)) {
@@ -134,7 +139,7 @@ public class GradedQuizManager implements Manager {
      * @return ArrayList of graded quizzes
      */
     public ArrayList<GradedQuiz> getGradedQuizList() {
-        synchronized (obj) {
+        synchronized (gradedQuizList) {
             return gradedQuizList;
         }
     }
