@@ -36,7 +36,7 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @return Hash Map of Graded Quizzes
      */
     public HashMap<Integer, Integer> getGradedQuizMap() {
-        synchronized (obj) {
+        synchronized (map) {
             return this.map;
         }
     }
@@ -67,7 +67,7 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @param answer Answer that will be added
      */
     public void addQuestion(Question question, Answer answer) {
-        synchronized (obj) {
+        synchronized (map) {
             map.put(question.getId(), answer.getId());
         }
     }
@@ -77,7 +77,9 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @return String of Graded Quiz ID
      */
     public String getID() {
-        return String.format("G%d", quizID);
+        synchronized (obj) {
+            return String.format("G%d", quizID);
+        }
     }
 
     /**
@@ -86,7 +88,7 @@ public class GradedQuiz { // should students be able to take quiz multiple times
      * @param answerID ID of answer that will be added to hash map
      */
     public void addQuestion(int questionID, int answerID) {
-        synchronized (obj) {
+        synchronized (map) {
             map.put(questionID, answerID);
         }
     }
