@@ -13,7 +13,6 @@ public class CreateUserRequestPacket extends RequestPacket {
 
     //server
     public ResponsePacket serverHandle(LearningManagementSystemServer mainServer) {
-        //add user to usermanager
     	user.setID(mainServer.getUserManager().getUniqueID());
         if (mainServer.getUserManager().getUser(user.getUsername()) == null) {
             mainServer.getUserManager().addUser(user);
@@ -21,7 +20,7 @@ public class CreateUserRequestPacket extends RequestPacket {
         } else {
             return new ResponsePacket(false);
         }
-        //if user already exists return fail in the return statement below
+
     }
 
 }
