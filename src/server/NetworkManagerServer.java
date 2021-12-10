@@ -29,18 +29,18 @@ public class NetworkManagerServer {
     public NetworkManagerServer(LearningManagementSystemServer lmsServer) {
         this.lmsServer = lmsServer;
     }
+
     /**
      * Runs when initialized
-     *
+     * <p>
      * Starts the server and waits for the user to send a request packet
-     *
      */
     public void init() {
         try {
             @SuppressWarnings("resource")
             ServerSocket ss = new ServerSocket(4040);
 
-            while(true) {
+            while (true) {
                 final Socket socket = ss.accept();
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
@@ -48,16 +48,20 @@ public class NetworkManagerServer {
 
                     @Override
                     public void run() {
-                        while(true) {
+                        while (true) {
                             try {
                                 Object obj = ois.readObject();
-                                if(!(obj instanceof RequestPacket)) {
+                                if ((obj instanceof RequestPacket)) {
+                                    RequestPacket requestPacket = (RequestPacket) obj;
+                                    ResponsePacket response = requestPacket.serverHandle(lmsServer);
+
+                                    oos.writeObject(response);
+                                } else if (obj instanceof ResponsePacket) {
+                                    ResponsePacket responsePacket = (ResponsePacket) obj;
+                                    oos.writeObject(responsePacket);
+                                } else {
                                     continue;
                                 }
-                                RequestPacket requestPacket = (RequestPacket) obj;
-                                ResponsePacket response = requestPacket.serverHandle(lmsServer);
-
-                                oos.writeObject(response);
                             } catch (EOFException e) {
                                 // Client disconnected.
                                 return;
@@ -71,25 +75,11 @@ public class NetworkManagerServer {
                     }
 
                 });
-                Thread pushThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-
-                        }
-                        catch (EOFException e) {
-                            // Client disconnected.
-                            return;
-                        } catch (ClassNotFoundException e) {
-                        } catch (IOException e) {
-                        }
-                    }
-                });
-                thread.start();
             }
+
         } catch (IOException e) {
+
         }
 
     }
-
 }
