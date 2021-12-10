@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -44,6 +46,12 @@ public class Button extends JButton {
 
 	public PanelRunnable getClickRunnable() {
 		return this.clickRunnable;
+	}
+	
+	public Panel panelize() {
+		Panel p = new Panel(new GridBagLayout());
+		p.add(this, new GridBagConstraints());
+		return p;
 	}
 	
 }

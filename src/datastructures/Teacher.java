@@ -1,5 +1,7 @@
 package datastructures;
 
+import java.io.Serializable;
+
 /**
  *
  * Class that contains the detail of a teacher
@@ -8,7 +10,7 @@ package datastructures;
  * @version 11/14/21
  * @see User
  */
-public class Teacher extends User {
+public class Teacher extends User implements Serializable {
     private final UserPermission userPermission;
     public Teacher(int id, String name, String username, String password) {
         super(id, name, username, password);

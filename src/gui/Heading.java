@@ -1,7 +1,12 @@
 package gui;
 
 import java.awt.Font;
+import java.awt.font.TextAttribute;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 public class Heading extends JLabel {
@@ -13,6 +18,14 @@ public class Heading extends JLabel {
 		Font f = new Font(this.getFont().getName(), Font.BOLD, 24);
 		this.setFont(f);
 		this.setForeground(Aesthetics.GENERAL_FOREGROUND);
+		// TODO Debug
+		this.addMouseListener(DebugListener.INST);
+	}
+
+	public JComponent big() {
+		Font f = new Font(this.getFont().getName(), Font.BOLD, 36);
+		this.setFont(f);
+		return this;
 	}
 	
 }

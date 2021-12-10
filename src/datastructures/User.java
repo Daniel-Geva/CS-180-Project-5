@@ -1,5 +1,7 @@
 package datastructures;
 
+import java.io.Serializable;
+
 import server.UserManager;
 
 /**
@@ -10,7 +12,7 @@ import server.UserManager;
  * @version 11/14/21
  * @see UserManager
  */
-public class User {
+public class User implements Serializable {
     private int id;
     private String username;
     private String password;

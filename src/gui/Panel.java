@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
@@ -30,7 +31,7 @@ public class Panel extends JLayeredPane {
 
 	private static final long serialVersionUID = -5199098153231935544L;
 
-	Frame frame;
+	JFrame frame;
 	
 	JComponent prevComponent;
 
@@ -254,7 +255,6 @@ public class Panel extends JLayeredPane {
 
 		Panel p = new Panel(new GridBagLayout());
 		p.setBackground(Aesthetics.MODAL_BACKGROUND);
-		//p.mainPanel.setLayout(new GridBagLayout());
 		p.add(panel, new GridBagConstraints());
 		p.setVisible(false);
 		p.registerListeners();
@@ -273,20 +273,27 @@ public class Panel extends JLayeredPane {
 	}
 	
 	public Panel setMargin(int x, int y) {
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(x>>1, y>>1, x>>1, y>>1));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(y>>1, x>>1, y>>1, x>>1));
 		return this;
 	}
 
 	public void registerListeners() {
 		final Panel panel = this;
 		for (Button b : this.buttons) {
-			b.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					b.getClickRunnable().run(panel);
-				}
-			});
+			if(b.getActionListeners().length == 0) {
+				b.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						b.getClickRunnable().run(panel);
+					}
+				});
+			}
 		}
+	}
+	
+	public void revalidate() {
+		super.revalidate();
+		this.registerListeners();
 	}
 	
 	public void registerDebug(Container c) {
@@ -304,11 +311,12 @@ public class Panel extends JLayeredPane {
 		this.runOnOpen();
 		this.updateBounds();
 		
-		Frame f = new Frame();
+		JFrame f = new JFrame();
 		this.frame = f;
 		f.setLayout(new GridLayout(1,1));
 		this.registerListeners();
 		f.setSize(prefWidth, prefHeight);
+		f.setLocationRelativeTo(null);
 		f.setBackground(Color.DARK_GRAY);
 		f.add(this); // , new GridBagConstraints()
 		f.setResizable(false);
@@ -346,6 +354,8 @@ public class Panel extends JLayeredPane {
 	}
 
 	public Panel compSetSize(int i, int j) {
+		this.prevComponent.setMaximumSize(new Dimension(i, j));
+		this.prevComponent.setMinimumSize(new Dimension(i, j));
 		this.prevComponent.setPreferredSize(new Dimension(i, j));
 		this.prevComponent.setSize(i, j);
 		return this;
@@ -389,6 +399,24 @@ public class Panel extends JLayeredPane {
 	public Panel boxLayout(int boxlayout) {
 		this.mainPanel.setLayout(new BoxLayout(this.mainPanel, boxlayout));
 		return this;
+	}
+
+	public String getInput(String key) {
+		for (TextField textField : this.getTextFields()) {
+			if(textField.getResultKey().equals(key)) {
+				return textField.getText();
+			}
+		}
+		for (Dropdown dropdown : this.getDropdowns()) {
+			if(dropdown.getResultKey().equals(key)) {
+				return dropdown.getSelection();
+			}
+		}
+		return "";
+	}
+
+	public JComponent prevComp() {
+		return this.prevComponent;
 	}
 
 	// TODO Click Event for Panel (clickable card)

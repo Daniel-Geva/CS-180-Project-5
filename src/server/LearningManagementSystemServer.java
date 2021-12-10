@@ -18,6 +18,8 @@ public class LearningManagementSystemServer {
 	private UserManager userManager;
 	private QuizManager quizManager;
 	private GradedQuizManager gradedQuizManager;
+
+	private NetworkManagerServer networkManagerServer;
 	
 	/**
 	 * Main method. Initializes the LMS instance
@@ -40,6 +42,8 @@ public class LearningManagementSystemServer {
 		quizFileManager = new QuizFileManager(this);
 		gradedQuizManager = new GradedQuizManager(this);
 		gradedQuizFileManager = new GradedQuizFileManager(this);
+		
+		networkManagerServer = new NetworkManagerServer(this);
 	}
 
 	/**
@@ -53,6 +57,7 @@ public class LearningManagementSystemServer {
 		quizFileManager.init();
 		gradedQuizManager.init();
 		gradedQuizFileManager.init();
+		networkManagerServer.init();
 	}
 
 	public UserFileManager getUserFileManager() {

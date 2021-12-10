@@ -1,4 +1,7 @@
 package datastructures;
+
+import java.io.Serializable;
+
 /**
  *
  * Enum that holds the two possible values of a user's permission:
@@ -7,7 +10,7 @@ package datastructures;
  * @author Sean Lee
  * @version 11/7/21
  */
-public enum UserPermission {
+public enum UserPermission implements Serializable {
     ADMIN,
     USER
 }

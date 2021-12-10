@@ -22,13 +22,13 @@ public class DebugListener extends MouseAdapter {
 	public void mouseEntered(MouseEvent e) {
 		JComponent component = (JComponent) e.getSource();
 		component.setBackground(new Color(0, 0, 0, 100));
-		//component.setBorder(new StrokeBorder(new BasicStroke(5), Color.BLUE));
+		component.setBorder(new StrokeBorder(new BasicStroke(5), Color.BLUE));
 	}
 	@Override
 	public void mouseExited(MouseEvent e) {
 		JComponent component = (JComponent) e.getSource();
 		component.setBackground(Aesthetics.GENERAL_BACKGROUND);
-		//component.setBorder(null);
+		component.setBorder(null);
 	}
 	
 }
