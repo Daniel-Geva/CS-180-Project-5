@@ -1,4 +1,5 @@
 package packets.request;
+import datastructures.GradedQuiz;
 import server.LearningManagementSystemServer;
 import java.io.Serializable;
 import packets.response.GradedQuizResponsePacket;
@@ -9,18 +10,50 @@ import packets.response.GradedQuizResponsePacket;
  * Contains the method that handles a handle request by the server.
  *
  * @author Sean Lee
- * @version 12/7/21
+ * @version 12/10/21
  * @see GradedQuizResponsePacket
  * @see datastructures.GradedQuiz
  */
 public class GradedQuizRequestPacket implements Serializable {
+    GradedQuiz gradedQuiz;
     int id;
 
-    public GradedQuizRequestPacket(int id) {
-        this.id = id;
+    /**
+     * Constructor for when the user creates a new Graded Quiz or changes an existing Graded Quiz
+     * @param gradedQuiz
+     */
+    public GradedQuizRequestPacket(GradedQuiz gradedQuiz) {
+        this.gradedQuiz = gradedQuiz;
+        id = Integer.parseInt(gradedQuiz.getID());
     }
 
+    /**
+     * Constructor for when client is requesting a specific Graded Quiz
+     * @param id
+     */
+    public GradedQuizRequestPacket(int id) {
+        this.id = id;
+        gradedQuiz = null;
+    }
+
+    /**
+     * Handles the request packet based on client needs
+     * @param lms
+     * @return
+     */
     public GradedQuizResponsePacket serverHandle(LearningManagementSystemServer lms) {
-        return new GradedQuizResponsePacket(lms, id);
+        // if the Graded Quiz is null the server needs to send the client the Graded Quiz it is looking for
+        if (gradedQuiz == null) {
+            gradedQuiz = lms.getGradedQuizManager().searchGradedQuizByID(id);
+            return new GradedQuizResponsePacket(true, gradedQuiz);
+        } else {
+            // if the Graded Quiz exists the new information is replaced
+            // TODO: there is probably a better way to do this
+            lms.getGradedQuizManager().removeQuiz(id);
+            lms.getGradedQuizManager().addGradedQuiz(gradedQuiz);
+            // if the Graded Quiz doesn't exist a new Graded Quiz is added to the LMS
+            lms.getGradedQuizManager().addGradedQuiz(gradedQuiz);
+            return new GradedQuizResponsePacket(true);
+        }
     }
 }

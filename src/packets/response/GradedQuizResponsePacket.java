@@ -15,13 +15,21 @@ import java.io.Serializable;
  */
 public class GradedQuizResponsePacket implements Serializable {
     GradedQuiz gradedQuiz;
+    boolean success = false;
 
-    public GradedQuizResponsePacket(LearningManagementSystemServer lms, int id) {
-        // if gradedQuiz is null the entered id is not valid
-        gradedQuiz = lms.getGradedQuizManager().searchGradedQuizByID(id);
+    public GradedQuizResponsePacket(boolean success) {
+        this.success = success;
+    }
+
+    public GradedQuizResponsePacket(boolean success, GradedQuiz gradedQuiz) {
+        this.success = success;
     }
 
     public GradedQuiz getQuizResponse() {
         return gradedQuiz;
+    }
+
+    public boolean getSuccess() {
+        return this.success;
     }
 }
