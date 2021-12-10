@@ -44,22 +44,31 @@ public class NetworkManagerClient {
                 do {
                     try {
                         synchronized (nameSetter) {
-                            nameSetter.wait(10000);
+                            nameSetter.wait();
                         }
                         socket = new Socket(nameSetter.getName(), 4040);
                         oos = new ObjectOutputStream(socket.getOutputStream());
                         connected = true;
+                        SwingUtilities.invokeLater(nameSetter.getSuccessRunnable());
                     } catch (IOException e) {
-                        nameSetter.getErrorRunnable().run();
+                        SwingUtilities.invokeLater(nameSetter.getErrorRunnable());
                     } catch (InterruptedException e) {
                         return;
                     }
                 } while (!connected);
 
                 while (true) {
+                	synchronized(packetQueue) {
+                		try {
+							packetQueue.wait();
+						} catch (InterruptedException e) {
+							return;
+						}
+                	}
                     while (packetQueue.size() != 0) {
                         try {
                             RequestPacket request = packetQueue.keySet().iterator().next();
+                            System.out.println("Sent " + request);
                             queue.add(packetQueue.get(request));
                             oos.writeObject(request);
                             packetQueue.remove(request);
@@ -79,7 +88,9 @@ public class NetworkManagerClient {
                 do {
                     try {
                         while (!connected) {
-                            wait(5000);
+                            synchronized(this) {
+                            	this.wait(5000);
+                            }
                         }
                         ois = new ObjectInputStream(socket.getInputStream());
                         success = true;
@@ -87,21 +98,20 @@ public class NetworkManagerClient {
                         nameSetter.getErrorRunnable().run();
                     }
                 } while (!success);
-
                 while (true) {
                     try {
                         Object responseObj = ois.readObject();
+                        System.out.println("Response1");
                         if (!(responseObj instanceof ResponsePacket)) {
                             continue;
                         }
                         ResponsePacket response = (ResponsePacket) responseObj;
+                        System.out.println("Response");
                         if (!response.getPush()) {
                             ResponsePacketHandler handler = queue.remove();
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    handler.handlePacket(response);
-                                }
+                            System.out.println(handler);
+                            SwingUtilities.invokeLater(() -> {
+                                handler.handlePacket(response);
                             });
                         } else {
                             for (PushPacketHandler handler : pushPacketHandlers) {
@@ -128,6 +138,9 @@ public class NetworkManagerClient {
     public ResponsePacketHandler sendPacket(RequestPacket requestPacket) {
         ResponsePacketHandler handler = new ResponsePacketHandler();
         this.packetQueue.put(requestPacket, handler);
+    	synchronized(packetQueue) {
+    		packetQueue.notifyAll();
+    	}
         return handler;
     }
 
@@ -142,6 +155,7 @@ public class NetworkManagerClient {
     class NameSetter {
         String name;
         Runnable errorRunnable;
+        Runnable successRunnable;
 
         public void setErrorRunnable(Runnable errorRunnable) {
             this.errorRunnable = errorRunnable;
@@ -151,13 +165,21 @@ public class NetworkManagerClient {
             return errorRunnable;
         }
 
-        public String getName() {
+        public Runnable getSuccessRunnable() {
+			return successRunnable;
+		}
+
+		public String getName() {
             return name;
         }
 
         public void setName(String name) {
             this.name = name;
         }
+
+		public void setSuccessRunnable(Runnable runnable) {
+			this.successRunnable = runnable;
+		}
     }
 
 

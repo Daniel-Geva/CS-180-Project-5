@@ -74,6 +74,7 @@ public class NetworkManagerServer {
                     }
 
                 });
+                thread.start();
             }
 
         } catch (IOException e) {
