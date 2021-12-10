@@ -34,6 +34,16 @@ import packets.request.LoginUserRequestPacket;
 import packets.response.NewUserResponsePacket;
 import packets.response.ResponsePacket;
 
+/**
+ *
+ *
+ * @author Aryan Jain
+ * @author Isaac Fleetwood
+ * @version 1.0.0
+ *
+ *
+ */
+
 public class UIManager implements Manager {
 
 	LearningManagementSystemClient lms;

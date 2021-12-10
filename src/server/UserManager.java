@@ -8,6 +8,7 @@ import datastructures.Manager;
 import datastructures.User;
 
 /**
+ *
  * The UserManager of the application
  * <p>
  * Implements the Manager class
@@ -17,11 +18,13 @@ import datastructures.User;
  *
  * @author Aryan Jain
  * @version 1.0.0
+ *
  */
 
 public class UserManager implements Manager {
     //Created an Object named obj to synchronize elements of this code
     Object obj = new Object();
+
     //Arraylist called users that has user objects
     private ArrayList<User> users = new ArrayList<>();
 
@@ -39,9 +42,10 @@ public class UserManager implements Manager {
 
     /**
      * Returns an ArrayList users of User objects
+     * The section of the code below has to be synchronized because this method can be called
+     * as the change is/has been made
      */
     public ArrayList<User> getUsers() {
-
         synchronized (obj) {
             return users;
         }
@@ -49,6 +53,7 @@ public class UserManager implements Manager {
 
     /**
      * Set an ArrayList users of User objects
+     * Users can be accessed by multiple threads and thus has to be synchronized
      */
     public void setUsers(ArrayList<User> users) {
         synchronized (obj) {
@@ -58,6 +63,7 @@ public class UserManager implements Manager {
 
     /**
      * Adds a User object to the ArrayList users
+     *
      */
     public void addUser(User user) {
         synchronized (obj) {
@@ -78,6 +84,9 @@ public class UserManager implements Manager {
      * Takes an username parameter and a password parameter
      * and returns boolean if a specific user's
      * username matches its password
+     *
+     * This forEach-loop is synchronized because multiple threads can call this
+     * method to validate a user or this method can be accessed while a field is modified
      */
     public boolean authenticator(String username, String password) {
         synchronized (obj) {
@@ -95,6 +104,9 @@ public class UserManager implements Manager {
     /**
      * Iterates through the ArrayList users and returns a user based
      * on a search by username
+     *
+     * Multiple threads have access to this method and can run this method simultaneously and hence,
+     * this forEach-loop has to be synchronized
      */
     public User getUser(String username) {
         synchronized (obj) {
@@ -111,6 +123,10 @@ public class UserManager implements Manager {
     /**
      * Iterates through the ArrayList users and returns a user based
      * on a search by User ID
+     *
+     * Multiple threads have access to this method and can run this method simultaneously and hence,
+     * this forEach-loop has to be synchronized
+     *
      */
     public User getUserById(int id) {
         synchronized (obj) {
@@ -125,6 +141,9 @@ public class UserManager implements Manager {
 
     /**
      * Generates a uniqueID for each User object in the ArrayList users
+     *
+     * Multiple threads have access to this method and can access this method at the same time
+     * and hence, this for-loop has to be synchronized
      */
     public int getUniqueID() {
         Random rand = new Random();
