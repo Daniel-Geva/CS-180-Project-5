@@ -105,7 +105,7 @@ public class UIManager implements Manager {
 			}
 			i += 1;
 		}
-		panel.addModal("verify-cancel", new Panel()
+		overallPanel.addModal("verify-cancel", new Panel()
 			.add(new Heading("Are you sure?"))
 			.add(new Label("If you cancel, you will"))
 			.add(new Label("lose your progress."))
@@ -113,27 +113,29 @@ public class UIManager implements Manager {
 				.boxLayout(BoxLayout.X_AXIS)
 				.add(new Button("Cancel")
 					.onClick((Panel p) -> {
-						panel.closeModal();
+						overallPanel.closeModal();
 					}))
 				.add(new Button("Exit Quiz")
 					.onClick((Panel p) -> {
-						panel.close();
+						overallPanel.close();
 						mainPanel.open();
 					}))
 			)
+			.setPanelSize(350, 200)
 		);
 		
-		panel.add(new Panel(new FlowLayout(FlowLayout.LEADING))
-			//.boxLayout(BoxLayout.X_AXIS)
+		panel.add(new Panel()
+			.boxLayout(BoxLayout.X_AXIS)
 			.add(new Button("Cancel")
 				.color(Aesthetics.BUTTON_WARNING)
 				.onClick((Panel p) -> {
-					panel.openModal("verify-cancel");
+					overallPanel.openModal("verify-cancel");
 				}))
 			.add(new Button("Submit Quiz")
 				.onClick((Panel p) -> {
 					
-				}))
+				})
+			).setPanelSize(200, 50)
 		);
 
 		JScrollPane pane = new JScrollPane(panel.getMainPanel());
@@ -187,6 +189,9 @@ public class UIManager implements Manager {
 		
 		mainTabPanel.addTabPanel("Quiz List", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 			.onOpen((Panel p) -> {
+				System.out.println("Test");
+				p.removeAll();
+				p.setVisible(true);
 				p.add((new Heading("Quiz List")).big());
 				lms.getNetworkManagerClient()
 					.sendPacket(new QuizListRequestPacket("All", "", false))
@@ -262,6 +267,7 @@ public class UIManager implements Manager {
 										.boxLayout(BoxLayout.X_AXIS) 
 										.add((new Button("Take Quiz"))
 											.onClick((Panel __2) -> {
+												mainPanel.closeModal();
 												mainPanel.close();
 												getTakeQuizPanel(quiz).open();
 											}))
@@ -341,7 +347,7 @@ public class UIManager implements Manager {
 							} else {
 								JOptionPane.showMessageDialog(
 									null, 
-									"Unable to create the user. Please try again.",
+									"That username is already taken. Please try a different one.",
 									"Error",
 									JOptionPane.ERROR_MESSAGE
 								);
@@ -353,8 +359,8 @@ public class UIManager implements Manager {
 		);
 		
 		loginPanel
-		.add(new Heading("Darkspace"))
 		.add(new GapComponent())
+		.add(new Heading("Darkspace"))
 		.add(new TextField("Username"))
 		.add(new TextField("Password"))
 		.add((new Panel(new GridBagLayout()))
@@ -394,7 +400,7 @@ public class UIManager implements Manager {
 					});
 				}), GridBagBuilder.start().right().build())
 		)
-		.setPanelSize(500, 600)
+		.setPanelSize(500, 500)
 		.setMargin(100, 100);
 
 		connectionStatusPanel
@@ -439,7 +445,7 @@ public class UIManager implements Manager {
 					nameSetter.notify();
 				}
 				System.out.println("Finish");
-			}).panelize())
+			}).panelize().setPanelSize(500, 100))
 		.setPanelSize(500, 300)
 		.setMargin(100, 100);
 		
@@ -452,7 +458,7 @@ public class UIManager implements Manager {
 	
 	public void run() {
 		// TODO hostnamePanel
-		this.hostnamePanel.open();
+		this.mainPanel.open();
 	}
 	
 	public Scanner getScanner() {
