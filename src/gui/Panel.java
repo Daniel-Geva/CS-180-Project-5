@@ -434,6 +434,11 @@ public class Panel extends JLayeredPane {
 				return dropdown.getSelection();
 			}
 		}
+		for (RadioButton radioButton : new ArrayList<RadioButton>()) {
+			if(radioButton.getResultKey().equals(key) && radioButton.isSelected()) {
+				return Integer.toString(radioButton.getSelectionId());
+			}
+		}
 		return "";
 	}
 

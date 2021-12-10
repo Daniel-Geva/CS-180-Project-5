@@ -83,19 +83,21 @@ public class UIManager implements Manager {
 		panel.setMargin(64, 64);
 		//panel.disableBounding();
 		panel.boxLayout(BoxLayout.Y_AXIS);
-		
-		panel.add(new Heading("Taking Quiz: " + quiz.getName()).big());
+
+		panel.add(new Heading("Quiz Session").big().margin(30));
+		panel.add(new Heading(quiz.getName()));
 		
 		int i = 1;
 		for(Question question: quiz.getQuestions()) {
-			panel.add(new Label("Question #" + i));
+			panel.add(new Panel().setPanelSize(50, 50));
+			panel.add(new Label("\nQuestion #" + i));
 			panel.add(new Label(question.getQuestion()));
 			switch(question.getQuestionType()) {
 				case "True or False":
 				case "Multiple Choice":
 					ButtonGroup buttonGroup = new ButtonGroup();
 					for(Answer answer: question.getAnswers()) {
-						RadioButton button = new RadioButton(answer.getAnswer(), question.getId());
+						RadioButton button = new RadioButton(answer.getAnswer(), answer.getId(), question.getId());
 						panel.add(button);
 						buttonGroup.add(button);
 					}
@@ -103,12 +105,30 @@ public class UIManager implements Manager {
 			}
 			i += 1;
 		}
+		panel.addModal("verify-cancel", new Panel()
+			.add(new Heading("Are you sure?"))
+			.add(new Label("If you cancel, you will"))
+			.add(new Label("lose your progress."))
+			.add(new Panel()
+				.boxLayout(BoxLayout.X_AXIS)
+				.add(new Button("Cancel")
+					.onClick((Panel p) -> {
+						panel.closeModal();
+					}))
+				.add(new Button("Exit Quiz")
+					.onClick((Panel p) -> {
+						panel.close();
+						mainPanel.open();
+					}))
+			)
+		);
+		
 		panel.add(new Panel(new FlowLayout(FlowLayout.LEADING))
 			//.boxLayout(BoxLayout.X_AXIS)
 			.add(new Button("Cancel")
 				.color(Aesthetics.BUTTON_WARNING)
 				.onClick((Panel p) -> {
-					
+					panel.openModal("verify-cancel");
 				}))
 			.add(new Button("Submit Quiz")
 				.onClick((Panel p) -> {
@@ -188,6 +208,21 @@ public class UIManager implements Manager {
 				answers.add(new Answer("This", true, 1, 0));
 				answers.add(new Answer("This", false, 0, 1));
 				answers.add(new Answer("The second one", false, 0, 2));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "Quisdnwawd?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answedkwnajdywjamr?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What wadjdawhis the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "Whatwadmadwj is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
 				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
 				quizzes.add(new Quiz("Quiz 2", "Author", 0, new ArrayList<Question>(), false, "Course"));
 				quizzes.add(new Quiz("Quiz 3", "Author", 0, new ArrayList<Question>(), false, "Course"));
@@ -393,12 +428,12 @@ public class UIManager implements Manager {
 						);
 					connectionStatusPanel.revalidate();
 				});
-				/*
+				
 				nameSetter.setSuccessRunnable(() -> {
 					connectionStatusPanel.close();
 					loginPanel.open();
 				});
-				*/
+				
 				synchronized(nameSetter) {
 					nameSetter.setName(ip);
 					nameSetter.notify();
@@ -417,7 +452,7 @@ public class UIManager implements Manager {
 	
 	public void run() {
 		// TODO hostnamePanel
-		this.mainPanel.open();
+		this.hostnamePanel.open();
 	}
 	
 	public Scanner getScanner() {

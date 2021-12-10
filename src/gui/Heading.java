@@ -22,9 +22,14 @@ public class Heading extends JLabel {
 		this.addMouseListener(DebugListener.INST);
 	}
 
-	public JComponent big() {
+	public Heading big() {
 		Font f = new Font(this.getFont().getName(), Font.BOLD, 36);
 		this.setFont(f);
+		return this;
+	}
+	
+	public Heading margin(int margin) {
+		this.setBorder(BorderFactory.createEmptyBorder(0, 0, margin, 0));
 		return this;
 	}
 	
