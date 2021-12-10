@@ -41,6 +41,8 @@ public class UIManager implements Manager {
 		this.lms = lms;
 	}
 
+	Panel hostnameMenu;
+	Panel errorMenu;
 	Panel loginPanel;
 	Panel mainPanel;
 	Panel mainTabPanel;
@@ -74,16 +76,16 @@ public class UIManager implements Manager {
 			.add((new Button("Quiz Submissions"))
 				.onClick((Panel p) -> {
 					mainTabPanel.openTabPanel("Quiz Submissions");
-				}), GridBagBuilder.start().top().weightY().build())
+				}))
 			.add((new Button("User Settings"))
 				.onClick((Panel p) -> {
 					mainTabPanel.openTabPanel("User Settings");
-				}), GridBagBuilder.start().top().weightY().build())
+				}))
 			.add((new Button("Logout"))
 				.onClick((Panel p) -> {
 					mainPanel.close();
 					loginPanel.open();
-				}), GridBagBuilder.start().top().weightY().build())
+				}))
 		.setPanelSize(280, 720));
 		
 		mainPanel.add(mainTabPanel
@@ -262,7 +264,7 @@ public class UIManager implements Manager {
 	}
 	
 	public void run() {
-		this.mainPanel.open();
+		this.loginPanel.open();
 	}
 	
 	public Scanner getScanner() {
