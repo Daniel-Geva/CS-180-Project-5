@@ -1,5 +1,6 @@
 package packets.request;
 
+import packets.response.QuizListResponsePacket;
 import packets.response.QuizResponsePacket;
 import server.LearningManagementSystemServer;
 import packets.response.ResponsePacket;
@@ -19,10 +20,17 @@ import datastructures.*;
 public class QuizRequestPacket extends RequestPacket {
     int id;
     boolean push;
+    Quiz quizWithChanges;
 
     public QuizRequestPacket(int id, boolean push) {
         this.id = id;
     }
+
+    public QuizRequestPacket(Quiz quizWithChanges, boolean push) {
+        this.quizWithChanges = quizWithChanges;
+        this.push = push;
+    }
+
 
     /**
      * Sends response packet to the client
@@ -32,8 +40,12 @@ public class QuizRequestPacket extends RequestPacket {
      */
 
     public ResponsePacket serverHandle(LearningManagementSystemServer lms) {
-        Quiz quiz = lms.getQuizManager().searchQuizByID(id);
-        return new QuizResponsePacket(quiz, push);
+        if (quizWithChanges == null) {
+            Quiz quiz = lms.getQuizManager().searchQuizByID(id);
+            return new QuizResponsePacket(quiz, push);
+        } else {
+            return new QuizResponsePacket(quizWithChanges, push);
+        }
     }
 
 

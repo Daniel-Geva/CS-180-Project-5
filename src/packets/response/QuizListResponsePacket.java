@@ -15,7 +15,8 @@ import java.util.ArrayList;
 public class QuizListResponsePacket extends ResponsePacket {
     ArrayList<Quiz> quizzesToReturn;
 
-    public QuizListResponsePacket(ArrayList<Quiz> quizzesToReturn,  String requestType, String searchTerm) {
+    public QuizListResponsePacket(ArrayList<Quiz> quizzesToReturn, boolean push) {
+        super(push);
         this.quizzesToReturn = quizzesToReturn;
     }
 
