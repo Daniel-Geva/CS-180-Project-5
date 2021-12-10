@@ -56,6 +56,7 @@ public class GradedQuizRequestPacket implements Serializable {
                 // if the Graded Quiz doesn't exist a new Graded Quiz is added to the LMS
                 lms.getGradedQuizManager().addGradedQuiz(gradedQuiz);
             }
+            // client needs to figure out if its a new Graded Quiz or preexisting Graded Quiz that needs to be updated
             return new GradedQuizResponsePacket(true);
         }
     }
