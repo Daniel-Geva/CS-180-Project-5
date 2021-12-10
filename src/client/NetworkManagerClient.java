@@ -22,6 +22,7 @@ public class NetworkManagerClient {
     HashMap<RequestPacket, ResponsePacketHandler> packetQueue;
     final NameSetter nameSetter;
     Runnable onExit;
+    boolean connected = false;
 
     Socket socket;
     ObjectInputStream ois = null;
@@ -40,21 +41,20 @@ public class NetworkManagerClient {
         Thread outputThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean success = false;
                 do {
                     try {
                         synchronized (nameSetter) {
-                            nameSetter.wait();
+                            nameSetter.wait(10000);
                         }
                         socket = new Socket(nameSetter.getName(), 4040);
                         oos = new ObjectOutputStream(socket.getOutputStream());
-                        success = true;
+                        connected = true;
                     } catch (IOException e) {
                         nameSetter.getErrorRunnable().run();
                     } catch (InterruptedException e) {
                         return;
                     }
-                } while (!success);
+                } while (!connected);
 
                 while (true) {
                     while (packetQueue.size() != 0) {
@@ -78,9 +78,12 @@ public class NetworkManagerClient {
                 boolean success = false;
                 do {
                     try {
+                        while (!connected) {
+                            wait(5000);
+                        }
                         ois = new ObjectInputStream(socket.getInputStream());
                         success = true;
-                    } catch (IOException e) {
+                    } catch (IOException | InterruptedException e) {
                         nameSetter.getErrorRunnable().run();
                     }
                 } while (!success);
@@ -112,7 +115,7 @@ public class NetworkManagerClient {
                     } catch (IOException e) {
                         return;
                     } catch (ClassNotFoundException e) {
-
+                        return;
                     }
                 }
             }
