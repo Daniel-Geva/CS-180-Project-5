@@ -300,6 +300,7 @@ public class UIManager implements Manager {
 						.add((new Button("Try Again"))
 							.onClick((Panel __) -> {
 								connectionStatusPanel.close();
+								connectionStatusPanel.getMainPanel().removeAll();
 								connectionStatusPanel
 									.add(new Label("Connecting to the server..."))
 									.add(new Label("Please Wait..."));
@@ -308,10 +309,12 @@ public class UIManager implements Manager {
 						);
 					connectionStatusPanel.revalidate();
 				});
+				/*
 				nameSetter.setSuccessRunnable(() -> {
 					connectionStatusPanel.close();
 					loginPanel.open();
 				});
+				*/
 				synchronized(nameSetter) {
 					nameSetter.setName(ip);
 					nameSetter.notify();
