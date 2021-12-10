@@ -8,11 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
@@ -359,7 +355,7 @@ public class UIManager implements Manager {
 		);
 		
 		loginPanel
-		.add(new GapComponent())
+		.add(new JLabel(new ImageIcon("FinalLogo.png")))
 		.add(new Heading("Darkspace"))
 		.add(new TextField("Username"))
 		.add(new TextField("Password"))
