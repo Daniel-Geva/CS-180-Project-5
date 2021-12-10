@@ -3,6 +3,9 @@ package packets.request;
 import packets.response.QuizListResponsePacket;
 import packets.response.ResponsePacket;
 import server.LearningManagementSystemServer;
+import datastructures.*;
+
+import java.util.ArrayList;
 
 /**
  * Request Packet for a list of quizzes
@@ -18,6 +21,7 @@ import server.LearningManagementSystemServer;
 public class QuizListRequestPacket extends RequestPacket {
     String requestType;
     String searchTerm;
+    ArrayList<Quiz> quizzesToReturn;
 
     public QuizListRequestPacket(String requestType, String searchTerm) {
         this.requestType = requestType;
@@ -31,7 +35,23 @@ public class QuizListRequestPacket extends RequestPacket {
      * @return a new response packet with the requested quizzes
      */
     public ResponsePacket serverHandle(LearningManagementSystemServer lms) {
-        return new QuizListResponsePacket(lms, requestType, searchTerm);
+        switch (requestType) {
+            case "All":
+                quizzesToReturn = lms.getQuizManager().getQuizList();
+                break;
+            case "Author":
+                quizzesToReturn = lms.getQuizManager().searchQuizByAuthor(searchTerm);
+                break;
+            case "Name":
+                quizzesToReturn = lms.getQuizManager().searchQuizByName(searchTerm);
+                break;
+            case "Course":
+                quizzesToReturn = lms.getQuizManager().searchQuizByCourse(searchTerm);
+                break;
+            default:
+                quizzesToReturn = null;
+        }
+        return new QuizListResponsePacket(quizzesToReturn, requestType, searchTerm);
     }
 
 }

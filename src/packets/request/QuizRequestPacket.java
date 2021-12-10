@@ -3,6 +3,7 @@ package packets.request;
 import packets.response.QuizResponsePacket;
 import server.LearningManagementSystemServer;
 import packets.response.ResponsePacket;
+import datastructures.*;
 
 /**
  * Request Packet for a single quiz
@@ -17,8 +18,9 @@ import packets.response.ResponsePacket;
 
 public class QuizRequestPacket extends RequestPacket {
     int id;
+    boolean push;
 
-    public QuizRequestPacket(int id) {
+    public QuizRequestPacket(int id, boolean push) {
         this.id = id;
     }
 
@@ -30,7 +32,8 @@ public class QuizRequestPacket extends RequestPacket {
      */
 
     public ResponsePacket serverHandle(LearningManagementSystemServer lms) {
-        return new QuizResponsePacket(lms, id);
+        Quiz quiz = lms.getQuizManager().searchQuizByID(id);
+        return new QuizResponsePacket(quiz, push);
     }
 
 

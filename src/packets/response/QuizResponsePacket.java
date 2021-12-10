@@ -15,8 +15,9 @@ import datastructures.Quiz;
 public class QuizResponsePacket extends ResponsePacket{
     Quiz quizToReturn;
 
-    public QuizResponsePacket(LearningManagementSystemServer lms, int id) {
-        quizToReturn = lms.getQuizManager().searchQuizByID(id);
+    public QuizResponsePacket(Quiz quiz, boolean push) {
+        super(push);
+        quizToReturn = quiz;
     }
 
     /**

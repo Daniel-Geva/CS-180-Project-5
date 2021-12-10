@@ -51,10 +51,9 @@ public class NetworkManagerServer {
                         while (true) {
                             try {
                                 Object obj = ois.readObject();
-                                if ((obj instanceof RequestPacket)) {
+                                if (obj instanceof RequestPacket) {
                                     RequestPacket requestPacket = (RequestPacket) obj;
                                     ResponsePacket response = requestPacket.serverHandle(lmsServer);
-
                                     oos.writeObject(response);
                                 } else if (obj instanceof ResponsePacket) {
                                     ResponsePacket responsePacket = (ResponsePacket) obj;
