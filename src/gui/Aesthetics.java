@@ -18,5 +18,6 @@ public class Aesthetics {
 	public static final Color TEXT_FIELD_FOREGROUND = new Color(0, 0, 0);
 	public static final Color CLICKABLE_HOVER_BG_COLOR = new Color(0x2961BA);
 	public static final Color SIDEBAR_BACKGROUND = GENERAL_BACKGROUND;
+	public static final Color BUTTON_WARNING = new Color(0xFF7F00);
 	
 }

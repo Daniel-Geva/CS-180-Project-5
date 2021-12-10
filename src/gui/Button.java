@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -52,6 +53,23 @@ public class Button extends JButton {
 		Panel p = new Panel(new GridBagLayout());
 		p.add(this, new GridBagConstraints());
 		return p;
+	}
+
+	public Button color(Color bg) {
+		this.setBackground(bg);
+		this.setForeground(Aesthetics.BUTTON_FOREGROUND);
+		this.setBorder(
+			BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(Aesthetics.GENERAL_BACKGROUND, 5),
+				BorderFactory.createEmptyBorder(
+					Aesthetics.BUTTON_BORDER_SIZE,
+					Aesthetics.BUTTON_BORDER_SIZE,
+					Aesthetics.BUTTON_BORDER_SIZE,
+					Aesthetics.BUTTON_BORDER_SIZE
+				)
+			)
+		);
+		return this;
 	}
 	
 }

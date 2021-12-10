@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
@@ -37,6 +38,7 @@ public class Panel extends JLayeredPane {
 
 	int prefWidth;
 	int prefHeight;
+	boolean boundingDisabled = false;
 	
 	List<TextField> textFields;
 	List<Button> buttons;
@@ -64,7 +66,7 @@ public class Panel extends JLayeredPane {
 		}
 	}
 	
-	public Panel onClick(PanelRunnable runnable) {
+	public Panel onClick(Panel parent, PanelRunnable runnable) {
 		final Panel panel = this;
 		registerClick(this, new MouseAdapter() {
 			@Override
@@ -79,10 +81,39 @@ public class Panel extends JLayeredPane {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if(!parent.isPanelOpen(panel)) return;
 				runnable.run(panel);
 			}
 		});
 		return this;
+	}
+
+	public boolean containsComponent(Container container, Component component) {
+		for(Component c: container.getComponents()) {
+			if(c == component)
+				return true;
+			if(c instanceof Container)
+				if(containsComponent((Container) c, component))
+					return true;
+		}
+		return false;
+	}
+	
+	protected boolean isPanelOpen(Panel panel) {
+		if(containsComponent(mainPanel, panel)) {
+			return this.currentModalId == null;
+		}
+		if(this.currentModalId != null) {
+			Panel p = this.modals.get(this.currentModalId);
+			if(p != null && containsComponent(p, panel))
+				return true;
+		}
+		if(this.currentTabId != null) {
+			Panel p = this.tabPanels.get(this.currentTabId);
+			if(p != null && containsComponent(p, panel))
+				return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -103,20 +134,11 @@ public class Panel extends JLayeredPane {
 	}
 
 	public void updateBounds() {
-		/*
-		System.out.println(this.getPreferredSize() + " " + this.getBounds());
-		mainPanel.setPreferredSize(this.getPreferredSize());
-		if(this.prefWidth != 0)
-			mainPanel.setSize(this.getPreferredSize());
-		System.out.println(this.getPreferredSize() + " " + this.getBounds());
-		*/
-		/*
-		if(this.getPreferredSize() != null) {
-			mainPanel.setPreferredSize(this.getPreferredSize());
-			mainPanel.setBounds(0, 0, (int) this.getPreferredSize().getWidth(), (int) this.getPreferredSize().getHeight());
-		} else {
-			*/
-		//}
+		if(this.boundingDisabled) {
+			mainPanel.setBounds(0, 0, this.getWidth(), this.getHeight());
+			return;
+		}
+		
 		int wid = this.getWidth();
 		int hei = this.getHeight();
 		if(this.prefWidth != 0) {
@@ -417,6 +439,15 @@ public class Panel extends JLayeredPane {
 
 	public JComponent prevComp() {
 		return this.prevComponent;
+	}
+
+	public void disableBounding() {
+		this.boundingDisabled = true;
+	}
+
+	public Panel alignLeft() {
+		this.setAlignmentX(0.0f);
+		return this;
 	}
 
 	// TODO Click Event for Panel (clickable card)

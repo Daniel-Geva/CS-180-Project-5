@@ -10,10 +10,12 @@ import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import client.NetworkManagerClient.NameSetter;
+import datastructures.Answer;
 import datastructures.Manager;
 import datastructures.Question;
 import datastructures.Quiz;
@@ -29,9 +31,12 @@ import gui.Heading;
 import gui.Label;
 import gui.Panel;
 import gui.TextField;
+import gui.RadioButton;
 import packets.request.CreateUserRequestPacket;
 import packets.request.LoginUserRequestPacket;
+import packets.request.QuizListRequestPacket;
 import packets.response.NewUserResponsePacket;
+import packets.response.QuizListResponsePacket;
 import packets.response.ResponsePacket;
 
 /**
@@ -43,7 +48,6 @@ import packets.response.ResponsePacket;
  *
  *
  */
-
 public class UIManager implements Manager {
 
 	LearningManagementSystemClient lms;
@@ -71,6 +75,55 @@ public class UIManager implements Manager {
 		)).toList();
 	}
 	
+	private Panel getTakeQuizPanel(Quiz quiz) {
+		Panel overallPanel = new Panel();
+		overallPanel.setPanelSize(1000, 720);
+		overallPanel.setMargin(0, 20);
+		Panel panel = new Panel();
+		panel.setMargin(64, 64);
+		//panel.disableBounding();
+		panel.boxLayout(BoxLayout.Y_AXIS);
+		
+		panel.add(new Heading("Taking Quiz: " + quiz.getName()).big());
+		
+		int i = 1;
+		for(Question question: quiz.getQuestions()) {
+			panel.add(new Label("Question #" + i));
+			panel.add(new Label(question.getQuestion()));
+			switch(question.getQuestionType()) {
+				case "True or False":
+				case "Multiple Choice":
+					ButtonGroup buttonGroup = new ButtonGroup();
+					for(Answer answer: question.getAnswers()) {
+						RadioButton button = new RadioButton(answer.getAnswer(), question.getId());
+						panel.add(button);
+						buttonGroup.add(button);
+					}
+					break;
+			}
+			i += 1;
+		}
+		panel.add(new Panel(new FlowLayout(FlowLayout.LEADING))
+			//.boxLayout(BoxLayout.X_AXIS)
+			.add(new Button("Cancel")
+				.color(Aesthetics.BUTTON_WARNING)
+				.onClick((Panel p) -> {
+					
+				}))
+			.add(new Button("Submit Quiz")
+				.onClick((Panel p) -> {
+					
+				}))
+		);
+
+		JScrollPane pane = new JScrollPane(panel.getMainPanel());
+		pane.setBorder(null);
+		//pane.setSize(1000, 720);
+		overallPanel.add(pane);
+		return overallPanel;
+		
+	}
+	
 	@Override
 	public void init() {
 		this.hostnamePanel = new Panel(new GridLayout(3, 1));
@@ -82,7 +135,7 @@ public class UIManager implements Manager {
 		mainPanel.setPanelSize(1280+64, 720+64);
 		mainPanel.setMargin(64, 64);
 		
-		mainPanel.add((new Panel())
+		mainPanel.add(new Panel()
 			/*.add()*/ /* Icon */
 			.add((new Button("Quiz List"))
 				.onClick((Panel p) -> {
@@ -115,8 +168,27 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Quiz List", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 			.onOpen((Panel p) -> {
 				p.add((new Heading("Quiz List")).big());
+				lms.getNetworkManagerClient()
+					.sendPacket(new QuizListRequestPacket("All", ""))
+					.onReceiveResponse((ResponsePacket resp) -> {
+						QuizListResponsePacket listResp = (QuizListResponsePacket) resp;
+						List<Quiz> quizzes = listResp.getListOfQuizzesResponse();
+						if(quizzes == null) {
+							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
+							p.revalidate();
+							return;
+						}
+						
+						
+						p.revalidate();
+					});
 				List<Quiz> quizzes = new ArrayList<Quiz>();
 				quizzes.add(new Quiz("Quiz Name", "Author", 0, new ArrayList<Question>(), false, "Course"));
+				ArrayList<Answer> answers = new ArrayList<Answer>();
+				answers.add(new Answer("This", true, 1, 0));
+				answers.add(new Answer("This", false, 0, 1));
+				answers.add(new Answer("The second one", false, 0, 2));
+				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
 				quizzes.add(new Quiz("Quiz 2", "Author", 0, new ArrayList<Question>(), false, "Course"));
 				quizzes.add(new Quiz("Quiz 3", "Author", 0, new ArrayList<Question>(), false, "Course"));
 				quizzes.add(new Quiz("Quiz 4", "Author", 0, new ArrayList<Question>(), false, "Course"));
@@ -125,7 +197,7 @@ public class UIManager implements Manager {
 				quizzes.add(new Quiz("Quiz 2", "Author", 0, new ArrayList<Question>(), false, "CS 180"));
 				quizzes.add(new Quiz("Quiz 3", "Author", 0, new ArrayList<Question>(), false, "CS 182"));
 				quizzes.add(new Quiz("Quiz 4", "Author", 0, new ArrayList<Question>(), false, "CS 182"));
-				
+				// = getCourses(quizzes);
 				List<String> courses = new ArrayList<String>();
 				courses.add("Course");
 				courses.add("CS 180");
@@ -143,18 +215,20 @@ public class UIManager implements Manager {
 							.add(new Label(quiz.getName()))
 							.add(new Label("Author: " + quiz.getAuthor()))
 							.add(new Label("Questions: " + quiz.getQuestions().size()))
-							.onClick((Panel __) -> {
+							.onClick(mainPanel, (Panel __) -> {
 								mainPanel.addModal("Quiz-" + quiz.getId(), 
 									(new Panel())
 									.boxLayout(BoxLayout.Y_AXIS)
 									.add(new Heading(quiz.getName()))
 									.add(new Label("Course: " + quiz.getCourse()))
 									.add(new Label("Author: " + quiz.getAuthor()))
+									.add(new Label("Questions: " + quiz.getQuestions().size()))
 									.add((new Panel())
 										.boxLayout(BoxLayout.X_AXIS) 
 										.add((new Button("Take Quiz"))
 											.onClick((Panel __2) -> {
-												
+												mainPanel.close();
+												getTakeQuizPanel(quiz).open();
 											}))
 										.add((new Button("Cancel"))
 											.onClick((Panel __2) -> {
@@ -162,7 +236,7 @@ public class UIManager implements Manager {
 											}))
 										.setPanelSize(300, 48)
 									)
-									.setPanelSize(400, 500)
+									.setPanelSize(400, 300)
 								);
 								mainPanel.revalidate();
 								mainPanel.openModal("Quiz-"+quiz.getId());
