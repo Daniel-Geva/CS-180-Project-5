@@ -45,14 +45,17 @@ public class GradedQuizRequestPacket implements Serializable {
         // if the Graded Quiz is null the server needs to send the client the Graded Quiz it is looking for
         if (gradedQuiz == null) {
             gradedQuiz = lms.getGradedQuizManager().searchGradedQuizByID(id);
-            return new GradedQuizResponsePacket(true, gradedQuiz);
+            return new GradedQuizResponsePacket(false, gradedQuiz);
         } else {
             // if the Graded Quiz exists the new information is replaced
             // TODO: there is probably a better way to do this
-            lms.getGradedQuizManager().removeQuiz(id);
-            lms.getGradedQuizManager().addGradedQuiz(gradedQuiz);
-            // if the Graded Quiz doesn't exist a new Graded Quiz is added to the LMS
-            lms.getGradedQuizManager().addGradedQuiz(gradedQuiz);
+            if (lms.getGradedQuizManager().searchGradedQuizByID(id) != null) {
+                lms.getGradedQuizManager().removeQuiz(id);
+                lms.getGradedQuizManager().addGradedQuiz(gradedQuiz);
+            } else {
+                // if the Graded Quiz doesn't exist a new Graded Quiz is added to the LMS
+                lms.getGradedQuizManager().addGradedQuiz(gradedQuiz);
+            }
             return new GradedQuizResponsePacket(true);
         }
     }

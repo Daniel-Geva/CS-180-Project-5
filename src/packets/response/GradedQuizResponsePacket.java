@@ -13,23 +13,32 @@ import java.io.Serializable;
  * @see GradedQuizResponsePacket
  * @see datastructures.GradedQuiz
  */
-public class GradedQuizResponsePacket implements Serializable {
+public class GradedQuizResponsePacket extends ResponsePacket implements Serializable {
     GradedQuiz gradedQuiz;
-    boolean success = false;
+//    boolean success = false;
 
-    public GradedQuizResponsePacket(boolean success) {
-        this.success = success;
+//    public GradedQuizResponsePacket(boolean success) {
+//        this.success = success;
+//    }
+
+//    public GradedQuizResponsePacket(boolean success, GradedQuiz gradedQuiz) {
+//        this.success = success;
+//    }
+
+    public GradedQuizResponsePacket(boolean push, GradedQuiz gradedQuiz) {
+        super(push);
+        this.gradedQuiz = gradedQuiz;
     }
 
-    public GradedQuizResponsePacket(boolean success, GradedQuiz gradedQuiz) {
-        this.success = success;
+    public GradedQuizResponsePacket(boolean push) {
+
     }
 
     public GradedQuiz getQuizResponse() {
         return gradedQuiz;
     }
 
-    public boolean getSuccess() {
-        return this.success;
-    }
+//    public boolean getSuccess() {
+//        return this.success;
+//    }
 }
