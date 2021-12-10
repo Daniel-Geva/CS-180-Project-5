@@ -16,7 +16,7 @@ public class QuizResponsePacket extends ResponsePacket{
     Quiz quizToReturn;
 
     public QuizResponsePacket(Quiz quiz, boolean push) {
-        super(push);
+        super(true, push);
         quizToReturn = quiz;
     }
 

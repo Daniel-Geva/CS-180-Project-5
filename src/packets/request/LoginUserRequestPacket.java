@@ -45,7 +45,7 @@ public class LoginUserRequestPacket extends RequestPacket{
             return new NewUserResponsePacket(mainServer.getUserManager().getUser(username));
         } else {
             //if the condition is not met, then the operation is unsuccessful
-            return new ResponsePacket(false);
+            return new ResponsePacket(false, false);
         }
 
 

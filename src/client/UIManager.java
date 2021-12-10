@@ -169,7 +169,7 @@ public class UIManager implements Manager {
 			.onOpen((Panel p) -> {
 				p.add((new Heading("Quiz List")).big());
 				lms.getNetworkManagerClient()
-					.sendPacket(new QuizListRequestPacket("All", ""))
+					.sendPacket(new QuizListRequestPacket("All", "", false))
 					.onReceiveResponse((ResponsePacket resp) -> {
 						QuizListResponsePacket listResp = (QuizListResponsePacket) resp;
 						List<Quiz> quizzes = listResp.getListOfQuizzesResponse();

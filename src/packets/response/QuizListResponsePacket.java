@@ -16,7 +16,7 @@ public class QuizListResponsePacket extends ResponsePacket {
     ArrayList<Quiz> quizzesToReturn;
 
     public QuizListResponsePacket(ArrayList<Quiz> quizzesToReturn, boolean push) {
-        super(push);
+        super(true, push);
         this.quizzesToReturn = quizzesToReturn;
     }
 
