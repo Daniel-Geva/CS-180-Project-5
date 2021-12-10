@@ -17,6 +17,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * Runs the client for the Learning Management System
+ * <p>
+ * sends information to the server about what the changes the client has made and requests information the client needs as well as receiving information from the server.
+ *
+ * @author Daniel Geva, Isaac Fleetwood
+ *
+ * @version December 10, 2021
+ *
+ */
+
 public class NetworkManagerClient {
     LearningManagementSystemClient lmsc;
     HashMap<RequestPacket, ResponsePacketHandler> packetQueue;
