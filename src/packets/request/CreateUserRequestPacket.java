@@ -7,7 +7,7 @@ import server.LearningManagementSystemServer;
 /**
  *
  * CreateUserRequestPacket file for CS 180 Project 5
- * Once the user chooses that option to create a user in the GUI,
+ * Once the user chooses the option to create a user in the GUI,
  * The client side connects with the server to send the information
  * And process that information. This file acts as that bridge between
  * Client to server communication.
@@ -20,12 +20,19 @@ import server.LearningManagementSystemServer;
 
 public class CreateUserRequestPacket extends RequestPacket {
     private User user;
+
     //Constructor giving user parameter
     public CreateUserRequestPacket(User user) {
         this.user = user;
     }
 
     //server
+
+    /**
+     * Method to connect the client information with the server
+     * @param mainServer
+     * @return
+     */
     public ResponsePacket serverHandle(LearningManagementSystemServer mainServer) {
         //Generates an ID for the user
         user.setID(mainServer.getUserManager().getUniqueID());
