@@ -113,4 +113,23 @@ public class GradedQuiz implements Serializable { // should students be able to 
             this.submissionTime = submissionTime;
         }
     }
+
+    public String getScore(Quiz quiz) {
+        int earnedPoints = 0;
+        int possiblePoints = 0;
+        for (Question question: quiz.getQuestions()) {
+            int chosenAnswerId = map.get(question.getId());
+            Answer chosen = null;
+            Answer best = question.getAnswers().get(0);
+            for (Answer answer : question.getAnswers()) {
+                if (answer.getId() == chosenAnswerId) {
+                    chosen = answer;
+                }
+                if (answer.getPoints() > best.getPoints()) {
+                    best = answer;
+                }
+            }
+        }
+        return String.format("%s/%s", earnedPoints, possiblePoints);
+    }
 }
