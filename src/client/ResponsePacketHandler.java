@@ -5,9 +5,9 @@ package client;
 import packets.response.ResponsePacket;
 
 /**
- * short description
+ * Handles packets received from the server
  * <p>
- * functionality
+ * Makes sure the packet received is not null and interprets it in context
  *
  * @author Isaac Fleetwood
  *

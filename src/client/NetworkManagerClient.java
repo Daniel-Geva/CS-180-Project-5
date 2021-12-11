@@ -18,7 +18,7 @@ import packets.response.ResponsePacket;
 /**
  * Runs the client for the Learning Management System
  * <p>
- * sends information to the server about what the changes the client has made and requests information the client needs as well as receiving information from the server.
+ * Sends information to the server about what the changes the client has made and requests information the client needs as well as receiving information from the server.
  *
  * @author Daniel Geva, Isaac Fleetwood
  *
