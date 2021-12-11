@@ -28,7 +28,7 @@ This documentation can be very useful for getting an overview of how certain par
 ### LearningManagementSystemClient
 -desc. needed for all client classes
 ### NetworkManagerClient
-
+Responsible for establishing a connection to the server and creating threads to send information back and forth. `init()` creates two threads, one for receiving objects and one for sending objects, so that the NetworkManagerClient can handle normal request and response packets as well as push packets sent to update the client when necessary.
 ### ResponsePacketHandler
 
 ### RunnableHandleResponsePacket
