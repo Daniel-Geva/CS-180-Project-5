@@ -155,6 +155,16 @@ public class NetworkManagerClient {
         this.outputThread.start();
     }
 
+    ///Adds the push packet handler from the list
+    public void addPushHandler(PushPacketHandler pPHandler) {
+        pushPacketHandlers.add(pPHandler);
+    }
+
+    ///Removes a push packet handler from the list
+    public void removePushHandler(PushPacketHandler pPHandler) {
+        pushPacketHandlers.remove(pPHandler);
+    }
+
     ///Closes the threads upon exit
     public void exit() {
     	this.outputThread.interrupt();
