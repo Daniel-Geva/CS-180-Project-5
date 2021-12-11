@@ -91,8 +91,7 @@ public class NetworkManagerServer {
                         synchronized (list) {
                             while (list.size() > 0) {
                                 try {
-                                    oos.writeObject(list.peek());
-                                    list.pop();
+                                    oos.writeObject(list.pop());
                                 } catch (IOException e) {
                                 }
                             }
