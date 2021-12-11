@@ -1,8 +1,11 @@
 package packets.request;
-import datastructures.GradedQuiz;
-import server.LearningManagementSystemServer;
 import java.io.Serializable;
+
+import datastructures.GradedQuiz;
+import datastructures.Quiz;
+import datastructures.User;
 import packets.response.GradedQuizResponsePacket;
+import server.LearningManagementSystemServer;
 
 /**
  * Graded Quiz Request Packet
@@ -17,7 +20,7 @@ import packets.response.GradedQuizResponsePacket;
 public class GradedQuizRequestPacket extends RequestPacket implements Serializable {
     
 	GradedQuiz gradedQuiz;
-    int id;
+	String id;
 
     /**
      * Constructor for when the user creates a new Graded Quiz or changes an existing Graded Quiz
@@ -25,14 +28,14 @@ public class GradedQuizRequestPacket extends RequestPacket implements Serializab
      */
     public GradedQuizRequestPacket(GradedQuiz gradedQuiz) {
         this.gradedQuiz = gradedQuiz;
-        id = Integer.parseInt(gradedQuiz.getID());
+        this.id = gradedQuiz.getID();
     }
 
     /**
      * Constructor for when client is requesting a specific Graded Quiz
      * @param id
      */
-    public GradedQuizRequestPacket(int id) {
+    public GradedQuizRequestPacket(String id) {
         this.id = id;
         gradedQuiz = null;
     }
@@ -58,8 +61,9 @@ public class GradedQuizRequestPacket extends RequestPacket implements Serializab
                 // if the Graded Quiz doesn't exist a new Graded Quiz is added to the LMS
                 lms.getGradedQuizManager().addGradedQuiz(gradedQuiz);
             }
+            lms.getGradedQuizFileManager().save();
             // client needs to figure out if its a new Graded Quiz or preexisting Graded Quiz that needs to be updated
-            return new GradedQuizResponsePacket(true);
+            return new GradedQuizResponsePacket(false);
         }
     }
 }

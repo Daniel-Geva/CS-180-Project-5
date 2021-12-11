@@ -31,7 +31,7 @@ public class NetworkManagerClient {
 	LearningManagementSystemClient lmsc;
     HashMap<RequestPacket, ResponsePacketHandler> packetQueue;
     
-    public static final boolean DEBUG_ENABLED = true;
+    public static final boolean DEBUG_ENABLED = false;
     
     final NameSetter nameSetter;
     final Object connectionSuccessLock = new Object();
@@ -123,7 +123,9 @@ public class NetworkManagerClient {
                 } while (!success);
                 while (true) {
                     try {
+                    	System.out.println("Reading");
                     	Object responseObj = ois.readObject();
+                    	System.out.println("Received " + responseObj);
                         if (!(responseObj instanceof ResponsePacket)) {
                             continue;
                         }

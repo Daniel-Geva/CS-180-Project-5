@@ -62,10 +62,10 @@ public class GradedQuizManager implements Manager {
         }
     }
 
-    public GradedQuiz searchGradedQuizByID(int id) {
+    public GradedQuiz searchGradedQuizByID(String id) {
         synchronized (gradedQuizList) {
             for (int i = 0; i <gradedQuizList.size(); i++) {
-                if (gradedQuizList.get(i).getID().equals(Integer.toString(id))) {
+                if (gradedQuizList.get(i).getID().equals(id)) {
                     return gradedQuizList.get(i);
                 }
             }
@@ -77,11 +77,11 @@ public class GradedQuizManager implements Manager {
      * Removes a graded quiz from the list of graded quiz
      * @param id The ID of the Graded Quiz that is to be removed
      */
-    public void removeQuiz(int id) {
+    public void removeQuiz(String id) {
         synchronized (gradedQuizList) {
             int startingListLength = gradedQuizList.size();
             for (int i = 0; i < gradedQuizList.size(); i++) {
-                if (gradedQuizList.get(i).getID().equals(Integer.toString(id))) {
+                if (gradedQuizList.get(i).getID().equals(id)) {
                     gradedQuizList.remove(i);
                     i--;
                 }
