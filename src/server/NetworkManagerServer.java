@@ -43,7 +43,7 @@ public class NetworkManagerServer {
         try {
             @SuppressWarnings("resource")
             ServerSocket ss = new ServerSocket(4040);
-            ArrayDeque<ResponsePacket> list = new ArrayDeque<>();
+            ArrayDeque<ResponsePacket> stack = new ArrayDeque<>();
 
             while (true) {
                 final Socket socket = ss.accept();
@@ -60,8 +60,8 @@ public class NetworkManagerServer {
                                     RequestPacket requestPacket = (RequestPacket) obj;
                                     ResponsePacket response = requestPacket.serverHandle(lmsServer);
                                     if (response.getPush()) {
-                                        synchronized (list) {
-                                            list.push(response);
+                                        synchronized (stack) {
+                                            stack.push(response);
                                         }
                                     }
                                     oos.writeObject(response);
@@ -89,10 +89,10 @@ public class NetworkManagerServer {
                 @Override
                 public void run() {
                     while (true) {
-                        synchronized (list) {
-                            while (list.size() > 0) {
+                        synchronized (stack) {
+                            while (!stack.isEmpty()) {
                                 try {
-                                    oos.writeObject(list.pop());
+                                    oos.writeObject(stack.pop());
                                 } catch (IOException e) {
                                 }
                             }
