@@ -46,7 +46,6 @@ import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
 import packets.request.UpdateUserRequestPacket;
 import packets.response.GradedQuizListResponsePacket;
-import packets.response.GradedQuizResponsePacket;
 import packets.response.NewUserResponsePacket;
 import packets.response.QuizListResponsePacket;
 import packets.response.ResponsePacket;
@@ -97,7 +96,6 @@ public class UIManager implements Manager {
 		overallPanel.setMargin(0, 20);
 		Panel panel = new Panel();
 		panel.setMargin(64, 64);
-		//panel.disableBounding();
 		panel.boxLayout(BoxLayout.Y_AXIS);
 
 		panel.add(new Heading("Quiz Session").big().margin(30));
@@ -124,6 +122,10 @@ public class UIManager implements Manager {
 						panel.add(button);
 						buttonGroup.add(button);
 					}
+					break;
+				case "Dropdown":
+					Dropdown dropdown = new Dropdown(Integer.toString(question.getId()), answers.stream().map((Answer a) -> a.getAnswer()).toArray());
+					panel.add(dropdown);
 					break;
 			}
 			i += 1;
