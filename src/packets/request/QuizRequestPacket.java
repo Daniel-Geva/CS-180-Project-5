@@ -41,6 +41,10 @@ public class QuizRequestPacket extends RequestPacket {
             Quiz quiz = lms.getQuizManager().searchQuizByID(id);
             return new QuizResponsePacket(quiz, false);
         } else {
+            if (lms.getQuizManager().searchQuizByID(quizWithChanges.getId()) != null) {
+                lms.getQuizManager().removeQuiz(quizWithChanges.getId());
+            }
+            lms.getQuizManager().addQuiz(quizWithChanges);
             return new QuizResponsePacket(quizWithChanges, true);
         }
     }
