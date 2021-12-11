@@ -24,6 +24,7 @@ import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
 import datastructures.GradedQuiz;
 import datastructures.Manager;
+import datastructures.PushPacketHandler;
 import datastructures.Question;
 import datastructures.Quiz;
 import datastructures.Student;
@@ -44,6 +45,7 @@ import packets.request.GradedQuizListRequestPacket;
 import packets.request.GradedQuizRequestPacket;
 import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
+import packets.request.QuizRequestPacket;
 import packets.request.UpdateUserRequestPacket;
 import packets.response.GradedQuizListResponsePacket;
 import packets.response.NewUserResponsePacket;
@@ -92,7 +94,7 @@ public class UIManager implements Manager {
 	
 	private Panel getTakeQuizPanel(Quiz quiz) {
 		Panel overallPanel = new Panel();
-		overallPanel.setPanelSize(1000, 720);
+		overallPanel.setPanelSize(500, 720);
 		overallPanel.setMargin(0, 20);
 		Panel panel = new Panel();
 		panel.setMargin(64, 64);
@@ -223,7 +225,8 @@ public class UIManager implements Manager {
 								.add(new Heading("Submit Quiz"))
 								.add(new Label("Successfully submitted quiz."))
 								.add(new Label("Would you like to see your score?"))
-								.add(new Panel(new FlowLayout())
+								.add(new Panel()
+									.boxLayout(BoxLayout.X_AXIS)
 									.add(new Button("No")
 										.onClick((Panel __) -> {
 											overallPanel.close();
@@ -234,8 +237,10 @@ public class UIManager implements Manager {
 											overallPanel.close();
 											getSubmissionPanel(submission, quiz, this.getCurrentUser()).open();
 										}))
+									.setPanelSize(250, 50)
+									.setMargin(10, 0)
 								)
-								.setPanelSize(350, 200)
+								.setPanelSize(350, 230)
 							);
 							overallPanel.openModal("submitted");
 						});
@@ -258,7 +263,6 @@ public class UIManager implements Manager {
 		overallPanel.setMargin(0, 20);
 		Panel panel = new Panel();
 		panel.setMargin(64, 64);
-		//panel.disableBounding();
 		panel.boxLayout(BoxLayout.Y_AXIS);
 		
 		panel.add(new Heading("Quiz Submission").big().margin(30));
@@ -346,7 +350,6 @@ public class UIManager implements Manager {
 		
 		mainPanel.setPanelSize(1280+64, 720+64);
 		mainPanel.setMargin(64, 64);
-
 		
 		mainPanel.addModal("create-quiz", new Panel(new GridLayout(5, 1))
 			.add(new Heading("Create Quiz"))
@@ -363,10 +366,16 @@ public class UIManager implements Manager {
 						Map<String, String> map = panel.getResultMap();
 						String name = map.get("Quiz Name");
 						String course = map.get("Course");
-						int id = 159571;
 						ArrayList<Question> questions = new ArrayList<Question>();
-						Quiz quiz = new Quiz(name, this.getCurrentUser().getName(), id, questions, false, course);
-						mainPanel.closeModal();
+						Quiz quiz = new Quiz(name, this.getCurrentUser().getName(), -1, questions, false, course);
+						
+						lms.getNetworkManagerClient()
+							.sendPacket(new QuizRequestPacket(quiz))
+							.onReceiveResponse((ResponsePacket resp) -> {
+								JOptionPane.showMessageDialog(null, "Successfully created the quiz.");
+								mainPanel.closeModal();
+								//mainPanel.close();
+							});
 					}))
 			)
 			.setPanelSize(500, 500)
@@ -377,8 +386,8 @@ public class UIManager implements Manager {
 				panel.clear();
 				panel
 					.add(new JLabel(new ImageIcon("FinalLogo.png")))
-					.add(new GapComponent())
-					.compSetSize(280, 20)
+					.add(new Heading("Darkspace").center())
+					.compSetSize(280, 30)
 					.add(new Label("Logged in as " + this.getCurrentUser().getName()).center())
 					.compSetSize(280, 50)
 					.add((new Button("Quiz List"))
@@ -563,9 +572,8 @@ public class UIManager implements Manager {
 		.setPanelSize(1000, 720)
 		.setMargin(64, 0));
 		
-		mainTabPanel.addTabPanel("Quiz Submissions", new Panel()
+		mainTabPanel.addTabPanel("Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 			.onOpen((Panel p) -> {
-
 				p.getMainPanel().removeAll();
 				p.add((new Heading("Submission List")).big());
 				lms.getNetworkManagerClient()
@@ -595,8 +603,9 @@ public class UIManager implements Manager {
 								
 								Panel panel = (new Panel())
 									.add(new Label(quiz.getName()))
-									.add(new Label("Author: " + quiz.getAuthor()))
-									.add(new Label("Questions: " + quiz.getQuestions().size()))
+									.add(new Label(user.getName()))
+									//.add(new Label(gradedQuiz.getScore(quiz)))
+									.add(new Label(gradedQuiz.getSubmissionTime()))
 									.onClick(mainPanel, (Panel __) -> {
 										mainPanel.addModal("Quiz-" + quiz.getId(), 
 											(new Panel())
@@ -651,7 +660,7 @@ public class UIManager implements Manager {
 			.add(new TextField("Name"))
 			.add(new TextField("Username"))
 			.add(new TextField("Password"))
-			.add(new Dropdown("User Type", new String[] {
+			.add(new Dropdown("User Type", "User Type", new String[] {
 				"Student", "Teacher"
 			}))
 			.add((new Panel(new FlowLayout()))
@@ -824,6 +833,13 @@ public class UIManager implements Manager {
 	}
 	
 	public void run() {
+		lms.getNetworkManagerClient()
+			.addPushHandler(new PushPacketHandler(ResponsePacket.class) {
+				@Override
+				public void handlePacket(ResponsePacket resp) {
+					System.out.println("Push " + resp);
+				}
+			});
 		this.hostnamePanel.open();
 	}
 	

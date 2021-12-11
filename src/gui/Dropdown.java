@@ -3,6 +3,7 @@ package gui;
 import java.awt.GridLayout;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,7 +30,10 @@ public class Dropdown extends JPanel {
 	
 	public Dropdown(String resultKey, List<String> options) {
 		this.resultKey = resultKey;
-		this.jComboBox = new JComboBox<String>((String[]) options.toArray());
+		String[] arr = new String[options.size()];
+		for(int i = 0; i < options.size(); i++)
+			arr[i] = options.get(i);
+		this.jComboBox = new JComboBox<String>(arr);
 
 		this.setLayout(new GridLayout(1, 1));
 		this.add(jComboBox);
@@ -61,6 +65,11 @@ public class Dropdown extends JPanel {
 	
 	public String getResultKey() {
 		return this.name;
+	}
+	
+	public Dropdown margin(int margin) {
+		this.setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
+		return this;
 	}
 	
 }
