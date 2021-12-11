@@ -109,7 +109,7 @@ The class used for reading and writing to file. It contains static methods that 
 
 
 ### GradedQuizManager
-The manager that holds the the list of all graded quizzes. It also provides a method for searching for graded quizzes by course, and a method to delete all graded quizzes taken by a certain student.
+The manager that holds the list of all graded quizzes. It also provides a method for searching for graded quizzes by course, and a method to delete all graded quizzes taken by a certain student.
 
 ### LearningManagementSystemServer
 
@@ -129,11 +129,11 @@ The manager that is responsible for keeping track of users and providing functio
 ### Request Packet Classes
 
 #### CreateUserRequestPacket
-
+This packet serves as a bridge for communication between the client side to server communication. Information is sent from the client to the server once the user chooses the option to create a user in the GUI. This class provides the server class with the information to create a new user based on user inputs.
 #### GradedQuizListRequestPacket
 
 #### LoginUserRequestPacket
-
+Once the user enters the username and password and clicks on the submit button to log in to the system, the client side connects with the server to send the information, process that information, and authenticates the identity of the user based on their inputs.
 #### QuizListRequestPacket
 
 #### QuizRequestPacket
@@ -147,7 +147,7 @@ The manager that is responsible for keeping track of users and providing functio
 #### GradedQuizResponsePacket
 
 #### NewUserResponsePacket
-
+Stores the user that has logged in to the program as an object.
 #### QuizListResponsePacket
 
 #### QuizResponsePacket

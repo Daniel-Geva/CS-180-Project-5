@@ -1,4 +1,3 @@
-//TODO: Gives reasons for why each part of the code is synchronized
 package server;
 
 import java.util.ArrayList;

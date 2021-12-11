@@ -7,10 +7,9 @@ import server.LearningManagementSystemServer;
 /**
  *
  * LoginUserRequestPacket file for CS 180 Project 5
- * Once the user chooses the option to create a user in the GUI,
- * The client side connects with the server to send the information
- * And process that information. This file acts as that bridge between
- * Client to server communication.
+ * Once the user enters the username and password and clicks on the submit button to log in to the system,
+ * The client side connects with the server to send the information, process that information,
+ * And authenticates the identity of the user based on their inputs.
  *
  * @author Aryan Jain
  * @version 1.0.0
