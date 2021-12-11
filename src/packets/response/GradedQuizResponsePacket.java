@@ -31,10 +31,6 @@ public class GradedQuizResponsePacket extends ResponsePacket implements Serializ
         this.gradedQuiz = gradedQuiz;
     }
 
-    public GradedQuizResponsePacket(boolean push) {
-
-    }
-
     public GradedQuiz getQuizResponse() {
         return gradedQuiz;
     }
