@@ -5,9 +5,9 @@ package client;
 import packets.response.ResponsePacket;
 
 /**
- * short description
+ * Handles packets received from the server
  * <p>
- * functionality
+ * Makes sure the packet received is not null and interprets it in context
  *
  * @author Isaac Fleetwood
  *
@@ -20,10 +20,12 @@ public class ResponsePacketHandler {
 
     RunnableHandleResponsePacket onRecieveRunnable;
 
+    ///Sets the interpreter to the corresponding one for the received packet
     public void onReceiveResponse(RunnableHandleResponsePacket runnable) {
         this.onRecieveRunnable = runnable;
     }
 
+    ///Runs the handle packet method in context with the handler after confirming that the packet is not null
     public void handlePacket(ResponsePacket packet) {
         if(this.onRecieveRunnable != null) {
             this.onRecieveRunnable.handlePacket(packet);
