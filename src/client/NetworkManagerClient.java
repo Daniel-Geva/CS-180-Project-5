@@ -124,9 +124,9 @@ public class NetworkManagerClient {
                 } while (!success);
                 while (true) {
                     try {
-                    	System.out.println("Reading");
+                    	//System.out.println("Reading");
                     	Object responseObj = ois.readObject();
-                    	System.out.println("Received " + responseObj);
+                    	//System.out.println("Received " + responseObj);
                         if (!(responseObj instanceof ResponsePacket)) {
                             continue;
                         }
