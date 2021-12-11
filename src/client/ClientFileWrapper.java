@@ -3,7 +3,6 @@ package client;
 import datastructures.Answer;
 import datastructures.Question;
 import datastructures.Quiz;
-import server.FileWrapper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,14 +10,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-public class ClientFileWrapper {
+/**
+ * Class for importing a quiz from a file
+ * <p>
+ * Contains methods for reading a file and extracting the information as well as creating a quiz object with the information
+ * <p>
+ *
+ *
+ * @author Daniel Geva
+ * @version 11/14/21
+ */
 
-    private static Object importLock = new Object();
+public class ClientFileWrapper {
 
     ///A version of readFile that is specific for importing quizzes in a file
     public static ArrayList<String> readImportFile(File f) {
         ArrayList<String> contents = new ArrayList<>();
-        synchronized (importLock) {
             try (BufferedReader br = new BufferedReader(new FileReader(f))) {
                 String line;
                 String readLine = "";
@@ -46,7 +53,6 @@ public class ClientFileWrapper {
                 e.printStackTrace();
                 return null;
             }
-        }
         return contents;
     }
 
