@@ -19,8 +19,9 @@ import packets.response.*;
  * Waits for the user to request or send objects and sends them to the client accordingly
  *
  * @author Liam Kelly
+ * @author Sean Lee
  *
- * @version December 7, 2021
+ * @version December 11, 2021
  *
  */
 
