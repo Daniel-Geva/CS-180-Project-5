@@ -1,6 +1,5 @@
 package packets.response;
 
-import server.LearningManagementSystemServer;
 import datastructures.Quiz;
 
 /**
@@ -13,7 +12,8 @@ import datastructures.Quiz;
  **/
 
 public class QuizResponsePacket extends ResponsePacket{
-    Quiz quizToReturn;
+    
+	Quiz quizToReturn;
 
     public QuizResponsePacket(Quiz quiz, boolean push) {
         super(true, push);

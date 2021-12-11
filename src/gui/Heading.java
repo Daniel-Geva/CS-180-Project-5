@@ -1,17 +1,12 @@
 package gui;
 
 import java.awt.Font;
-import java.awt.font.TextAttribute;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 public class Heading extends JLabel {
-
-	private static final long serialVersionUID = 7183462484820139751L;
 
 	public Heading(String text) {
 		this.setText(text);
@@ -22,6 +17,11 @@ public class Heading extends JLabel {
 		this.addMouseListener(DebugListener.INST);
 	}
 
+	public Heading center() {
+		this.setHorizontalAlignment(SwingConstants.CENTER);
+		return this;
+	}
+	
 	public Heading big() {
 		Font f = new Font(this.getFont().getName(), Font.BOLD, 36);
 		this.setFont(f);

@@ -23,7 +23,6 @@ public class LearningManagementSystemClient {
 		LearningManagementSystemClient lms = new LearningManagementSystemClient();
 		lms.init();
 		lms.run();
-		lms.exit();
 	}
 	
 	/**
@@ -53,16 +52,6 @@ public class LearningManagementSystemClient {
 	public void run() {
 		uiManager.run();
 	}
-	
-	/**
-	 * Notifies all the managers that
-	 * the program is exiting.
-	 */
-	public void exit() {
-		uiManager.exit();
-		//networkManagerClient.exit();
-	}
-	
 	
 	public UIManager getUIManager() {
 		return uiManager;

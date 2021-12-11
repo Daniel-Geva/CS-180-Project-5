@@ -1,10 +1,10 @@
 package datastructures;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
-import server.LearningManagementSystemServer;
 import server.QuizManager;
-
-import java.util.*;
 /**
  * A quiz, which contains an arraylist of questions along with various attributes of the quiz
  * <p>
@@ -17,18 +17,19 @@ import java.util.*;
  * @version 11/14/21
  * @see QuizManager
  */
-public class Quiz implements Listable {
-    private String name;
+public class Quiz implements Listable, Serializable {
+	
+	private String name;
     private String author;
     ArrayList<Question> questions;
     private int id;
     private boolean scrambled;
     private String course;
-    private Object idLock = new Object();
-    private Object nameLock = new Object();
-    private Object authorLock = new Object();
-    private Object scrambledLock = new Object();
-    private Object courseLock = new Object();
+    //private Object idLock = new Object();
+    //private Object nameLock = new Object();
+    //private Object authorLock = new Object();
+    //private Object scrambledLock = new Object();
+    //private Object courseLock = new Object();
 
     public Quiz(String name, String author, int id, ArrayList<Question> questions,  boolean scrambled, String course) {
         this.name = name;
@@ -38,15 +39,7 @@ public class Quiz implements Listable {
         this.questions = questions;
         this.course = course;
     }
-    public Quiz(LearningManagementSystemServer lms, String name, String course) {
-        this.name = name;
-        //this.author = lms.getUIManager().getCurrentUser().getName();
-        //TODO: request Network Packet
-        this.id = lms.getQuizManager().getUniqueID();
-        this.scrambled = false;
-        this.questions = new ArrayList<>();
-        this.course = course;
-    }
+    
     /**
      * Creates a unique ID for a new question
      * <p>
@@ -55,7 +48,7 @@ public class Quiz implements Listable {
      * @return max - a unique id for a new question object
      */
     public int generateUniqueQuestionId() {
-        synchronized (idLock) {
+        //synchronized (idLock) {
             int max = 0;
             for (Question q : questions) {
                 if (q.getId() > max) {
@@ -63,7 +56,7 @@ public class Quiz implements Listable {
                 }
             }
             return max + 1;
-        }
+        //}
     }
     /**
      * Returns id of the quiz
@@ -95,9 +88,9 @@ public class Quiz implements Listable {
      * @param name - the new name of the quiz
      */
     public void setName(String name) {
-        synchronized (nameLock) {
+        //synchronized (nameLock) {
             this.name = name;
-        }
+        //}
     }
     /**
      * Sets quiz author
@@ -105,9 +98,9 @@ public class Quiz implements Listable {
      * @param author - the new name of the author of the quiz
      */
     public void setAuthor(String author) {
-        synchronized (authorLock) {
+        //synchronized (authorLock) {
             this.author = author;
-        }
+        //}
     }
     /**
      * Sets quiz ID
@@ -115,9 +108,9 @@ public class Quiz implements Listable {
      * @param idParameter - the new ID of the quiz
      */
     public void setID(int idParameter) {
-        synchronized (idLock) {
+        //synchronized (idLock) {
             this.id = idParameter;
-        }
+        //}
     }
     /**
      * Sets quiz scrambled boolean
@@ -125,9 +118,9 @@ public class Quiz implements Listable {
      * @param scrambled - whether the teacher wants the quiz questions to be in random order
      */
     public void setScrambled(boolean scrambled) {
-        synchronized (scrambledLock) {
+        //synchronized (scrambledLock) {
             this.scrambled = scrambled;
-        }
+        //}
     }
     /**
      * Returns true if the quiz needs to be scrambled
@@ -145,9 +138,9 @@ public class Quiz implements Listable {
      *
      */
     public void scrambleQuestions() {
-        synchronized (scrambledLock) {
+        //synchronized (scrambledLock) {
             Collections.shuffle(questions);
-        }
+        //}
     }
     /**
      * Returns the name of the quiz
@@ -171,9 +164,9 @@ public class Quiz implements Listable {
      * @param course - String containing the name of the course the quiz is a part of
      */
     public void setCourse(String course) {
-        synchronized (courseLock) {
+        //synchronized (courseLock) {
             this.course = course;
-        }
+        //}
     }
     /**
      * Returns a synopsis of the attributes of a quiz

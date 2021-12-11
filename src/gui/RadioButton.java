@@ -4,10 +4,8 @@ import javax.swing.JRadioButton;
 
 public class RadioButton extends JRadioButton {
 
-	private static final long serialVersionUID = -973924243650919387L;
-
-	String resultKey;
-	int selectionId;
+	private String resultKey;
+	private int selectionId;
 	
 	public RadioButton(String text) {
 		super(text);

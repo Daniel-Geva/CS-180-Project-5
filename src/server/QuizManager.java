@@ -58,9 +58,6 @@ public class QuizManager implements Manager {
 					i--;
 				}
 			}
-			if (startingListLength == quizList.size()) {
-				System.out.println("No quizzes were found with that ID. Please try again");
-			}
 		}
 	}
 

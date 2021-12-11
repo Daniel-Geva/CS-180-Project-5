@@ -1,5 +1,6 @@
 package datastructures;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import server.GradedQuizManager;
@@ -12,7 +13,7 @@ import server.GradedQuizManager;
  * @version 11/14/21
  * @see GradedQuizManager
  */
-public class GradedQuiz { // should students be able to take quiz multiple times
+public class GradedQuiz implements Serializable { // should students be able to take quiz multiple times
 
 	private String submissionTime;
     private int quizID;

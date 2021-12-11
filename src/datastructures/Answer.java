@@ -1,4 +1,7 @@
 package datastructures;
+
+import java.io.Serializable;
+
 /**
  * Stores one answer to a question
  * <p>
@@ -11,15 +14,12 @@ package datastructures;
  * @version 11/14/21
  * @see Question
  */
-public class Answer {
-    String answer;
+public class Answer implements Serializable {
+	
+	String answer;
     boolean isCorrect;
     int points;
     int id;
-    private Object idLock = new Object();
-    private Object answerLock = new Object();
-    private Object correctLock = new Object();
-    private Object pointLock = new Object();
 
     public Answer(String answer, boolean correct, int points, int id) {
         this.answer = answer;
@@ -51,9 +51,9 @@ public class Answer {
      * @param answer - the new answer String
      */
     public void setAnswer(String answer) {
-        synchronized (answerLock) {
+        //synchronized (answerLock) {
             this.answer = answer;
-        }
+        //}
     }
     /**
      * Sets a new point value for the question
@@ -61,9 +61,9 @@ public class Answer {
      * @param pointsParameter - the new point value
      */
     public void setPointValue(int pointsParameter) {
-        synchronized (pointLock) {
+        //synchronized (pointLock) {
             this.points = pointsParameter;
-        }
+        //}
     }
     /**
      * Sets the new question id
@@ -71,9 +71,9 @@ public class Answer {
      * @param idParameter - the new unique id for the answer
      */
     public void setID(int idParameter) {
-        synchronized (idLock) {
+        //synchronized (idLock) {
             this.id = idParameter;
-        }
+        //}
     }
     /**
      * Returns the question's unique id

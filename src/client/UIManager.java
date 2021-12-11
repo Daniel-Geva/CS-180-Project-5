@@ -3,12 +3,21 @@ package client;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 
 import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
@@ -21,16 +30,18 @@ import datastructures.User;
 import gui.Aesthetics;
 import gui.Button;
 import gui.Dropdown;
+import gui.DynamicLabel;
+import gui.FileInput;
 import gui.GapComponent;
-import gui.GridBagBuilder;
 import gui.Heading;
 import gui.Label;
 import gui.Panel;
-import gui.TextField;
 import gui.RadioButton;
+import gui.TextField;
 import packets.request.CreateUserRequestPacket;
 import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
+import packets.request.UpdateUserRequestPacket;
 import packets.response.NewUserResponsePacket;
 import packets.response.QuizListResponsePacket;
 import packets.response.ResponsePacket;
@@ -47,7 +58,8 @@ import packets.response.ResponsePacket;
 public class UIManager implements Manager {
 
 	LearningManagementSystemClient lms;
-	User currentUser;
+	
+	User currentUser = new Teacher(49100, "Person 1", "username", "passa");
 	
 	public UIManager(LearningManagementSystemClient lms) {
 		this.lms = lms;
@@ -61,7 +73,10 @@ public class UIManager implements Manager {
 	
 	private List<String> getCourses(List<Quiz> quizzes) {
 		ArrayList<String> courses = new ArrayList<String>();
-		// TODO Get courses
+		for(Quiz q: quizzes) {
+			if(!courses.contains(q.getCourse()))
+				courses.add(q.getCourse());
+		}
 		return courses;
 	}
 	
@@ -82,9 +97,13 @@ public class UIManager implements Manager {
 
 		panel.add(new Heading("Quiz Session").big().margin(30));
 		panel.add(new Heading(quiz.getName()));
+
+		ArrayList<Question> questions = quiz.getQuestions();
+		if(quiz.isScrambled())
+			Collections.shuffle(questions);
 		
 		int i = 1;
-		for(Question question: quiz.getQuestions()) {
+		for(Question question: questions) {
 			panel.add(new Panel().setPanelSize(50, 50));
 			panel.add(new Label("\nQuestion #" + i));
 			panel.add(new Label(question.getQuestion()));
@@ -92,7 +111,10 @@ public class UIManager implements Manager {
 				case "True or False":
 				case "Multiple Choice":
 					ButtonGroup buttonGroup = new ButtonGroup();
-					for(Answer answer: question.getAnswers()) {
+					ArrayList<Answer> answers = question.getAnswers();
+					if(quiz.isScrambled())
+						Collections.shuffle(answers);
+					for(Answer answer: answers) {
 						RadioButton button = new RadioButton(answer.getAnswer(), answer.getId(), question.getId());
 						panel.add(button);
 						buttonGroup.add(button);
@@ -142,6 +164,25 @@ public class UIManager implements Manager {
 		
 	}
 	
+	public Panel getModifyQuizPanel(Quiz quiz) {
+		Panel overallPanel = new Panel();
+		overallPanel.setPanelSize(1000, 720);
+		overallPanel.setMargin(0, 20);
+		Panel panel = new Panel();
+		panel.setMargin(64, 64);
+		//panel.disableBounding();
+		panel.boxLayout(BoxLayout.Y_AXIS);
+
+		panel.add(new Heading("Modify Quiz").big().margin(30));
+		panel.add(new Heading(quiz.getName()));
+
+		JScrollPane pane = new JScrollPane(panel.getMainPanel());
+		pane.setBorder(null);
+		//pane.setSize(1000, 720);
+		overallPanel.add(pane);
+		return overallPanel;
+	}
+	
 	@Override
 	public void init() {
 		this.hostnamePanel = new Panel(new GridLayout(3, 1));
@@ -152,42 +193,152 @@ public class UIManager implements Manager {
 		
 		mainPanel.setPanelSize(1280+64, 720+64);
 		mainPanel.setMargin(64, 64);
+
 		
-		mainPanel.add(new Panel()
-			/*.add()*/ /* Icon */
-			.add((new Button("Quiz List"))
-				.onClick((Panel p) -> {
-					mainTabPanel.openTabPanel("Quiz List");
-				}))
-			.compSetSize(280, 35)
-			.add((new Button("Quiz Submissions"))
-				.onClick((Panel p) -> {
-					mainTabPanel.openTabPanel("Quiz Submissions");
-				}))
-			.compSetSize(280, 35)
-			.add((new Button("User Settings"))
-				.onClick((Panel p) -> {
-					mainTabPanel.openTabPanel("User Settings");
-				}))
-			.compSetSize(280, 35)
-			.add((new Button("Logout"))
-				.onClick((Panel p) -> {
-					mainPanel.close();
-					loginPanel.open();
-				}))
-			.compSetSize(280, 35)
+		mainPanel.addModal("create-quiz", new Panel(new GridLayout(5, 1))
+			.add(new Heading("Create Quiz"))
+			.add(new TextField("Course"))
+			.add(new TextField("Quiz Name"))
+			.add(new FileInput("Quiz File (Optional)", "quiz-file"))
+			.add(new Panel(new FlowLayout())
+				.add(new Button("Cancel")
+					.onClick((Panel __) -> {
+						mainPanel.closeModal();
+					}))
+				.add(new Button("Create Quiz")
+					.onClick((Panel panel) -> {
+						Map<String, String> map = panel.getResultMap();
+						String name = map.get("Quiz Name");
+						String course = map.get("Course");
+						int id = 159571;
+						ArrayList<Question> questions = new ArrayList<Question>();
+						Quiz quiz = new Quiz(name, this.getCurrentUser().getName(), id, questions, false, course);
+						mainPanel.closeModal();
+					}))
+			)
+			.setPanelSize(500, 500)
+		);
+		
+		mainPanel.add(new Panel(new FlowLayout(FlowLayout.CENTER))
+			.onOpen((Panel panel) -> {
+				panel.clear();
+				panel
+					.add(new JLabel(new ImageIcon("FinalLogo.png")))
+					.add(new GapComponent())
+					.compSetSize(280, 20)
+					.add(new Label("Logged in as " + this.getCurrentUser().getName()).center())
+					.compSetSize(280, 50)
+					.add((new Button("Quiz List"))
+						.onClick((Panel __) -> {
+							mainTabPanel.openTabPanel("Quiz List");
+						}))
+					.compSetSize(280, 35)
+					.add((new Button("Quiz Submissions"))
+						.onClick((Panel __) -> {
+							mainTabPanel.openTabPanel("Quiz Submissions");
+						}))
+					.compSetSize(280, 35);
+				if(this.getCurrentUser() instanceof Teacher) {
+					panel
+						.add(new Button("Create Quiz")
+							.onClick((Panel __) -> {
+								mainPanel.openModal("create-quiz");
+							}))
+						.compSetSize(280, 35);
+				}
+				panel
+					.add((new Button("User Settings"))
+						.onClick((Panel __) -> {
+							mainTabPanel.openTabPanel("User Settings");
+						}))
+					.compSetSize(280, 35)
+					.add((new Button("Logout"))
+						.onClick((Panel __) -> {
+							mainPanel.close();
+							loginPanel.open();
+						}))
+					.compSetSize(280, 35);
+				mainPanel.refreshComponents();
+			})
 		.setPanelSize(280, 720));
 		
 		mainPanel.add(mainTabPanel
-			.setPanelSize(1000, 720)
-			.setMargin(50, 50));
-		//GridBagBuilder.start().left().stretchY().build()
+			.setPanelSize(1000, 720));
+		
+		mainPanel.addModal("user-settings-invalid", new Panel()
+			.add(new Label("No fields can be empty."))
+			.add(new Label("Verify all fields have values in them."))
+			.add(new Button("Okay")
+				.onClick((Panel __) -> {
+					mainPanel.closeModal();
+				}))
+			.setPanelSize(400, 200));
+		
+		mainPanel.addModal("user-settings-error", new Panel()
+			.add(new Label("A user with that username already exists."))
+			.add(new Label("Please use a different one."))
+			.add(new Button("Okay")
+				.onClick((Panel __) -> {
+					mainPanel.closeModal();
+				}))
+			.setPanelSize(400, 200));
+		
+		mainPanel.addModal("user-settings-success", new Panel()
+			.add(new Label("Successfully updated your details."))
+			.add(new Button("Okay")
+				.onClick((Panel __) -> {
+					mainPanel.closeModal();
+				}))
+			.setPanelSize(400, 200));
+		
+		mainTabPanel.addTabPanel("User Settings", (new Panel(new GridLayout(6, 1)))
+			.onOpen((Panel p) -> {
+				User user = this.getCurrentUser();
+				p.setInput("Name", user.getName());
+				p.setInput("Username", user.getUsername());
+				p.setInput("Password", user.getPassword());
+			})
+			.add(new Heading("User Settings"))
+			.add(new TextField("Name"))
+			.add(new TextField("Username"))
+			.add(new TextField("Password"))
+			.add(new GapComponent())
+			.add(new Button("Save Changes")
+				.onClick((Panel p) -> {
+					Map<String, String> results = p.getResultMap();
+					String name = results.get("Name");
+					String username = results.get("Username");
+					String password = results.get("Password");
+					
+					if(name.isBlank() || username.isBlank() || password.isBlank()) {
+						mainPanel.openModal("user-settings-invalid");
+						return;
+					}
+					
+					User user = this.getCurrentUser();
+					user.setName(name);
+					user.setUsername(username);
+					user.setPassword(password);
+					
+					lms.getNetworkManagerClient()
+					.sendPacket(new UpdateUserRequestPacket(user))
+					.onReceiveResponse((ResponsePacket packet) -> {
+						if(!packet.wasSuccess()) {
+							mainPanel.openModal("user-settings-error");
+							return;
+						}
+						mainPanel.openModal("user-settings-success");
+					});
+				}).panelize()
+			)
+			.setPanelSize(300, 300)
+		);
+		
+		
 		
 		mainTabPanel.addTabPanel("Quiz List", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 			.onOpen((Panel p) -> {
-				System.out.println("Test");
-				p.removeAll();
-				p.setVisible(true);
+				p.getMainPanel().removeAll();
 				p.add((new Heading("Quiz List")).big());
 				lms.getNetworkManagerClient()
 					.sendPacket(new QuizListRequestPacket("All", "", false))
@@ -199,99 +350,62 @@ public class UIManager implements Manager {
 							p.revalidate();
 							return;
 						}
-						
-						
-						p.revalidate();
-					});
-				List<Quiz> quizzes = new ArrayList<Quiz>();
-				quizzes.add(new Quiz("Quiz Name", "Author", 0, new ArrayList<Question>(), false, "Course"));
-				ArrayList<Answer> answers = new ArrayList<Answer>();
-				answers.add(new Answer("This", true, 1, 0));
-				answers.add(new Answer("This", false, 0, 1));
-				answers.add(new Answer("The second one", false, 0, 2));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "Quisdnwawd?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answedkwnajdywjamr?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What wadjdawhis the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "Whatwadmadwj is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.get(0).getQuestions().add(new Question(answers, "What is the answer?", 0, "Multiple Choice"));
-				quizzes.add(new Quiz("Quiz 2", "Author", 0, new ArrayList<Question>(), false, "Course"));
-				quizzes.add(new Quiz("Quiz 3", "Author", 0, new ArrayList<Question>(), false, "Course"));
-				quizzes.add(new Quiz("Quiz 4", "Author", 0, new ArrayList<Question>(), false, "Course"));
-				
-				quizzes.add(new Quiz("Quiz Name", "Author", 0, new ArrayList<Question>(), false, "CS 180"));
-				quizzes.add(new Quiz("Quiz 2", "Author", 0, new ArrayList<Question>(), false, "CS 180"));
-				quizzes.add(new Quiz("Quiz 3", "Author", 0, new ArrayList<Question>(), false, "CS 182"));
-				quizzes.add(new Quiz("Quiz 4", "Author", 0, new ArrayList<Question>(), false, "CS 182"));
-				// = getCourses(quizzes);
-				List<String> courses = new ArrayList<String>();
-				courses.add("Course");
-				courses.add("CS 180");
-				courses.add("CS 182");
-				
-				for(String course: courses) {
-					p.add(new Heading(course));
-					p.compSetSize(1000, 80);
-					
-					
-					List<Quiz> quizzesCourse = getQuizzesFromCourse(quizzes, course);
-					
-					for(Quiz quiz: quizzesCourse) {
-						Panel panel = (new Panel())
-							.add(new Label(quiz.getName()))
-							.add(new Label("Author: " + quiz.getAuthor()))
-							.add(new Label("Questions: " + quiz.getQuestions().size()))
-							.onClick(mainPanel, (Panel __) -> {
-								mainPanel.addModal("Quiz-" + quiz.getId(), 
-									(new Panel())
-									.boxLayout(BoxLayout.Y_AXIS)
-									.add(new Heading(quiz.getName()))
-									.add(new Label("Course: " + quiz.getCourse()))
+						List<String> courses = getCourses(quizzes);
+						for(String course: courses) {
+							p.add(new Heading(course));
+							p.compSetSize(1000, 80);
+							
+							
+							List<Quiz> quizzesCourse = getQuizzesFromCourse(quizzes, course);
+							
+							for(Quiz quiz: quizzesCourse) {
+								Panel panel = (new Panel())
+									.add(new Label(quiz.getName()))
 									.add(new Label("Author: " + quiz.getAuthor()))
 									.add(new Label("Questions: " + quiz.getQuestions().size()))
-									.add((new Panel())
-										.boxLayout(BoxLayout.X_AXIS) 
-										.add((new Button("Take Quiz"))
-											.onClick((Panel __2) -> {
-												mainPanel.closeModal();
-												mainPanel.close();
-												getTakeQuizPanel(quiz).open();
-											}))
-										.add((new Button("Cancel"))
-											.onClick((Panel __2) -> {
-												mainPanel.closeModal();
-											}))
-										.setPanelSize(300, 48)
+									.onClick(mainPanel, (Panel __) -> {
+										mainPanel.addModal("Quiz-" + quiz.getId(), 
+											(new Panel())
+											.boxLayout(BoxLayout.Y_AXIS)
+											.add(new Heading(quiz.getName()))
+											.add(new Label("Course: " + quiz.getCourse()))
+											.add(new Label("Author: " + quiz.getAuthor()))
+											.add(new Label("Questions: " + quiz.getQuestions().size()))
+											.add((new Panel())
+												.boxLayout(BoxLayout.X_AXIS) 
+												.add((new Button("Take Quiz"))
+													.onClick((Panel __2) -> {
+														mainPanel.closeModal();
+														mainPanel.close();
+														getTakeQuizPanel(quiz).open();
+													}))
+												.add((new Button("Cancel"))
+													.onClick((Panel __2) -> {
+														mainPanel.closeModal();
+													}))
+												.setPanelSize(300, 48)
+											)
+											.setPanelSize(400, 300)
+										);
+										mainPanel.revalidate();
+										mainPanel.openModal("Quiz-"+quiz.getId());
+									});
+								panel.getMainPanel().setBorder(
+									BorderFactory.createCompoundBorder(
+										BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+										BorderFactory.createEmptyBorder(20, 20, 20, 20)
 									)
-									.setPanelSize(400, 300)
 								);
-								mainPanel.revalidate();
-								mainPanel.openModal("Quiz-"+quiz.getId());
-							});
-						panel.getMainPanel().setBorder(
-							BorderFactory.createCompoundBorder(
-								BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
-								BorderFactory.createEmptyBorder(20, 20, 20, 20)
-							)
-						);
-						panel.setPanelSize(200, 100);
-						panel.setSize(200, 100);
-						p.add(panel);
+								panel.setPanelSize(200, 100);
+								panel.setSize(200, 100);
+								p.add(panel);
+								
+							}
+						}
 						
-					}
-				}
-				
-				p.revalidate();
+						p.revalidate();
+						p.updateBounds();
+					});
 			})
 		.setPanelSize(1000, 720)
 		.setMargin(64, 0));
@@ -306,11 +420,11 @@ public class UIManager implements Manager {
 			.add(new Dropdown("User Type", new String[] {
 				"Student", "Teacher"
 			}))
-			.add((new Panel(new GridBagLayout()))
+			.add((new Panel(new FlowLayout()))
 				.add((new Button("Cancel"))
 					.onClick((Panel p) -> {
 						loginPanel.closeModal();
-					}), GridBagBuilder.start().left().build())
+					}))
 				.add((new Button("Create User"))
 					.onClick((Panel p) -> {
 						Map<String, String> result = p.getResultMap();
@@ -318,17 +432,15 @@ public class UIManager implements Manager {
 						String username = result.get("Username");
 						String password = result.get("Password");
 						String userType = result.get("User Type");
-						// TODO Get ID or send raw data and create user on server with id.
 						User user = null;
 						switch(userType) {
-						case "Student":
-							user = new Student(0, name, username, password);
-							break;
-						case "Teacher":
-							user = new Teacher(0, name, username, password);
-							break;
+							case "Student":
+								user = new Student(0, name, username, password);
+								break;
+							case "Teacher":
+								user = new Teacher(0, name, username, password);
+								break;
 						}
-						System.out.println(user);
 						lms.getNetworkManagerClient().sendPacket(
 							new CreateUserRequestPacket(user)	
 						).onReceiveResponse((ResponsePacket response) -> {
@@ -349,22 +461,21 @@ public class UIManager implements Manager {
 								);
 							}
 						});
-					})
-				, GridBagBuilder.start().right().build())
+					}))
 			).setPanelSize(350, 400)
 		);
 		
 		loginPanel
 		.add(new JLabel(new ImageIcon("FinalLogo.png")))
-		.add(new Heading("Darkspace"))
+		.add(new Heading("Darkspace").center())
 		.add(new TextField("Username"))
 		.add(new TextField("Password"))
-		.add((new Panel(new GridBagLayout()))
+		.add((new Panel(new FlowLayout()))
 			.add((new Button("Create User"))
 					.onClick((Panel p) -> {
 						// Open Create User menu.
 						loginPanel.openModal("Create User");
-					}), GridBagBuilder.start().left().build())
+					}))
 			.add((new Button("Login"))
 				.onClick((Panel p) -> {
 					Map<String, String> result = p.getResultMap();
@@ -383,7 +494,6 @@ public class UIManager implements Manager {
 						} else {
 							NewUserResponsePacket resp = (NewUserResponsePacket) response;
 							this.setCurrentUser(resp.getUser());
-							// TODO Open main menu.
 							JOptionPane.showMessageDialog(
 									null,
 									"You have successfully logged into Darkspace.",
@@ -394,7 +504,7 @@ public class UIManager implements Manager {
 							mainPanel.open();
 						}
 					});
-				}), GridBagBuilder.start().right().build())
+				}))
 		)
 		.setPanelSize(500, 500)
 		.setMargin(100, 100);
@@ -440,7 +550,6 @@ public class UIManager implements Manager {
 					nameSetter.setName(ip);
 					nameSetter.notify();
 				}
-				System.out.println("Finish");
 			}).panelize().setPanelSize(500, 100))
 		.setPanelSize(500, 300)
 		.setMargin(100, 100);
@@ -453,7 +562,6 @@ public class UIManager implements Manager {
 	}
 	
 	public void run() {
-		// TODO hostnamePanel
 		this.mainPanel.open();
 	}
 	

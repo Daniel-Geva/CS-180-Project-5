@@ -11,8 +11,10 @@ import java.io.Serializable;
  * @see User
  */
 public class Teacher extends User implements Serializable {
-    private final UserPermission userPermission;
-    public Teacher(int id, String name, String username, String password) {
+    
+	private final UserPermission userPermission;
+    
+	public Teacher(int id, String name, String username, String password) {
         super(id, name, username, password);
         userPermission = UserPermission.ADMIN;
     }

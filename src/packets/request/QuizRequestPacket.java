@@ -1,10 +1,9 @@
 package packets.request;
 
-import packets.response.QuizListResponsePacket;
+import datastructures.Quiz;
 import packets.response.QuizResponsePacket;
-import server.LearningManagementSystemServer;
 import packets.response.ResponsePacket;
-import datastructures.*;
+import server.LearningManagementSystemServer;
 
 /**
  * Request Packet for a single quiz

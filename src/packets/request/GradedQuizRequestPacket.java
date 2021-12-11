@@ -15,7 +15,8 @@ import packets.response.GradedQuizResponsePacket;
  * @see datastructures.GradedQuiz
  */
 public class GradedQuizRequestPacket implements Serializable {
-    GradedQuiz gradedQuiz;
+    
+	GradedQuiz gradedQuiz;
     int id;
 
     /**

@@ -10,8 +10,6 @@ import javax.swing.JButton;
 
 public class Button extends JButton {
 
-	private static final long serialVersionUID = -4114844686642969288L;
-	
 	public Button(String label) {
 		super(label);
 		

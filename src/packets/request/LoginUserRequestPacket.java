@@ -1,10 +1,8 @@
 package packets.request;
 
-import datastructures.User;
 import packets.response.NewUserResponsePacket;
 import packets.response.ResponsePacket;
 import server.LearningManagementSystemServer;
-import server.UserManager;
 
 /**
  *
@@ -21,7 +19,8 @@ import server.UserManager;
  */
 
 public class LoginUserRequestPacket extends RequestPacket{
-    private String username;
+    
+	private String username;
     private String password;
 
     //Constructor with 2 paramaters: Username and Password

@@ -1,12 +1,11 @@
 package packets.request;
 
+import java.util.ArrayList;
+
+import datastructures.Quiz;
 import packets.response.QuizListResponsePacket;
-import packets.response.QuizResponsePacket;
 import packets.response.ResponsePacket;
 import server.LearningManagementSystemServer;
-import datastructures.*;
-
-import java.util.ArrayList;
 
 /**
  * Request Packet for a list of quizzes
@@ -20,7 +19,8 @@ import java.util.ArrayList;
  */
 
 public class QuizListRequestPacket extends RequestPacket {
-    String requestType;
+    
+	String requestType;
     String searchTerm;
     ArrayList<Quiz> quizzesWithChanges;
     boolean push;

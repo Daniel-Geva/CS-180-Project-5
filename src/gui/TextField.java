@@ -8,8 +8,6 @@ import javax.swing.JTextField;
 
 public class TextField extends JPanel {
 
-	private static final long serialVersionUID = -4102102193118450553L;
-
 	private String resultKey;
 	
 	private JLabel jlabel;
@@ -23,9 +21,6 @@ public class TextField extends JPanel {
 		this.setLayout(new GridLayout(2, 1));
 		this.add(this.jlabel);
 		this.add(jtextField);
-		//this.jtextField.setMaximumSize(this.jtextField.getPreferredSize());
-		//System.out.println(this.jtextField.getPreferredSize());
-		//System.out.println(this.getPreferredSize());
 		
 		this.jlabel.setForeground(Aesthetics.GENERAL_FOREGROUND);
 		this.jtextField.setForeground(Aesthetics.TEXT_FIELD_FOREGROUND);
@@ -58,5 +53,9 @@ public class TextField extends JPanel {
 	
 	public JTextField getJTextField() {
 		return this.jtextField;
+	}
+
+	public void setText(String value) {
+		this.jtextField.setText(value);
 	}
 }

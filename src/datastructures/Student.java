@@ -11,7 +11,8 @@ import java.io.Serializable;
  * @see User
  */
 public class Student extends User implements Serializable {
-    UserPermission userPermission;
+    
+	UserPermission userPermission;
     public Student(int id, String name, String username, String password) {
         super(id, name, username, password);
         this.userPermission = UserPermission.USER;

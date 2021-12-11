@@ -1,4 +1,5 @@
 package datastructures;
+import java.io.Serializable;
 import java.util.ArrayList;
 /**
  * Stores one Question, including multiple answers
@@ -11,15 +12,16 @@ import java.util.ArrayList;
  * @version 11/14/21
  * @see Quiz
  */
-public class Question implements Listable {
-    ArrayList<Answer> answers;
+public class Question implements Listable, Serializable {
+	
+	ArrayList<Answer> answers;
     String question;
     int id;
     String questionType;
-    private Object lockQuestionType = new Object();
-    private Object lockId = new Object();
-    private Object lockQuestion = new Object();
-    private Object lockAnswer = new Object();
+    //private Object lockQuestionType = new Object();
+    //private Object lockId = new Object();
+    //private Object lockQuestion = new Object();
+    //private Object lockAnswer = new Object();
 
     public Question(ArrayList<Answer> answers, String question, int id, String questionType) {
         this.answers = answers;
@@ -33,7 +35,7 @@ public class Question implements Listable {
      * @return max - a new unique id
      */
     public int generateUniqueAnswerId() {
-        synchronized (lockId) {
+        //synchronized (lockId) {
             int max = 0;
             for (Answer a : answers) {
                 if (a.getId() > max) {
@@ -41,7 +43,7 @@ public class Question implements Listable {
                 }
             }
             return max + 1;
-        }
+        //}
     }
     /**
      * Returns the question string, with a limit of 20 characters
@@ -97,9 +99,9 @@ public class Question implements Listable {
      * @param id - the new unique id for the quiz
      */
     public void setId(int id) {
-        synchronized (lockId) {
+        //synchronized (lockId) {
             this.id = id;
-        }
+        //}
     }
     /**
      * Returns the unique quiz id
@@ -123,9 +125,9 @@ public class Question implements Listable {
      * @param questionType - the type of question
      */
     public void setQuestionType(String questionType) {
-        synchronized (lockQuestionType) {
+        //synchronized (lockQuestionType) {
             this.questionType = questionType;
-        }
+        //}
     }
     /**
      * Returns the question as it will be displayed to the user
