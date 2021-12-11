@@ -1,9 +1,9 @@
 # CS-180-Project-5
 
 # Submission Details
-Project 4 Reflection Submitted by Liam Kelly
+Project 5 Reflection Submitted by Liam Kelly
 
-Project 4 submitted on Vocareum by Sean Lee
+Project 5 submitted on Vocareum by Sean Lee
 
 # Compilation Instructions
 To compile and run the project, run the `compile_and_run.sh` script found in the root project directory. This script will compile all of the java classes, run the main class, and then clean away all of the .class files once the program has exited.
@@ -112,8 +112,10 @@ The class used for reading and writing to file. It contains static methods that 
 The manager that holds the list of all graded quizzes. It also provides a method for searching for graded quizzes by course, and a method to delete all graded quizzes taken by a certain student.
 
 ### LearningManagementSystemServer
+This class contains all of the managers that are stored on the server - quizManager, gradedQuizManeger, UserManager, and all of those file managers.  When the server is started those are all initialized.  This is also used for the client managers to retrieve information from one another.
 
 ### NetworkManagerServer
+This handles requests for information from the client, including sending push packets to all clients if something needs to be changed.  It also starts the server on initialization.  It utilizes multithreading in order to simultaneously be able to send and receive packets while also always listening for push packets.
 
 ### UserFileManager, QuizFileManager, and GradedQuizFileManager
 The managers that read and write user, quiz, and graded quiz data to and from files. Each gives its respective manager the list of users, quizzes, or graded quizzes at the start of the program and receives the list of them at the end. The file paths in `readUsers()`, `readQuizzes()`, and `readGradedQuizzes` as well as `writeUsers()`, `writeQuizzes()`, and `writeGradedQuizzes()` are hard coded and should work as relative paths for the file that stores the desired information.
