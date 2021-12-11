@@ -14,7 +14,7 @@ import packets.response.GradedQuizResponsePacket;
  * @see GradedQuizResponsePacket
  * @see datastructures.GradedQuiz
  */
-public class GradedQuizRequestPacket implements Serializable {
+public class GradedQuizRequestPacket extends RequestPacket implements Serializable {
     
 	GradedQuiz gradedQuiz;
     int id;
@@ -42,6 +42,7 @@ public class GradedQuizRequestPacket implements Serializable {
      * @param lms
      * @return
      */
+    @Override
     public GradedQuizResponsePacket serverHandle(LearningManagementSystemServer lms) {
         // if the Graded Quiz is null the server needs to send the client the Graded Quiz it is looking for
         if (gradedQuiz == null) {
