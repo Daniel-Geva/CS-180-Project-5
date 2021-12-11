@@ -7,28 +7,30 @@ import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class FileInput extends JPanel {
 
 	private String resultKey;
 	private JFileChooser jFileChooser;
+	private Label selectedFileLabel;
 
-	public FileInput(String text, String resultKey) {
+	public FileInput(String text, String buttonName, String resultKey) {
 		this.resultKey = resultKey;
 		this.jFileChooser = new JFileChooser();
+		this.selectedFileLabel = new Label("No file");
+		// new DynamicLabel("No File Selected", "chosen-file")
 		
 		this.setLayout(new GridLayout(2, 1));
 		this.add(new Label(text).margin(5));
 		this.add(new Panel(new FlowLayout(FlowLayout.LEADING))
-			.add(new Button("Select Quiz File")
+			.add(new Button(buttonName)
 				.onClick((Panel panel) -> {
 					jFileChooser.showOpenDialog(null);
 					File f = jFileChooser.getSelectedFile();
-					panel.setDynamicLabel("chosen-file", f != null ? f.getName() : "No File Selected");
+					selectedFileLabel.setText(f != null ? f.getName() : "No File Selected");
 				}))
-			.add(new DynamicLabel("No File Selected", "chosen-file"))
+			.add(selectedFileLabel)
 		);
 		
 		//this.jlabel.setForeground(Aesthetics.GENERAL_FOREGROUND);

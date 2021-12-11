@@ -378,6 +378,11 @@ public class Panel extends JLayeredPane {
 		for (Dropdown dropdown : this.getDropdowns()) {
 			resultMap.put(dropdown.getResultKey(), dropdown.getSelection());
 		}
+		for (RadioButton radioButton : this.getRadioButtons()) {
+			if(radioButton.isSelected()) {
+				resultMap.put(radioButton.getResultKey(), radioButton.getSelectionId());
+			}
+		}
 		return resultMap;
 	}
 
@@ -424,7 +429,7 @@ public class Panel extends JLayeredPane {
 		}
 		for (RadioButton radioButton : this.getRadioButtons()) {
 			if(radioButton.getResultKey().equals(key) && radioButton.isSelected()) {
-				return Integer.toString(radioButton.getSelectionId());
+				return radioButton.getSelectionId();
 			}
 		}
 		return "";

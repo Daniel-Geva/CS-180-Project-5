@@ -5,17 +5,17 @@ import javax.swing.JRadioButton;
 public class RadioButton extends JRadioButton {
 
 	private String resultKey;
-	private int selectionId;
+	private String selectionId;
 	
 	public RadioButton(String text) {
 		super(text);
 	}
 
-	public RadioButton(String answer, int selectionId, int resultKey) {
-		this(answer, selectionId, Integer.toString(resultKey));
+	public RadioButton(String selection, int selectionId, int resultKey) {
+		this(selection, Integer.toString(selectionId), Integer.toString(resultKey));
 	}
 	
-	public RadioButton(String text, int selectionId, String resultKey) {
+	public RadioButton(String text, String selectionId, String resultKey) {
 		super(text);
 		this.selectionId = selectionId;
 		this.resultKey = resultKey;
@@ -28,7 +28,7 @@ public class RadioButton extends JRadioButton {
 		return resultKey;
 	}
 
-	public int getSelectionId() {
+	public String getSelectionId() {
 		return selectionId;
 	}
 	

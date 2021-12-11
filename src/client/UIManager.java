@@ -3,9 +3,11 @@ package client;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -14,13 +16,13 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
+import datastructures.GradedQuiz;
 import datastructures.Manager;
 import datastructures.Question;
 import datastructures.Quiz;
@@ -30,7 +32,6 @@ import datastructures.User;
 import gui.Aesthetics;
 import gui.Button;
 import gui.Dropdown;
-import gui.DynamicLabel;
 import gui.FileInput;
 import gui.GapComponent;
 import gui.Heading;
@@ -39,9 +40,11 @@ import gui.Panel;
 import gui.RadioButton;
 import gui.TextField;
 import packets.request.CreateUserRequestPacket;
+import packets.request.GradedQuizRequestPacket;
 import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
 import packets.request.UpdateUserRequestPacket;
+import packets.response.GradedQuizResponsePacket;
 import packets.response.NewUserResponsePacket;
 import packets.response.QuizListResponsePacket;
 import packets.response.ResponsePacket;
@@ -142,6 +145,45 @@ public class UIManager implements Manager {
 			.setPanelSize(350, 200)
 		);
 		
+		overallPanel.addModal("submit-error", new Panel()
+			.add(new Heading("Error"))
+			.add(new Label("An error occurred in submitting."))
+			.add(new Label(""))
+			.add(new Panel()
+				.boxLayout(BoxLayout.X_AXIS)
+				.add(new Button("Close")
+					.onClick((Panel p) -> {
+						overallPanel.closeModal();
+					}))
+				.add(new Button("Exit Quiz Without Submitting")
+					.onClick((Panel p) -> {
+						overallPanel.close();
+						mainPanel.open();
+					}))
+			)
+			.setPanelSize(350, 200)
+		);
+		
+		overallPanel.addModal("submitted", new Panel()
+			.add(new Heading("Submit Quiz"))
+			.add(new Label("Successfully submitted quiz."))
+			.add(new Label("Would you like to see your score?"))
+			.add(new Panel()
+				.boxLayout(BoxLayout.X_AXIS)
+				.add(new Button("No")
+					.onClick((Panel p) -> {
+						overallPanel.close();
+						mainPanel.open();
+					}))
+				.add(new Button("Yes")
+					.onClick((Panel p) -> {
+						overallPanel.close();
+						getSubmissionPanel(quiz, this.getCurrentUser()).open();
+					}))
+			)
+			.setPanelSize(350, 200)
+		);
+		
 		panel.add(new Panel()
 			.boxLayout(BoxLayout.X_AXIS)
 			.add(new Button("Cancel")
@@ -151,6 +193,41 @@ public class UIManager implements Manager {
 				}))
 			.add(new Button("Submit Quiz")
 				.onClick((Panel p) -> {
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+					LocalDateTime now = LocalDateTime.now();  
+					String time = dtf.format(now);
+					
+					Map<String, String> resultMap = p.getResultMap();
+					HashMap<Integer, Integer> map = new HashMap<>();
+					for(Question q: quiz.getQuestions()) {
+						if(!resultMap.containsKey(Integer.toString(q.getId()))) {
+							JOptionPane.showMessageDialog(
+								null, 
+								"Please answer all of the questions and try to submit again.", 
+								"Error", 
+								JOptionPane.ERROR_MESSAGE
+							);
+							return;
+						}
+						String answerId = resultMap.get(Integer.toString(q.getId()));
+						for(Answer a: q.getAnswers()) {
+							if(answerId.equals(Integer.toString(a.getId()))) {
+								map.put(q.getId(), a.getId());
+							}
+						}
+					}
+					
+					GradedQuiz submission = new GradedQuiz(quiz.getId(), this.getCurrentUser().getID(), map, time);
+					
+					lms.getNetworkManagerClient()
+						.sendPacket(new GradedQuizRequestPacket(submission))
+						.onReceiveResponse((ResponsePacket resp) -> {
+							if(!resp.wasSuccess()) {
+								overallPanel.openModal("submit-error");
+								return;
+							}
+							overallPanel.openModal("submitted");
+						});
 					
 				})
 			).setPanelSize(200, 50)
@@ -164,6 +241,90 @@ public class UIManager implements Manager {
 		
 	}
 	
+	private Panel getSubmissionPanel(Quiz quiz, User user) {
+		Panel overallPanel = new Panel();
+		overallPanel.setPanelSize(1000, 720);
+		overallPanel.setMargin(0, 20);
+		Panel panel = new Panel();
+		panel.setMargin(64, 64);
+		//panel.disableBounding();
+		panel.boxLayout(BoxLayout.Y_AXIS);
+		
+		lms.getNetworkManagerClient()
+		.sendPacket(new GradedQuizRequestPacket(quiz.getId()))
+		.onReceiveResponse((ResponsePacket resp) -> {
+			if(!resp.wasSuccess()) {
+				panel.add(new Heading("Error"))
+					.add(new Label("An error occurred when fetching the submission."))
+					.add(new Label("Click the following button to go back to the main menu."))
+					.add(new Button("Exit")
+						.onClick((Panel __) -> {
+							overallPanel.close();
+							mainPanel.open();
+						}));
+				return;
+			}
+			GradedQuizResponsePacket gradedQuizResp = (GradedQuizResponsePacket) resp;
+			GradedQuiz submission = gradedQuizResp.getQuizResponse();
+			
+			panel.add(new Heading("Quiz Submission").big().margin(30));
+			panel.add(new Heading("Quiz Name: " + quiz.getName()));
+			panel.add(new Heading("Taken By: " + user.getName()));
+			panel.add(new Heading("Time: " + quiz.getAuthor()));
+
+			ArrayList<Question> questions = quiz.getQuestions();
+			
+			int i = 1;
+			for(Question question: questions) {
+				panel.add(new Panel().setPanelSize(50, 50));
+				panel.add(new Label("\nQuestion #" + i));
+				panel.add(new Label(question.getQuestion()));
+				Answer chosenAnswer = null;
+				if(submission.getGradedQuizMap().containsKey(question.getId())) {
+					int chosenAnswerId = submission.getGradedQuizMap().get(question.getId());
+					int possibleAmt = 0;
+					for(Answer answer: question.getAnswers()) {
+						Label answerLabel = new Label(" - " + answer.getAnswer() + " - " + answer.getPoints() + " Points");
+						panel.add(answerLabel);
+						if(chosenAnswerId == answer.getId()) {
+							chosenAnswer = answer;
+						}
+						if(answer.getPoints() > possibleAmt) {
+							possibleAmt = answer.getPoints();
+						}
+					}
+					if(chosenAnswer != null) {
+						panel.add(new Label("Chosen Answer: " + chosenAnswer.getAnswer() ));
+						panel.add(new Label("Points Earned: " + chosenAnswer.getPoints() + " / " + possibleAmt));
+					} else {
+						panel.add(new Label("The answer the student chose was removed from the quiz."));
+					}
+				} else {
+					panel.add(new Label("This question was added after the student took the quiz."));
+				}
+				i += 1;
+			}
+			
+			panel.add(new Panel()
+				.boxLayout(BoxLayout.X_AXIS)
+				.add(new Button("Exit")
+					.color(Aesthetics.BUTTON_WARNING)
+					.onClick((Panel p) -> {
+						overallPanel.close();
+						mainPanel.open();
+					}))
+				.setPanelSize(200, 50)
+			);
+			panel.revalidate();
+		});
+
+		JScrollPane pane = new JScrollPane(panel.getMainPanel());
+		pane.setBorder(null);
+		//pane.setSize(1000, 720);
+		overallPanel.add(pane);
+		return overallPanel;
+	}
+
 	public Panel getModifyQuizPanel(Quiz quiz) {
 		Panel overallPanel = new Panel();
 		overallPanel.setPanelSize(1000, 720);
@@ -199,7 +360,7 @@ public class UIManager implements Manager {
 			.add(new Heading("Create Quiz"))
 			.add(new TextField("Course"))
 			.add(new TextField("Quiz Name"))
-			.add(new FileInput("Quiz File (Optional)", "quiz-file"))
+			.add(new FileInput("Quiz File (Optional)", "Select Quiz File", "quiz-file"))
 			.add(new Panel(new FlowLayout())
 				.add(new Button("Cancel")
 					.onClick((Panel __) -> {
