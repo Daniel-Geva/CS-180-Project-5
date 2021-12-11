@@ -1,4 +1,4 @@
-# CS-180-Project-4
+# CS-180-Project-5
 
 # Submission Details
 Project 4 Reflection Submitted by Liam Kelly
@@ -13,9 +13,6 @@ _Note: If the script is ran on Windows (or any system that doesn't support .sh s
 ## Voccheck instructions
 Voccheck (the script used by Vocareum to check coding style) only runs on .java files in the root directory. As such, it does not run with our project structure that is organized inside of directories. Because of this, we have provided a handy script `run_voccheck.sh` that will run voccheck on all of our .java files in our source code. Run `run_voccheck.sh` in Vocareum to view the output of voccheck on our code. If you want, you can also view the source code of the script to verify it is properly checking our code.
 
-## JUnit Test Cases instructions.
-The JUnit test cases can be ran by running `run_test_cases.sh` in the root project directory. Alternatively, they can also be ran via running the main method found in main/JUnitTestCases.java
-
 ## Importing File Instructions
 The instructions for importing quizzes from a file can be found in `ImportExample.txt`. If you would like to see an example of a file formatted properly to be imported, view `TestImport.txt`.
 
@@ -26,21 +23,31 @@ This documentation can be very useful for getting an overview of how certain par
 
 # Classes Summary
 
-## Main Class
-### LearningManagementSystem
-(Abbreviated LMS for short) 
-This is the main class that ties all of the managers together. It contains the `main()` method. Upon running, it instantiates all of the following managers:
+## Client Classes
 
-- UserManager
-- QuizManager
-- GradedQuizManager
-- QuizFileManager
-- UserFileManager
-- GradedQuizFileManager
-- UIManager
+### LearningManagementSystemClient
 
-Then, after instantiating them, it runs the `init()` method on all of them to notify them that the program is initializing. Once all the managers have initialized, the UIManager is ran, which opens the UI and prompts the user for input. Once the UI has exited, LMS then runs the `exit()` method on all of the managers to notify them that the program is exiting.
-The LMS class is the glue that ties all of the parts of the program together. It holds all of the managers, lets them communicate with each other, and notifies them about the state of the overall program.
+### NetworkManagerClient
+
+### ResponsePacketHandler
+
+### RunnableHandleResponsePacket
+
+### UIManager
+
+## Datastructure Classes
+
+## GUI Classes
+
+## Server Classes
+
+## Packet Classes
+
+### Request Packet Classes
+
+### Response Packet Classes
+
+## UI classes
 
 ## Manager Classses
 Classes that each handle a vital function of the program.
@@ -169,7 +176,3 @@ Ran whenever an option is selected in OptionMenu
 This class contains ANSI codes that are used for modifying text (like making it bold, underlines, or a different color). Also, it contains some commands for clearing the terminal and moving the cursor. Then, it also contains a utility function for stripping the ANSI codes from a piece of text, which is used for comparing output in test cases.
 
 
-## Test Case Classes
-
-### JUnitTestCases
-This class contains all JUnit test cases. In it, each requirement of the project is outlined, and it shows which test cases shows that each requirement is properly implemented.
