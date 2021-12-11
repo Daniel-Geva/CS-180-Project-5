@@ -2,9 +2,9 @@ package client;
 
 import packets.response.ResponsePacket;
 /**
- * short description
+ * An interface that gives a callback function whenever a packet is received for a specific request
  * <p>
- * functionality
+ *
  *
  * @author Isaac Fleetwood
  *
