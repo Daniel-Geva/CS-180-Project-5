@@ -53,7 +53,6 @@ public class GradedQuizRequestPacket extends RequestPacket implements Serializab
             return new GradedQuizResponsePacket(false, gradedQuiz);
         } else {
             // if the Graded Quiz exists the new information is replaced
-            // TODO: there is probably a better way to do this
             if (lms.getGradedQuizManager().searchGradedQuizByID(id) != null) {
                 lms.getGradedQuizManager().removeQuiz(id);
                 lms.getGradedQuizManager().addGradedQuiz(gradedQuiz);
@@ -63,7 +62,7 @@ public class GradedQuizRequestPacket extends RequestPacket implements Serializab
             }
             lms.getGradedQuizFileManager().save();
             // client needs to figure out if its a new Graded Quiz or preexisting Graded Quiz that needs to be updated
-            return new GradedQuizResponsePacket(false);
+            return new GradedQuizResponsePacket(false, gradedQuiz);
         }
     }
 }
