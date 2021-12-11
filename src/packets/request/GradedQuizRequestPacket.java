@@ -62,7 +62,7 @@ public class GradedQuizRequestPacket extends RequestPacket implements Serializab
             }
             lms.getGradedQuizFileManager().save();
             // client needs to figure out if its a new Graded Quiz or preexisting Graded Quiz that needs to be updated
-            return new GradedQuizResponsePacket(false, gradedQuiz);
+            return new GradedQuizResponsePacket(true, gradedQuiz);
         }
     }
 }
