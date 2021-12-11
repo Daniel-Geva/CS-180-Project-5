@@ -7,6 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+
 import packets.request.*;
 import packets.response.*;
 
@@ -16,8 +19,9 @@ import packets.response.*;
  * Waits for the user to request or send objects and sends them to the client accordingly
  *
  * @author Liam Kelly
+ * @author Sean Lee
  *
- * @version December 7, 2021
+ * @version December 11, 2021
  *
  */
 
@@ -39,6 +43,7 @@ public class NetworkManagerServer {
         try {
             @SuppressWarnings("resource")
             ServerSocket ss = new ServerSocket(4040);
+            ArrayDeque<ResponsePacket> list = new ArrayDeque<>();
 
             while (true) {
                 final Socket socket = ss.accept();
@@ -54,6 +59,11 @@ public class NetworkManagerServer {
                                 if (obj instanceof RequestPacket) {
                                     RequestPacket requestPacket = (RequestPacket) obj;
                                     ResponsePacket response = requestPacket.serverHandle(lmsServer);
+                                    if (response.getPush()) {
+                                        synchronized (list) {
+                                            list.push(response);
+                                        }
+                                    }
                                     oos.writeObject(response);
                                 } else if (obj instanceof ResponsePacket) {
                                     ResponsePacket responsePacket = (ResponsePacket) obj;
@@ -74,7 +84,24 @@ public class NetworkManagerServer {
                     }
 
                 });
+
+            Thread thread2 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        synchronized (list) {
+                            while (list.size() > 0) {
+                                try {
+                                    oos.writeObject(list.pop());
+                                } catch (IOException e) {
+                                }
+                            }
+                        }
+                    }
+                }
+            });
                 thread.start();
+                thread2.start();
             }
 
         } catch (IOException e) {
