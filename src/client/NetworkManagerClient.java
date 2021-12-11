@@ -50,6 +50,7 @@ public class NetworkManagerClient {
         this.nameSetter = new NameSetter();
     }
 
+    ///Connects to the server and initializes the two threads that send and receive objects
     public void init() {
         this.outputThread = new Thread(new Runnable() {
             @Override
@@ -153,12 +154,14 @@ public class NetworkManagerClient {
         this.inputThread.start();
         this.outputThread.start();
     }
-    
+
+    ///Closes the threads upon exit
     public void exit() {
     	this.outputThread.interrupt();
     	this.inputThread.interrupt();
     }
 
+    ///Method used by the UIManger in order to add a packet to the packetQueue to be sent
     public ResponsePacketHandler sendPacket(RequestPacket requestPacket) {
         ResponsePacketHandler handler = new ResponsePacketHandler();
         this.packetQueue.put(requestPacket, handler);
@@ -168,6 +171,7 @@ public class NetworkManagerClient {
         return handler;
     }
 
+    ///A class used to set the IP address and deal with errors
     class NameSetter {
         String name = "";
         Runnable errorRunnable = () -> {};

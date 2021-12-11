@@ -124,7 +124,13 @@ public class UIManager implements Manager {
 					}
 					break;
 				case "Dropdown":
-					Dropdown dropdown = new Dropdown(Integer.toString(question.getId()), answers.stream().map((Answer a) -> a.getAnswer()).toArray());
+					Dropdown dropdown = new Dropdown(
+						Integer.toString(question.getId()), 
+						question.getAnswers()
+							.stream()
+							.map((Answer a) -> a.getAnswer())
+							.toList()
+					);
 					panel.add(dropdown);
 					break;
 			}
@@ -258,7 +264,7 @@ public class UIManager implements Manager {
 		panel.add(new Heading("Quiz Submission").big().margin(30));
 		panel.add(new Heading("Quiz Name: " + quiz.getName()));
 		panel.add(new Heading("Taken By: " + user.getName()));
-		panel.add(new Heading("Time: " + quiz.getAuthor()));
+		panel.add(new Heading("Time: " + submission.getSubmissionTime()));
 
 		ArrayList<Question> questions = quiz.getQuestions();
 		
