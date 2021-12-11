@@ -4,6 +4,17 @@ package client;
 
 import packets.response.ResponsePacket;
 
+/**
+ * short description
+ * <p>
+ * functionality
+ *
+ * @author Isaac Fleetwood
+ *
+ * @version December 10, 2021
+ *
+ */
+
 public class ResponsePacketHandler {
     public ResponsePacketHandler() {}
 
