@@ -12,22 +12,20 @@ import server.LearningManagementSystemServer;
  *
  * @author Liam Kelly
  *
- * @version October 7, 2021
+ * @version December 5, 2021
  *
  */
 
 public class QuizRequestPacket extends RequestPacket {
     int id;
-    boolean push;
     Quiz quizWithChanges;
 
-    public QuizRequestPacket(int id, boolean push) {
+    public QuizRequestPacket(int id) {
         this.id = id;
     }
 
-    public QuizRequestPacket(Quiz quizWithChanges, boolean push) {
+    public QuizRequestPacket(Quiz quizWithChanges) {
         this.quizWithChanges = quizWithChanges;
-        this.push = push;
     }
 
 
@@ -41,9 +39,9 @@ public class QuizRequestPacket extends RequestPacket {
     public ResponsePacket serverHandle(LearningManagementSystemServer lms) {
         if (quizWithChanges == null) {
             Quiz quiz = lms.getQuizManager().searchQuizByID(id);
-            return new QuizResponsePacket(quiz, push);
+            return new QuizResponsePacket(quiz, false);
         } else {
-            return new QuizResponsePacket(quizWithChanges, push);
+            return new QuizResponsePacket(quizWithChanges, true);
         }
     }
 
