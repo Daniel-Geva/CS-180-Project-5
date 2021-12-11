@@ -174,45 +174,6 @@ public class QuizFileManager implements Manager {
         return retVal;
     }
 
-    ///Creates and returns a quiz object generated from a file, with some values provided by UI
-    public Quiz importQuiz(String path, String name, String course) {
-        String user = "stuff"; // TODO Old code lms.getUIManager().getCurrentUser().getName();
-        int quizId = lms.getQuizManager().getUniqueID();
-
-        ArrayList<String> contents = FileWrapper.readImportFile(path);
-
-        if (contents == null) {
-            return null;
-        }
-
-        ArrayList<Question> questions = new ArrayList<>();
-
-        for (int i = 0; i < contents.size(); i++) {
-            String[] quizParts = contents.get(i).split("\n", -1);
-            //A "\n" newline separates question from answers
-            String[] questionParts = quizParts[0].split("/", 2);
-            //A "/" forward slash separates the question form the type of question
-            String question = questionParts[0];
-            String questionType = questionParts[1];
-            int questionId = i;
-            ArrayList<Answer> answers = new ArrayList<>();
-            for (int j = 1; j < quizParts.length - 1; j++) {
-                String[] answerParts = quizParts[j].split(";;", 3);
-                //Two ";;" semicolons separate the parts of the answer
-                String answer = answerParts[0];
-                boolean isCorrect = Boolean.parseBoolean(answerParts[1]);
-                int numPoints = Integer.parseInt(answerParts[2]);
-                int answerId = j - 1;
-                answers.add(new Answer(answer, isCorrect, numPoints, answerId));
-            }
-            questions.add(new Question(answers, question, questionId, questionType));
-        }
-
-        Quiz quiz = new Quiz(name, user, quizId, questions, false, course);
-
-        return quiz;
-    }
-
     public void setQuizzes(ArrayList<Quiz> quizzes) {
         this.quizzes = quizzes;
     }
