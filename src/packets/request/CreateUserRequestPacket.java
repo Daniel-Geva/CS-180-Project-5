@@ -44,6 +44,7 @@ public class CreateUserRequestPacket extends RequestPacket {
             //if the user cannot be found in that arraylist, then this new user is added to the list
             //Operation is marked as successful
             mainServer.getUserManager().addUser(user);
+            mainServer.getUserFileManager().save();
             return new ResponsePacket(true, false);
         } else {
             //If the condition turns out to be false, then the operation is marked as false

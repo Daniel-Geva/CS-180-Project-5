@@ -21,6 +21,7 @@ public class UpdateUserRequestPacket extends RequestPacket {
 		oldUser.setName(user.getName());
 		oldUser.setUsername(user.getUsername());
 		oldUser.setPassword(user.getPassword());
+        mainServer.getUserFileManager().save();
 		return new ResponsePacket(true, false);
 	}
 

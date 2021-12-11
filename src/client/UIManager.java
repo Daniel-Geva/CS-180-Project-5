@@ -40,10 +40,12 @@ import gui.Panel;
 import gui.RadioButton;
 import gui.TextField;
 import packets.request.CreateUserRequestPacket;
+import packets.request.GradedQuizListRequestPacket;
 import packets.request.GradedQuizRequestPacket;
 import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
 import packets.request.UpdateUserRequestPacket;
+import packets.response.GradedQuizListResponsePacket;
 import packets.response.GradedQuizResponsePacket;
 import packets.response.NewUserResponsePacket;
 import packets.response.QuizListResponsePacket;
@@ -164,25 +166,7 @@ public class UIManager implements Manager {
 			.setPanelSize(350, 200)
 		);
 		
-		overallPanel.addModal("submitted", new Panel()
-			.add(new Heading("Submit Quiz"))
-			.add(new Label("Successfully submitted quiz."))
-			.add(new Label("Would you like to see your score?"))
-			.add(new Panel()
-				.boxLayout(BoxLayout.X_AXIS)
-				.add(new Button("No")
-					.onClick((Panel p) -> {
-						overallPanel.close();
-						mainPanel.open();
-					}))
-				.add(new Button("Yes")
-					.onClick((Panel p) -> {
-						overallPanel.close();
-						getSubmissionPanel(quiz, this.getCurrentUser()).open();
-					}))
-			)
-			.setPanelSize(350, 200)
-		);
+		
 		
 		panel.add(new Panel()
 			.boxLayout(BoxLayout.X_AXIS)
@@ -218,14 +202,33 @@ public class UIManager implements Manager {
 					}
 					
 					GradedQuiz submission = new GradedQuiz(quiz.getId(), this.getCurrentUser().getID(), map, time);
-					
+
 					lms.getNetworkManagerClient()
 						.sendPacket(new GradedQuizRequestPacket(submission))
 						.onReceiveResponse((ResponsePacket resp) -> {
+							System.out.println("Submitted");
 							if(!resp.wasSuccess()) {
 								overallPanel.openModal("submit-error");
 								return;
 							}
+							overallPanel.addModal("submitted", new Panel()
+								.add(new Heading("Submit Quiz"))
+								.add(new Label("Successfully submitted quiz."))
+								.add(new Label("Would you like to see your score?"))
+								.add(new Panel(new FlowLayout())
+									.add(new Button("No")
+										.onClick((Panel __) -> {
+											overallPanel.close();
+											mainPanel.open();
+										}))
+									.add(new Button("Yes")
+										.onClick((Panel __) -> {
+											overallPanel.close();
+											getSubmissionPanel(submission, quiz, this.getCurrentUser()).open();
+										}))
+								)
+								.setPanelSize(350, 200)
+							);
 							overallPanel.openModal("submitted");
 						});
 					
@@ -241,7 +244,7 @@ public class UIManager implements Manager {
 		
 	}
 	
-	private Panel getSubmissionPanel(Quiz quiz, User user) {
+	private Panel getSubmissionPanel(GradedQuiz submission, Quiz quiz, User user) {
 		Panel overallPanel = new Panel();
 		overallPanel.setPanelSize(1000, 720);
 		overallPanel.setMargin(0, 20);
@@ -250,73 +253,54 @@ public class UIManager implements Manager {
 		//panel.disableBounding();
 		panel.boxLayout(BoxLayout.Y_AXIS);
 		
-		lms.getNetworkManagerClient()
-		.sendPacket(new GradedQuizRequestPacket(quiz.getId()))
-		.onReceiveResponse((ResponsePacket resp) -> {
-			if(!resp.wasSuccess()) {
-				panel.add(new Heading("Error"))
-					.add(new Label("An error occurred when fetching the submission."))
-					.add(new Label("Click the following button to go back to the main menu."))
-					.add(new Button("Exit")
-						.onClick((Panel __) -> {
-							overallPanel.close();
-							mainPanel.open();
-						}));
-				return;
-			}
-			GradedQuizResponsePacket gradedQuizResp = (GradedQuizResponsePacket) resp;
-			GradedQuiz submission = gradedQuizResp.getQuizResponse();
-			
-			panel.add(new Heading("Quiz Submission").big().margin(30));
-			panel.add(new Heading("Quiz Name: " + quiz.getName()));
-			panel.add(new Heading("Taken By: " + user.getName()));
-			panel.add(new Heading("Time: " + quiz.getAuthor()));
+		panel.add(new Heading("Quiz Submission").big().margin(30));
+		panel.add(new Heading("Quiz Name: " + quiz.getName()));
+		panel.add(new Heading("Taken By: " + user.getName()));
+		panel.add(new Heading("Time: " + quiz.getAuthor()));
 
-			ArrayList<Question> questions = quiz.getQuestions();
-			
-			int i = 1;
-			for(Question question: questions) {
-				panel.add(new Panel().setPanelSize(50, 50));
-				panel.add(new Label("\nQuestion #" + i));
-				panel.add(new Label(question.getQuestion()));
-				Answer chosenAnswer = null;
-				if(submission.getGradedQuizMap().containsKey(question.getId())) {
-					int chosenAnswerId = submission.getGradedQuizMap().get(question.getId());
-					int possibleAmt = 0;
-					for(Answer answer: question.getAnswers()) {
-						Label answerLabel = new Label(" - " + answer.getAnswer() + " - " + answer.getPoints() + " Points");
-						panel.add(answerLabel);
-						if(chosenAnswerId == answer.getId()) {
-							chosenAnswer = answer;
-						}
-						if(answer.getPoints() > possibleAmt) {
-							possibleAmt = answer.getPoints();
-						}
+		ArrayList<Question> questions = quiz.getQuestions();
+		
+		int i = 1;
+		for(Question question: questions) {
+			panel.add(new Panel().setPanelSize(50, 50));
+			panel.add(new Label("\nQuestion #" + i));
+			panel.add(new Label(question.getQuestion()));
+			Answer chosenAnswer = null;
+			if(submission.getGradedQuizMap().containsKey(question.getId())) {
+				int chosenAnswerId = submission.getGradedQuizMap().get(question.getId());
+				int possibleAmt = 0;
+				for(Answer answer: question.getAnswers()) {
+					Label answerLabel = new Label(" - " + answer.getAnswer() + " - " + answer.getPoints() + " Points");
+					panel.add(answerLabel);
+					if(chosenAnswerId == answer.getId()) {
+						chosenAnswer = answer;
 					}
-					if(chosenAnswer != null) {
-						panel.add(new Label("Chosen Answer: " + chosenAnswer.getAnswer() ));
-						panel.add(new Label("Points Earned: " + chosenAnswer.getPoints() + " / " + possibleAmt));
-					} else {
-						panel.add(new Label("The answer the student chose was removed from the quiz."));
+					if(answer.getPoints() > possibleAmt) {
+						possibleAmt = answer.getPoints();
 					}
-				} else {
-					panel.add(new Label("This question was added after the student took the quiz."));
 				}
-				i += 1;
+				if(chosenAnswer != null) {
+					panel.add(new Label("Chosen Answer: " + chosenAnswer.getAnswer() ));
+					panel.add(new Label("Points Earned: " + chosenAnswer.getPoints() + " / " + possibleAmt));
+				} else {
+					panel.add(new Label("The answer the student chose was removed from the quiz."));
+				}
+			} else {
+				panel.add(new Label("This question was added after the student took the quiz."));
 			}
-			
-			panel.add(new Panel()
-				.boxLayout(BoxLayout.X_AXIS)
-				.add(new Button("Exit")
-					.color(Aesthetics.BUTTON_WARNING)
-					.onClick((Panel p) -> {
-						overallPanel.close();
-						mainPanel.open();
-					}))
-				.setPanelSize(200, 50)
-			);
-			panel.revalidate();
-		});
+			i += 1;
+		}
+		
+		panel.add(new Panel()
+			.boxLayout(BoxLayout.X_AXIS)
+			.add(new Button("Exit")
+				.color(Aesthetics.BUTTON_WARNING)
+				.onClick((Panel p) -> {
+					overallPanel.close();
+					mainPanel.open();
+				}))
+			.setPanelSize(200, 50)
+		);
 
 		JScrollPane pane = new JScrollPane(panel.getMainPanel());
 		pane.setBorder(null);
@@ -571,6 +555,87 @@ public class UIManager implements Manager {
 		.setPanelSize(1000, 720)
 		.setMargin(64, 0));
 		
+		mainTabPanel.addTabPanel("Quiz Submissions", new Panel()
+			.onOpen((Panel p) -> {
+
+				p.getMainPanel().removeAll();
+				p.add((new Heading("Submission List")).big());
+				lms.getNetworkManagerClient()
+					.sendPacket(new GradedQuizListRequestPacket())
+					.onReceiveResponse((ResponsePacket resp) -> {
+						GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
+						List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
+						if(gradedQuizzes == null) {
+							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
+							p.revalidate();
+							return;
+						}
+						List<User> users  = getUsers(gradedQuizzes, listResp.getUsers());
+						for(User user: users) {
+							p.add(new Heading(user.getName()));
+							p.compSetSize(1000, 80);
+							
+							List<GradedQuiz> userSubmissions = gradedQuizzes
+								.stream()
+								.filter((GradedQuiz submission) -> (
+									submission.getStudentID() == user.getID()
+								))
+								.toList();
+							
+							for(GradedQuiz gradedQuiz: userSubmissions) {
+								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
+								
+								Panel panel = (new Panel())
+									.add(new Label(quiz.getName()))
+									.add(new Label("Author: " + quiz.getAuthor()))
+									.add(new Label("Questions: " + quiz.getQuestions().size()))
+									.onClick(mainPanel, (Panel __) -> {
+										mainPanel.addModal("Quiz-" + quiz.getId(), 
+											(new Panel())
+											.boxLayout(BoxLayout.Y_AXIS)
+											.add(new Heading(quiz.getName()))
+											.add(new Label("Course: " + quiz.getCourse()))
+											.add(new Label("Author: " + quiz.getAuthor()))
+											.add(new Label("Questions: " + quiz.getQuestions().size()))
+											.add((new Panel())
+												.boxLayout(BoxLayout.X_AXIS) 
+												.add((new Button("View Submission"))
+													.onClick((Panel __2) -> {
+														mainPanel.closeModal();
+														mainPanel.close();
+														getSubmissionPanel(gradedQuiz, quiz, user).open();
+													}))
+												.add((new Button("Cancel"))
+													.onClick((Panel __2) -> {
+														mainPanel.closeModal();
+													}))
+												.setPanelSize(300, 48)
+											)
+											.setPanelSize(400, 300)
+										);
+										mainPanel.revalidate();
+										mainPanel.openModal("Quiz-"+quiz.getId());
+									});
+								panel.getMainPanel().setBorder(
+									BorderFactory.createCompoundBorder(
+										BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+										BorderFactory.createEmptyBorder(20, 20, 20, 20)
+									)
+								);
+								panel.setPanelSize(200, 100);
+								panel.setSize(200, 100);
+								p.add(panel);
+								
+							}
+						}
+						
+						p.revalidate();
+						p.updateBounds();
+					});
+			})
+			.setPanelSize(1000, 720)
+			.setMargin(64, 0));
+		
 		mainTabPanel.openTabPanel("Quiz List");
 		
 		loginPanel.addModal("Create User", (new Panel(new GridLayout(6, 1)))
@@ -717,13 +782,41 @@ public class UIManager implements Manager {
 		
 	}
 
+	private User getUser(List<User> users, int id) {
+		for(User u: users) {
+			if(u.getID() == id) {
+				return u;
+			}
+		}
+		return null;
+	}
+
+	private Quiz getQuiz(List<Quiz> quizzes, int id) {
+		for(Quiz q: quizzes) {
+			if(q.getId() == id) {
+				return q;
+			}
+		}
+		return null;
+	}
+	
+	private List<User> getUsers(List<GradedQuiz> quizzes, List<User> allUsers) {
+		List<User> users = new ArrayList<User>();
+		for(GradedQuiz submission: quizzes) {
+			User user = getUser(allUsers, submission.getStudentID());
+			if(user != null && !users.contains(user))
+				users.add(user);
+		}
+		return users;
+	}
+
 	@Override
 	public void exit() {
 		
 	}
 	
 	public void run() {
-		this.mainPanel.open();
+		this.hostnamePanel.open();
 	}
 	
 	public Scanner getScanner() {
