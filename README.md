@@ -35,6 +35,9 @@ This documentation can be very useful for getting an overview of how certain par
 
 ### UIManager
 
+### ClientFileWrapper
+Contains methods for importing a quiz from a file. `readImportFile()` is a special read method used for importing existing quizzes from a file. It is special so that the people creating the quiz on a new file will have an easier time writing it and won't have to write it in a way that makes it easy for the program to read.
+
 ## Datastructure Classes
 
 ### Quiz
@@ -102,7 +105,7 @@ This is a wrapper around GradedQuiz that includes fetching the names of the quiz
 ## Server Classes
 
 ### FileWrapper
-The class used for reading and writing to file. It contains static methods that are used in any situation where interacting with files is necessary. `readFile()` and `writeFile()` are generic methods that are used for reading and writing files. `readImportFile()` is a special read method used for importing existing quizzes from a file. It is special so that the people creating the quiz on a new file will have an easier time writing it and won't have to write it in a way that makes it easy for the program to read.
+The class used for reading and writing to file. It contains static methods that are used in any situation where interacting with files is necessary. `readFile()` and `writeFile()` are generic methods that are used for reading and writing files.
 
 
 ### GradedQuizManager
@@ -112,12 +115,11 @@ The manager that holds the the list of all graded quizzes. It also provides a me
 
 ### NetworkManagerServer
 
-### QuizFileManager
+### UserFileManager, QuizFileManager, and GradedQuizFileManager
+The managers that read and write user, quiz, and graded quiz data to and from files. Each gives its respective manager the list of users, quizzes, or graded quizzes at the start of the program and receives the list of them at the end. The file paths in `readUsers()`, `readQuizzes()`, and `readGradedQuizzes` as well as `writeUsers()`, `writeQuizzes()`, and `writeGradedQuizzes()` are hard coded and should work as relative paths for the file that stores the desired information.
 
 ### QuizManager
 The manager that holds the list of every created quiz.  It also provides methods for searching through the quizzes with various filters, such as name, author, etc.  It also is responsible for generating unique ids for new quizzes.
-
-### UserFileManager
 
 ### UserManager
 The manager that is responsible for keeping track of users and providing functionalities such as `addUser()` or `authenticator()`. This manager performs actions that mainly require iterating through all the Users. For example, searching a user by his username or generating a unique id for each user is done through this class.
