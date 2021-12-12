@@ -60,6 +60,7 @@ import packets.response.QuizResponsePacket;
 import packets.response.ResponsePacket;
 
 /**
+ *
  * The manager that is responsible for the User Interface (UI).
  * It uses the User Interface Menu System to create menus that the user then interacts with.
  * In init() it creates all of the menus, which sets up the structure of the UI,
@@ -103,12 +104,20 @@ public class UIManager implements Manager {
 		return courses;
 	}
 
+	//TODO:ADD documentation here
 	private List<Quiz> getQuizzesFromCourse(List<Quiz> quizzes, String course) {
 		return quizzes.stream().filter((Quiz q) -> (
 			q.getCourse().equals(course)
 		)).toList();
 	}
-	
+
+	/**
+	 *
+	 * This is the method that is responsible that
+	 *
+	 * @param quiz
+	 * @return
+	 */
 	private Panel getTakeQuizPanel(Quiz quiz) {
 		Panel overallPanel = new Panel();
 		overallPanel.setPanelSize(500, 720);
