@@ -22,6 +22,7 @@ public class DeleteQuizRequestPacket extends RequestPacket{
             for (int i = 0; i < gradedQuizList.size(); i++) {
                 if (id == gradedQuizList.get(i).getQuizID()) {
                     gradedQuizList.remove(i);
+                    i--;
                 }
             }
             lms.getGradedQuizManager().setGradedQuiz(gradedQuizList);
