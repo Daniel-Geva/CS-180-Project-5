@@ -80,6 +80,15 @@ public class UserManager implements Manager {
     }
 
     /**
+     * Removes a User object from the ArrayList users based on their ID
+     */
+    public void removeUserByID(int id) {
+        synchronized (obj) {
+            users.remove(getUserById(id));
+        }
+    }
+
+    /**
      * Takes an username parameter and a password parameter
      * and returns boolean if a specific user's
      * username matches its password
