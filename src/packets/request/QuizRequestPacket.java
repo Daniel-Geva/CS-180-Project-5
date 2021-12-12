@@ -37,20 +37,16 @@ public class QuizRequestPacket extends RequestPacket {
      */
 
     public ResponsePacket serverHandle(LearningManagementSystemServer lms) {
-        System.out.println("Handling!");
         if (quizWithChanges == null) {
             Quiz quiz = lms.getQuizManager().searchQuizByID(id);
             return new QuizResponsePacket(quiz, false);
         } else {
-            System.out.println("Else!");
             if (lms.getQuizManager().searchQuizByID(quizWithChanges.getId()) != null) {
-            	System.out.println("Remove!");
             	lms.getQuizManager().removeQuiz(quizWithChanges.getId());
             } else {
                 quizWithChanges.setID(lms.getQuizManager().getUniqueID());
             }
             lms.getQuizManager().addQuiz(quizWithChanges);
-            System.out.println("Saving!");
             lms.getQuizFileManager().save();
             return new QuizResponsePacket(quizWithChanges, true);
         }
