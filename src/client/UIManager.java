@@ -333,8 +333,7 @@ public class UIManager implements Manager {
 			i += 1;
 		}
 		
-		panel.add(new Panel()
-			.boxLayout(BoxLayout.X_AXIS)
+		panel.add(new Panel(new FlowLayout(FlowLayout.LEADING))
 			.alignLeft()
 			.alignTop()
 			.add(new Button("Exit")
