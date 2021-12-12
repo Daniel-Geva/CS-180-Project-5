@@ -1,11 +1,22 @@
 package packets.request;
 
-import datastructures.User;
 
 import packets.response.DeleteUserResponsePacket;
 import packets.response.ResponsePacket;
 import server.LearningManagementSystemServer;
 
+/**
+ *
+ * DeleteUserRequestPacket file for CS 180 Project 5
+ * This packet serves as a bridge for communication between the client side to server communication.
+ * Information is sent from the client to the server once the user chooses the option to delete their
+ * account in the GUI. This class provides the server class with the information to delete their account.
+ *
+ * @author Aryan Jain
+ * @version 1.0.0
+ *
+ *
+ */
 
 public class DeleteUserRequestPacket extends RequestPacket{
 

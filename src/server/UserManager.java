@@ -63,6 +63,7 @@ public class UserManager implements Manager {
     /**
      * Adds a User object to the ArrayList users
      *
+     * This is synchronized because multiple threads could be trying to add the same user
      */
     public void addUser(User user) {
         synchronized (obj) {
@@ -72,6 +73,8 @@ public class UserManager implements Manager {
 
     /**
      * Removes a User object from the ArrayList users
+     *
+     * This is synchronized because multiple threads could be trying to remove the same user
      */
     public void removeUser(User user) {
         synchronized (obj) {
@@ -81,6 +84,8 @@ public class UserManager implements Manager {
 
     /**
      * Removes a User object from the ArrayList users based on their ID
+     *
+     * This is synchronized because multiple threads could be trying to remove the same user
      */
     public void removeUserByID(int id) {
         synchronized (obj) {
