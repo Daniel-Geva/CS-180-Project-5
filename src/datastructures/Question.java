@@ -141,4 +141,10 @@ public class Question implements Listable, Serializable {
         }
         return s;
     }
+    
+    // TODO Comment
+    public void setQuestion(String question) {
+    	this.question = question;
+    }
+    
 }

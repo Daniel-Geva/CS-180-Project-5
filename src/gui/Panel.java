@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +50,8 @@ public class Panel extends JLayeredPane {
 	
 	private JComponent prevComponent;
 
+	public int scrollHeight;
+	
 	private int prefWidth;
 	private int prefHeight;
 
@@ -74,6 +78,10 @@ public class Panel extends JLayeredPane {
 		this.mainPanel = new JPanel();
 		
 		mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
+		
+		this.alignLeft();
+		this.alignTop();
+		
 		super.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
 		
 		this.dynamicLabels = new ArrayList<DynamicLabel>();
@@ -84,6 +92,8 @@ public class Panel extends JLayeredPane {
 
 		this.tabPanels = new HashMap<String, Panel>();
 		this.modals = new HashMap<String, Panel>();
+		
+		this.scrollHeight = 0;
 		
 		this.setBackground(Aesthetics.GENERAL_BACKGROUND);
 		this.setForeground(Aesthetics.GENERAL_FOREGROUND);
@@ -121,6 +131,8 @@ public class Panel extends JLayeredPane {
 		this.prefHeight = hei;
 		super.setSize(d);
 		super.setPreferredSize(d);
+		super.setMaximumSize(d);
+		super.setMinimumSize(d);
 		return this;
 	}
 
@@ -216,8 +228,8 @@ public class Panel extends JLayeredPane {
 		
 		if(this.prefWidth != 0) {
 			int x = (int) ((wid-this.prefWidth)*this.getAlignmentX());
-			int y = (int) ((hei-this.prefHeight)*this.getAlignmentY());
-			mainPanel.setBounds(x, y, prefWidth, prefHeight);
+			int y = (int) ((hei-this.prefHeight)*this.getAlignmentY()) - this.scrollHeight;
+			mainPanel.setBounds(x, y, prefWidth, prefHeight + this.scrollHeight);
 		} else {
 			mainPanel.setBounds(0, 0, wid, hei);
 		}
@@ -363,6 +375,7 @@ public class Panel extends JLayeredPane {
 		f.setResizable(false);
 		f.add(this);
 		f.setVisible(true);
+		f.setName("Darkspace");
 		this.frame = f;
 		
 		this.setBounds(0, 0, prefWidth, prefHeight);
@@ -402,21 +415,23 @@ public class Panel extends JLayeredPane {
 		return this;
 	}
 
+	public void searchOnOpen(Container container, int i) {
+		for(Component c: container.getComponents()) {
+			if(c instanceof Panel) {
+				Panel panel = (Panel) c;
+				panel.runOnOpen();
+				continue;
+			}
+			if(c instanceof Container) {
+				searchOnOpen((Container) c, i+1);
+			}
+		}
+	}
+	
 	public void runOnOpen() {
 		if (this.onOpenRunnable != null)
 			this.onOpenRunnable.run(this);
-		for (Component comp : this.getComponents()) {
-			if (comp instanceof Panel) {
-				Panel p = (Panel) comp;
-				p.runOnOpen();
-			}
-		}
-		for (Component comp : mainPanel.getComponents()) {
-			if (comp instanceof Panel) {
-				Panel p = (Panel) comp;
-				p.runOnOpen();
-			}
-		}
+		searchOnOpen(this, 0);
 	}
 
 	public String getInput(String key) {
@@ -524,6 +539,22 @@ public class Panel extends JLayeredPane {
 
 	public Panel alignBottom() {
 		this.setAlignmentY(1.0f);
+		return this;
+	}
+
+	public Panel scrollize() {
+		this.addMouseWheelListener(new MouseWheelListener() {
+
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				scrollHeight += e.getUnitsToScroll()*7;
+				if(scrollHeight < 0)
+					scrollHeight = 0;
+				updateBounds();
+				revalidate();
+			}
+			
+		});
 		return this;
 	}
 	

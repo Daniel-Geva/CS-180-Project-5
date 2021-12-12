@@ -3,6 +3,7 @@ package client;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -35,7 +37,6 @@ import datastructures.User;
 import gui.Aesthetics;
 import gui.Button;
 import gui.Dropdown;
-import gui.FileInput;
 import gui.GapComponent;
 import gui.Heading;
 import gui.Label;
@@ -53,6 +54,7 @@ import packets.response.GradedQuizListResponsePacket;
 import packets.response.GradedQuizResponsePacket;
 import packets.response.NewUserResponsePacket;
 import packets.response.QuizListResponsePacket;
+import packets.response.QuizResponsePacket;
 import packets.response.ResponsePacket;
 
 /**
@@ -346,22 +348,199 @@ public class UIManager implements Manager {
 	}
 
 	public Panel getModifyQuizPanel(Quiz quiz) {
-		Panel overallPanel = new Panel();
-		overallPanel.setPanelSize(1000, 720);
-		overallPanel.setMargin(0, 20);
 		Panel panel = new Panel();
+		panel.setPanelSize(1000, 720);
 		panel.setMargin(64, 64);
-		//panel.disableBounding();
 		panel.boxLayout(BoxLayout.Y_AXIS);
+		panel.alignLeft();
+		panel.onOpen((Panel __) -> {
+			panel.getMainPanel().removeAll();
+			
+			panel.add(new Heading("Modify Quiz").big().margin(30));
+			panel.add(new TextField("Quiz Name", "Quiz Name", quiz.getName()).panelize(300, 90, 0, 30));
 
-		panel.add(new Heading("Modify Quiz").big().margin(30));
-		panel.add(new Heading(quiz.getName()));
+			addMargin(panel.getPreviousComponent(), new int[] {0, 0, 30, 0});
+			Label scrambledLabel = new Label("Questions Scrambled: " + (quiz.isScrambled() ? "Yes" : "No"));
+			
+			panel.add(scrambledLabel);
+			panel.add(new Button("Toggle Scrambled")
+				.onClick((Panel ___) -> {
+					quiz.setScrambled(!quiz.isScrambled());
+					scrambledLabel.setText("Questions Scrambled: " + (quiz.isScrambled() ? "Yes" : "No"));
+				}));
+			panel.add(new GapComponent(10));
+			
+			int i = 1;
+			for(Question question: quiz.getQuestions()) {
+				addMargin(panel.getPreviousComponent(), new int[] {0, 0, 60, 0});
+				panel.add(new Label("\nQuestion #" + i));
+				Dropdown questionTypeDropdown = new Dropdown("QT-"+question.getId(), new String[] {
+						"Multiple Choice", "True or False", "Dropdown"
+					})
+					.onChange((String choice) -> {
+						if(question.getQuestionType().equalsIgnoreCase(choice))
+							return;
+						question.setQuestionType(choice);
+						if(choice.equalsIgnoreCase("True or False")) {
+							ArrayList<Answer> answers = question.getAnswers();
+							answers.clear();
+							answers.add(new Answer("True", true, 1, 0));
+							answers.add(new Answer("False", false, 0, 1));
+							panel.runOnOpen();
+						}
+					});
+				questionTypeDropdown.select(question.getQuestionType());
+				panel.add(questionTypeDropdown.panelize(300, 35, 0, 5));
+				TextField questionField = new TextField("Question", "Q-" + question.getId(), question.getQuestion());
+				panel.add(questionField.panelize(300, 45, 0, 5));
+				ArrayList<Answer> answers = question.getAnswers();
+				int answerIndex = 1;
+				for(Answer answer: answers) {
+					String id = "Q-" + question.getId() + "-" + answer.getId();
+					String idPoints = "Q-" + question.getId() + "-" + answer.getId() + "-P";
+					panel.add(new Panel(new FlowLayout(FlowLayout.LEADING))
+						.add(new TextField("Answer #" + answerIndex, id, answer.getAnswer())
+							.panelize(300, 45, 0, 5))
+						.add(new TextField("Points", idPoints, Integer.toString(answer.getPoints()))
+								.panelize(100, 45, 0, 5))
+						.add(new Button("Remove Answer")
+							.onClick((Panel ___) -> {
+								answers.remove(answer);
+								panel.runOnOpen();
+							}))
+						.setPanelSize(1000, 50)
+					);
+					answerIndex += 1;
+				}
+				panel.add(new Panel(new FlowLayout(FlowLayout.LEADING))
+					.add(new Button("Add New Answer")
+						.onClick((Panel ___) -> {
+							answers.add(new Answer("", false, 0, question.generateUniqueAnswerId()));
+							panel.runOnOpen();
+						}))
+					.add(new Button("Remove Question")
+						.onClick((Panel ___) -> {
+							quiz.getQuestions().remove(question);
+							panel.runOnOpen();
+						}))
+					.setPanelSize(1000, 50)
+				);
+				panel.add(new GapComponent(10));
+				i += 1;
+			}
+			panel.addModal("verify-cancel", new Panel()
+				.add(new Heading("Are you sure?"))
+				.add(new Label("If you cancel, you will"))
+				.add(new Label("lose all changes."))
+				.add(new Panel()
+					.boxLayout(BoxLayout.X_AXIS)
+					.add(new Button("Cancel")
+						.onClick((Panel p) -> {
+							panel.closeModal();
+						}))
+					.add(new Button("Discard Changes & Exit")
+						.onClick((Panel p) -> {
+							panel.close();
+							mainPanel.open();
+						}))
+				)
+				.setPanelSize(350, 200)
+			);
+			panel.addModal("verify-cancel", new Panel()
+					.add(new Heading("Are you sure?"))
+					.add(new Label("If you delete this quiz, "))
+					.add(new Label("it cannot be recovered."))
+					.add(new Panel()
+						.boxLayout(BoxLayout.X_AXIS)
+						.add(new Button("Cancel")
+							.onClick((Panel p) -> {
+								panel.closeModal();
+							}))
+						.add(new Button("Delete Quiz")
+							.color(Aesthetics.BUTTON_WARNING)
+							.onClick((Panel p) -> {
+								// TODO Delete Quiz
+							}))
+					)
+					.setPanelSize(350, 200)
+				);
 
-		JScrollPane pane = new JScrollPane(panel.getMainPanel());
-		pane.setBorder(null);
-		//pane.setSize(1000, 720);
-		overallPanel.add(pane);
-		return overallPanel;
+			panel.add(new Button("Add New Question")
+				.onClick((Panel ___) -> {
+					quiz.getQuestions().add(
+						new Question(
+							new ArrayList<Answer>(),
+							"", 
+							quiz.generateUniqueQuestionId(), 
+							"Multiple Choice"
+						)
+					);
+					panel.runOnOpen();
+				}));
+			
+			panel.add(new Panel()
+				.boxLayout(BoxLayout.X_AXIS)
+				.alignLeft()
+				.alignTop()
+				.add(new Button("Cancel")
+					.color(Aesthetics.BUTTON_WARNING)
+					.onClick((Panel p) -> {
+						panel.openModal("verify-cancel");
+					}))
+				.add(new Button("Delete Quiz")
+					.color(Aesthetics.BUTTON_WARNING)
+					.onClick((Panel p) -> {
+						panel.openModal("verify-delete");
+					}))
+				.add(new Button("Save Quiz")
+					.onClick((Panel p) -> {
+						Map<String, String> map = p.getResultMap();
+						List<Question> questions = quiz.getQuestions();
+						for(Question question: questions) {
+							int qid = question.getId();
+							// Scrambled is taken care of.
+							question.setQuestionType(map.get("QT-" + qid));
+							question.setQuestion(map.get("Q-" + qid));
+							for(Answer answer: question.getAnswers()) {
+								int aid = answer.getId();
+								String prefix = "Q-" + qid + "-" + aid;
+								answer.setAnswer(map.get(prefix));
+								try {
+									answer.setPointValue(Integer.parseInt(map.get(prefix + "-P")));
+								} catch(NumberFormatException e) {
+									JOptionPane.showMessageDialog(
+										null,
+										"Invalid point values. " +
+										"Please enter a valid input when entering the point values of a question. " +
+										"The point values must be an integer.", 
+										"Error", 
+										JOptionPane.ERROR_MESSAGE
+									);
+								}
+							}
+						}
+						
+						lms.getNetworkManagerClient()
+							.sendPacket(new QuizRequestPacket(quiz))
+							.onReceiveResponse((ResponsePacket resp) -> {
+								JOptionPane.showMessageDialog(
+									null, 
+									"Successfully saved the quiz. Going back to the main menu.",
+									"Success",
+									JOptionPane.INFORMATION_MESSAGE
+								);
+								panel.close();
+								mainPanel.open();
+							});
+						
+					})
+				).setPanelSize(200, 50)
+			);
+			
+			panel.revalidate();
+			panel.updateBounds();
+		});
+		return panel.scrollize();
 	}
 	
 	@Override
@@ -379,13 +558,46 @@ public class UIManager implements Manager {
 			.add(new Heading("Create Quiz"))
 			.add(new TextField("Course"))
 			.add(new TextField("Quiz Name"))
-			.add(new FileInput("Quiz File (Optional)", "Select Quiz File", "quiz-file"))
 			.add(new Panel(new FlowLayout())
 				.add(new Button("Cancel")
 					.onClick((Panel __) -> {
 						mainPanel.closeModal();
 					}))
-				.add(new Button("Create Quiz")
+				.add(new Button("Import From File")
+					.onClick((Panel panel) -> {
+						Map<String, String> map = panel.getResultMap();
+						String name = map.get("Quiz Name");
+						String course = map.get("Course");
+						JFileChooser fileChooser = new JFileChooser();
+						
+						fileChooser.showOpenDialog(null);
+						File f = fileChooser.getSelectedFile();
+						Quiz quiz;
+						try {
+							quiz = ClientFileWrapper.importQuiz(lms, f, name, course);
+						} catch(Exception e) {
+							// TODO Make sure no unexpected errors are possible
+							System.out.println("Expected????");
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(
+								null, 
+								"An error occurred when attempting to import the quiz. Invalid file format.", 
+								"Error", 
+								JOptionPane.ERROR_MESSAGE
+							);
+							return;
+						}
+						lms.getNetworkManagerClient()
+							.sendPacket(new QuizRequestPacket(quiz))
+							.onReceiveResponse((ResponsePacket resp) -> {
+								JOptionPane.showMessageDialog(null, "Successfully imported the quiz.");
+								mainPanel.closeModal();
+								mainPanel.close();
+								QuizResponsePacket quizResp = (QuizResponsePacket) resp;
+								getModifyQuizPanel(quizResp.getQuizResponse()).open();
+							});
+					}))
+				.add(new Button("Create Empty Quiz")
 					.onClick((Panel panel) -> {
 						Map<String, String> map = panel.getResultMap();
 						String name = map.get("Quiz Name");
@@ -398,11 +610,13 @@ public class UIManager implements Manager {
 							.onReceiveResponse((ResponsePacket resp) -> {
 								JOptionPane.showMessageDialog(null, "Successfully created the quiz.");
 								mainPanel.closeModal();
-								//mainPanel.close();
+								mainPanel.close();
+								QuizResponsePacket quizResp = (QuizResponsePacket) resp;
+								getModifyQuizPanel(quizResp.getQuizResponse()).open();
 							});
 					}))
 			)
-			.setPanelSize(500, 500)
+			.setPanelSize(500, 350)
 		);
 		
 		mainPanel.add(new Panel(new FlowLayout(FlowLayout.CENTER))
@@ -414,21 +628,33 @@ public class UIManager implements Manager {
 					.compSetSize(280, 30)
 					.add(new Label("Logged in as " + this.getCurrentUser().getName()).center())
 					.compSetSize(280, 50)
-					.add((new Button("Quiz List"))
+					.add((new Button("Take Quiz"))
 						.onClick((Panel __) -> {
-							mainTabPanel.openTabPanel("Quiz List");
-						}))
-					.compSetSize(280, 35)
-					.add((new Button("Quiz Submissions"))
-						.onClick((Panel __) -> {
-							mainTabPanel.openTabPanel("Quiz Submissions");
+							mainTabPanel.openTabPanel("Take Quiz");
 						}))
 					.compSetSize(280, 35);
 				if(this.getCurrentUser() instanceof Teacher) {
 					panel
+						.add((new Button("Modify Quiz"))
+							.onClick((Panel __) -> {
+								mainTabPanel.openTabPanel("Modify Quiz");
+							}))
+						.compSetSize(280, 35)
+						.add((new Button("Quiz Submissions"))
+							.onClick((Panel __) -> {
+								mainTabPanel.openTabPanel("Quiz Submissions");
+							}))
+						.compSetSize(280, 35)
 						.add(new Button("Create Quiz")
 							.onClick((Panel __) -> {
 								mainPanel.openModal("create-quiz");
+							}))
+						.compSetSize(280, 35);
+				} else {
+					panel
+						.add((new Button("My Quiz Submissions"))
+							.onClick((Panel __) -> {
+								mainTabPanel.openTabPanel("My Quiz Submissions");
 							}))
 						.compSetSize(280, 35);
 				}
@@ -522,10 +748,20 @@ public class UIManager implements Manager {
 		
 		
 		
-		mainTabPanel.addTabPanel("Quiz List", (new Panel(new FlowLayout(FlowLayout.LEFT)))
+		mainTabPanel.addTabPanel("Take Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 			.onOpen((Panel p) -> {
+				lms.getNetworkManagerClient()
+				.addPushHandler(new PushPacketHandler(QuizResponsePacket.class) {
+					@Override
+					public void handlePacket(ResponsePacket resp) {
+						lms.getNetworkManagerClient().removePushHandler(this);
+						SwingUtilities.invokeLater(() -> {
+							p.runOnOpen();
+						});
+					}
+				});
 				p.getMainPanel().removeAll();
-				p.add((new Heading("Quiz List")).big());
+				p.add((new Heading("Take Quiz")).big());
 				lms.getNetworkManagerClient()
 					.sendPacket(new QuizListRequestPacket("All", "", false))
 					.onReceiveResponse((ResponsePacket resp) -> {
@@ -553,12 +789,13 @@ public class UIManager implements Manager {
 										mainPanel.addModal("Quiz-" + quiz.getId(), 
 											(new Panel())
 											.boxLayout(BoxLayout.Y_AXIS)
+											.alignLeft()
 											.add(new Heading(quiz.getName()))
 											.add(new Label("Course: " + quiz.getCourse()))
 											.add(new Label("Author: " + quiz.getAuthor()))
 											.add(new Label("Questions: " + quiz.getQuestions().size()))
-											.add((new Panel())
-												.boxLayout(BoxLayout.X_AXIS) 
+											.add(new Panel()
+												.boxLayout(BoxLayout.X_AXIS)
 												.add((new Button("Take Quiz"))
 													.onClick((Panel __2) -> {
 														mainPanel.closeModal();
@@ -569,7 +806,7 @@ public class UIManager implements Manager {
 													.onClick((Panel __2) -> {
 														mainPanel.closeModal();
 													}))
-												.setPanelSize(300, 48)
+												.setPanelSize(299, 48)
 											)
 											.setPanelSize(400, 300)
 										);
@@ -594,7 +831,93 @@ public class UIManager implements Manager {
 					});
 			})
 		.setPanelSize(1000, 720)
-		.setMargin(64, 0));
+		.setMargin(64, 0)
+		.scrollize());
+		
+		mainTabPanel.addTabPanel("Modify Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
+				.onOpen((Panel p) -> {
+					lms.getNetworkManagerClient()
+					.addPushHandler(new PushPacketHandler(QuizResponsePacket.class) {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
+							lms.getNetworkManagerClient().removePushHandler(this);
+							SwingUtilities.invokeLater(() -> {
+								p.runOnOpen();
+							});
+						}
+					});
+					p.getMainPanel().removeAll();
+					p.add((new Heading("Modify Quiz")).big());
+					lms.getNetworkManagerClient()
+						.sendPacket(new QuizListRequestPacket("All", "", false))
+						.onReceiveResponse((ResponsePacket resp) -> {
+							QuizListResponsePacket listResp = (QuizListResponsePacket) resp;
+							List<Quiz> quizzes = listResp.getListOfQuizzesResponse();
+							if(quizzes == null) {
+								p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
+								p.revalidate();
+								return;
+							}
+							List<String> courses = getCourses(quizzes);
+							for(String course: courses) {
+								p.add(new Heading(course));
+								p.compSetSize(1000, 80);
+								
+								
+								List<Quiz> quizzesCourse = getQuizzesFromCourse(quizzes, course);
+								
+								for(Quiz quiz: quizzesCourse) {
+									Panel panel = (new Panel())
+										.add(new Label(quiz.getName()))
+										.add(new Label("Author: " + quiz.getAuthor()))
+										.add(new Label("Questions: " + quiz.getQuestions().size()))
+										.onClick(mainPanel, (Panel __) -> {
+											mainPanel.addModal("Quiz-" + quiz.getId(), 
+												(new Panel())
+												.boxLayout(BoxLayout.Y_AXIS)
+												.add(new Heading(quiz.getName()))
+												.add(new Label("Course: " + quiz.getCourse()))
+												.add(new Label("Author: " + quiz.getAuthor()))
+												.add(new Label("Questions: " + quiz.getQuestions().size()))
+												.add((new Panel())
+													.boxLayout(BoxLayout.X_AXIS) 
+													.add((new Button("Modify Quiz"))
+														.onClick((Panel __2) -> {
+															mainPanel.closeModal();
+															mainPanel.close();
+															getModifyQuizPanel(quiz).open();
+														}))
+													.add((new Button("Cancel"))
+														.onClick((Panel __2) -> {
+															mainPanel.closeModal();
+														}))
+													.setPanelSize(300, 48)
+												)
+												.setPanelSize(400, 300)
+											);
+											mainPanel.revalidate();
+											mainPanel.openModal("Quiz-"+quiz.getId());
+										});
+									panel.getMainPanel().setBorder(
+										BorderFactory.createCompoundBorder(
+											BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+											BorderFactory.createEmptyBorder(20, 20, 20, 20)
+										)
+									);
+									panel.setPanelSize(200, 100);
+									panel.setSize(200, 100);
+									p.add(panel);
+									
+								}
+							}
+							
+							p.revalidate();
+							p.updateBounds();
+						});
+				})
+			.setPanelSize(1000, 720)
+			.setMargin(64, 0)
+			.scrollize());
 		
 		mainTabPanel.addTabPanel("Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 			.onOpen((Panel p) -> {
@@ -689,7 +1012,99 @@ public class UIManager implements Manager {
 			.setPanelSize(1000, 720)
 			.setMargin(64, 0));
 		
-		mainTabPanel.openTabPanel("Quiz List");
+		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
+				.onOpen((Panel p) -> {
+					lms.getNetworkManagerClient()
+						.addPushHandler(new PushPacketHandler(GradedQuizResponsePacket.class) {
+							@Override
+							public void handlePacket(ResponsePacket resp) {
+								lms.getNetworkManagerClient().removePushHandler(this);
+								SwingUtilities.invokeLater(() -> {
+									p.runOnOpen();
+								});
+							}
+						});
+					p.getMainPanel().removeAll();
+					p.add((new Heading("My Quiz Submission List")).big());
+					lms.getNetworkManagerClient()
+						.sendPacket(new GradedQuizListRequestPacket(this.getCurrentUser()))
+						.onReceiveResponse((ResponsePacket resp) -> {
+							GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
+							List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
+							if(gradedQuizzes == null) {
+								p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
+								p.revalidate();
+								return;
+							}
+							User user = this.getCurrentUser();
+							p.add(new Heading(user.getName()));
+							p.compSetSize(1000, 80);
+							
+							List<GradedQuiz> userSubmissions = gradedQuizzes
+								.stream()
+								.filter((GradedQuiz submission) -> (
+									submission.getStudentID() == user.getID()
+								))
+								.toList();
+							
+							for(GradedQuiz gradedQuiz: userSubmissions) {
+								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
+								
+								Panel panel = (new Panel())
+									.add(new Label(quiz.getCourse()))
+									.add(new Label(quiz.getName()))
+									.add(new Label("Score: " + gradedQuiz.getScore(quiz)))
+									.add(new Label(gradedQuiz.getSubmissionTime()))
+									.onClick(mainPanel, (Panel __) -> {
+										mainPanel.addModal("Quiz-" + quiz.getId(), 
+											(new Panel())
+											.boxLayout(BoxLayout.Y_AXIS)
+											.add(new Heading(quiz.getName()))
+											.add(new Label("Course: " + quiz.getCourse()))
+											.add(new Label("Author: " + quiz.getAuthor()))
+											.add(new Label("Questions: " + quiz.getQuestions().size()))
+											.add((new Panel())
+												.boxLayout(BoxLayout.X_AXIS) 
+												.add((new Button("View Submission"))
+													.onClick((Panel __2) -> {
+														mainPanel.closeModal();
+														mainPanel.close();
+														getSubmissionPanel(gradedQuiz, quiz, user).open();
+													}))
+												.add((new Button("Cancel"))
+													.onClick((Panel __2) -> {
+														mainPanel.closeModal();
+													}))
+												.setPanelSize(300, 48)
+											)
+											.setPanelSize(400, 300)
+										);
+										mainPanel.revalidate();
+										mainPanel.openModal("Quiz-"+quiz.getId());
+									});
+								panel.getMainPanel().setBorder(
+									BorderFactory.createCompoundBorder(
+										BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+										BorderFactory.createEmptyBorder(20, 20, 20, 20)
+									)
+								);
+								panel.setPanelSize(200, 100);
+								panel.setSize(200, 100);
+								p.add(panel);
+								
+							}
+							
+							p.revalidate();
+							p.repaint();
+							//mainTabPanel.revalidate();
+							p.updateBounds();
+						});
+				})
+				.setPanelSize(1000, 720)
+				.setMargin(64, 0));
+			
+		
+		mainTabPanel.openTabPanel("Take Quiz");
 		
 		loginPanel.addModal("Create User", (new Panel(new GridLayout(6, 1)))
 			.add(new Heading("Create User"))
@@ -870,7 +1285,7 @@ public class UIManager implements Manager {
 	}
 	
 	public void run() {
-		this.mainPanel.open();
+		this.hostnamePanel.open();
 	}
 	
 	public Scanner getScanner() {

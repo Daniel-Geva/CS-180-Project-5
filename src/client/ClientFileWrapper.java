@@ -57,7 +57,7 @@ public class ClientFileWrapper {
     }
 
     ///Creates and returns a quiz object generated from a file, with some values provided by UI
-    public Quiz importQuiz(LearningManagementSystemClient lmsc, File f, String name, String course) {
+    public static Quiz importQuiz(LearningManagementSystemClient lmsc, File f, String name, String course) {
         String user = lmsc.getUIManager().getCurrentUser().getName();
         int quizId = 0;
 
