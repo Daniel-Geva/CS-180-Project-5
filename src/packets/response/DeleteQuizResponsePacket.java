@@ -1,7 +1,5 @@
 package packets.response;
 
-import packets.request.DeleteQuizRequestPacket;
-
 public class DeleteQuizResponsePacket extends ResponsePacket{
     boolean success;
     int id;

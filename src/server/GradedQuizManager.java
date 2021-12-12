@@ -16,7 +16,6 @@ public class GradedQuizManager implements Manager {
 
     private LearningManagementSystemServer lms;
     private ArrayList<GradedQuiz> gradedQuizList = new ArrayList<>();
-    private static Object obj = new Object();
 
     public GradedQuizManager(LearningManagementSystemServer lms) {
         this.lms = lms;
@@ -50,6 +49,7 @@ public class GradedQuizManager implements Manager {
 
     public void deleteAllByStudentID(int studentID) {
         synchronized (gradedQuizList) {
+        	// TODO What is this????
             int size = gradedQuizList.size() - 1;
         }
         for (int size = gradedQuizList.size() - 1; size >= 0; size--) {  // iterates backwards to prevent
@@ -79,6 +79,7 @@ public class GradedQuizManager implements Manager {
      */
     public void removeQuiz(String id) {
         synchronized (gradedQuizList) {
+        	// TODO Uh, unused?
             int startingListLength = gradedQuizList.size();
             for (int i = 0; i < gradedQuizList.size(); i++) {
                 if (gradedQuizList.get(i).getID().equals(id)) {
