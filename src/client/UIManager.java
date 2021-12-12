@@ -53,6 +53,7 @@ import packets.request.QuizListRequestPacket;
 import packets.request.QuizRequestPacket;
 import packets.request.UpdateUserRequestPacket;
 import packets.response.DeleteQuizResponsePacket;
+import packets.response.DeleteUserResponsePacket;
 import packets.response.GradedQuizListResponsePacket;
 import packets.response.GradedQuizResponsePacket;
 import packets.response.NewUserResponsePacket;
@@ -413,7 +414,8 @@ public class UIManager implements Manager {
 					for(Answer answer: question.getAnswers()) {
 						int aid = answer.getId();
 						String prefix = "Q-" + qid + "-" + aid;
-						answer.setAnswer(map.get(prefix));
+						if(map.get(prefix) != null && !map.get(prefix).isBlank())
+							answer.setAnswer(map.get(prefix));
 						try {
 							if(map.containsKey(prefix + "-P"))
 								answer.setPointValue(Integer.parseInt(map.get(prefix + "-P")));
@@ -1383,6 +1385,17 @@ public class UIManager implements Manager {
 									"Login In Validation",
 									JOptionPane.INFORMATION_MESSAGE
 							);
+							lms.getNetworkManagerClient()
+							.addPushHandler("user-deletion-check", new PushPacketHandler(DeleteUserResponsePacket.class) {
+								@Override
+								public void handlePacket(ResponsePacket resp) {
+									DeleteUserResponsePacket deleteUserResp = (DeleteUserResponsePacket) resp;
+									int userId = deleteUserResp.getId();
+									if(getCurrentUser() != null && userId == getCurrentUser().getID()) {
+										
+									}
+								}
+							});
 							loginPanel.close();
 							mainPanel.open();
 						}
