@@ -51,6 +51,7 @@ import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
 import packets.request.QuizRequestPacket;
 import packets.request.UpdateUserRequestPacket;
+import packets.response.DeleteQuizResponsePacket;
 import packets.response.GradedQuizListResponsePacket;
 import packets.response.GradedQuizResponsePacket;
 import packets.response.NewUserResponsePacket;
@@ -351,6 +352,25 @@ public class UIManager implements Manager {
 
 	public Panel getModifyQuizPanel(Quiz quiz) {
 		Panel panel = new Panel();
+		
+		lms.getNetworkManagerClient()
+		.addPushHandler(new PushPacketHandler(DeleteQuizResponsePacket.class) {
+			@Override
+			public void handlePacket(ResponsePacket resp) {
+				DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
+				if(quiz.getId() == respDelQuiz.getQuizId()) {
+					panel.close();
+					JOptionPane.showMessageDialog(
+						null, 
+						"The quiz was deleted by another user.", 
+						"Error", 
+						JOptionPane.ERROR_MESSAGE
+					);
+					mainPanel.open();
+				}
+			}
+		});
+		
 		panel.setPanelSize(1000, 720);
 		panel.setMargin(96, 96);
 		panel.boxLayout(BoxLayout.Y_AXIS);
@@ -501,7 +521,8 @@ public class UIManager implements Manager {
 												"Success", 
 												JOptionPane.INFORMATION_MESSAGE
 											);
-											
+											panel.close();
+											mainPanel.open();
 										} else {
 											JOptionPane.showMessageDialog(
 												null, 
@@ -509,6 +530,8 @@ public class UIManager implements Manager {
 												"Error", 
 												JOptionPane.ERROR_MESSAGE
 											);
+											panel.close();
+											mainPanel.open();
 										}
 									});
 							}))
