@@ -75,7 +75,9 @@ public class GradedQuizFileManager implements Manager {
         HashMap<Integer, Integer> map = new HashMap<>();
         String[] list = contents.split("//", -1);
         //Two "//" forward slashes are used to separate the key/value pairs from each other
-
+        if(list[0].isBlank()) 
+        	return map;
+        
         for (int i = 0; i < list.length; i++) {
             String[] parts = list[i].split(",,", 2); //Two ",," commas are used to separate the key and value
             Integer questionId = Integer.parseInt(parts[0]);

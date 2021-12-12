@@ -44,6 +44,7 @@ import gui.Panel;
 import gui.RadioButton;
 import gui.TextField;
 import packets.request.CreateUserRequestPacket;
+import packets.request.DeleteQuizRequestPacket;
 import packets.request.GradedQuizListRequestPacket;
 import packets.request.GradedQuizRequestPacket;
 import packets.request.LoginUserRequestPacket;
@@ -490,7 +491,26 @@ public class UIManager implements Manager {
 						.add(new Button("Delete Quiz")
 							.color(Aesthetics.BUTTON_WARNING)
 							.onClick((Panel p) -> {
-								// TODO Delete Quiz
+								lms.getNetworkManagerClient()
+									.sendPacket(new DeleteQuizRequestPacket(quiz.getId()))
+									.onReceiveResponse((ResponsePacket resp) -> {
+										if(resp.wasSuccess()) {
+											JOptionPane.showMessageDialog(
+												null, 
+												"Successfully deleted the quiz.", 
+												"Success", 
+												JOptionPane.INFORMATION_MESSAGE
+											);
+											
+										} else {
+											JOptionPane.showMessageDialog(
+												null, 
+												"Unable to delete the quiz.", 
+												"Error", 
+												JOptionPane.ERROR_MESSAGE
+											);
+										}
+									});
 							}))
 					)
 					.setPanelSize(350, 200)
