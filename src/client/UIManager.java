@@ -59,7 +59,10 @@ import packets.response.QuizResponsePacket;
 import packets.response.ResponsePacket;
 
 /**
- *
+ * The manager that is responsible for the User Interface (UI).
+ * It uses the User Interface Menu System to create menus that the user then interacts with.
+ * In init() it creates all of the menus, which sets up the structure of the UI,
+ * and then in run() it runs the start menu, which is used as the entry point to the rest of the UI.
  *
  * @author Aryan Jain
  * @author Isaac Fleetwood
@@ -82,7 +85,14 @@ public class UIManager implements Manager {
 	Panel loginPanel;
 	Panel mainPanel;
 	Panel mainTabPanel;
-	
+
+	/**
+	 *
+	 * Takes a list of quizzes and makes an ArrayList of all the courses the quizzes are from
+	 *
+	 * @param quizzes
+	 * @return
+	 */
 	private List<String> getCourses(List<Quiz> quizzes) {
 		ArrayList<String> courses = new ArrayList<String>();
 		for(Quiz q: quizzes) {
@@ -91,7 +101,7 @@ public class UIManager implements Manager {
 		}
 		return courses;
 	}
-	
+
 	private List<Quiz> getQuizzesFromCourse(List<Quiz> quizzes, String course) {
 		return quizzes.stream().filter((Quiz q) -> (
 			q.getCourse().equals(course)
