@@ -41,8 +41,10 @@ public class QuizFileManager implements Manager {
 
     /// Gets the altered list of quizzes and writes them to a file
     public synchronized void save() {
+    	System.out.println("Adios");
         quizzes = lms.getQuizManager().getQuizList();
         this.writeQuizzes();
+    	System.out.println("Adios2");
     }
 
     ///reads the file that stores the quiz data and constructs an arraylist of quizzes out of it
@@ -122,9 +124,10 @@ public class QuizFileManager implements Manager {
 
     ///Writes the arraylist of quizzes "quizzes" to a file for storage
     private boolean writeQuizzes() {
+        System.out.println("Okay");
         ArrayList<String> writableQuizzes = new ArrayList<>();
         String path = "./data/quizzes.txt";
-
+        System.out.println(this.quizzes);
         for (int i = 0; i < quizzes.size(); i++) {
             String name = quizzes.get(i).getName();
             String author = quizzes.get(i).getAuthor();

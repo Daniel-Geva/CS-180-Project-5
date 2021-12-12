@@ -314,6 +314,7 @@ public class UIManager implements Manager {
 				}
 			} else {
 				panel.add(new Label("This question was added after the student took the quiz."));
+				panel.add(new Label("Therefore, they do not have a score for it."));
 			}
 			i += 1;
 		}
@@ -350,10 +351,40 @@ public class UIManager implements Manager {
 	public Panel getModifyQuizPanel(Quiz quiz) {
 		Panel panel = new Panel();
 		panel.setPanelSize(1000, 720);
-		panel.setMargin(64, 64);
+		panel.setMargin(96, 96);
 		panel.boxLayout(BoxLayout.Y_AXIS);
 		panel.alignLeft();
 		panel.onOpen((Panel __) -> {
+			if(panel.getMainPanel().getComponents().length > 1) {
+				Map<String, String> map = panel.getResultMap();
+				List<Question> questions = quiz.getQuestions();
+				for(Question question: questions) {
+					int qid = question.getId();
+					// Scrambled is taken care of.
+					if(map.containsKey("QT-" + qid))
+						question.setQuestionType(map.get("QT-" + qid));
+					question.setQuestion(map.get("Q-" + qid));
+					for(Answer answer: question.getAnswers()) {
+						int aid = answer.getId();
+						String prefix = "Q-" + qid + "-" + aid;
+						answer.setAnswer(map.get(prefix));
+						try {
+							if(map.containsKey(prefix + "-P"))
+								answer.setPointValue(Integer.parseInt(map.get(prefix + "-P")));
+						} catch(NumberFormatException e) {
+							JOptionPane.showMessageDialog(
+								null,
+								"Invalid point values. " +
+								"Please enter a valid input when entering the point values of a question. " +
+								"The point values must be an integer.", 
+								"Error", 
+								JOptionPane.ERROR_MESSAGE
+							);
+						}
+					}
+				}
+			}
+			
 			panel.getMainPanel().removeAll();
 			
 			panel.add(new Heading("Modify Quiz").big().margin(30));
@@ -446,7 +477,7 @@ public class UIManager implements Manager {
 				)
 				.setPanelSize(350, 200)
 			);
-			panel.addModal("verify-cancel", new Panel()
+			panel.addModal("verify-delete", new Panel()
 					.add(new Heading("Are you sure?"))
 					.add(new Label("If you delete this quiz, "))
 					.add(new Label("it cannot be recovered."))
@@ -534,7 +565,7 @@ public class UIManager implements Manager {
 							});
 						
 					})
-				).setPanelSize(200, 50)
+				).setPanelSize(400, 50)
 			);
 			
 			panel.revalidate();
@@ -576,13 +607,19 @@ public class UIManager implements Manager {
 						try {
 							quiz = ClientFileWrapper.importQuiz(lms, f, name, course);
 						} catch(Exception e) {
-							// TODO Make sure no unexpected errors are possible
-							System.out.println("Expected????");
-							e.printStackTrace();
 							JOptionPane.showMessageDialog(
 								null, 
 								"An error occurred when attempting to import the quiz. Invalid file format.", 
 								"Error", 
+								JOptionPane.ERROR_MESSAGE
+							);
+							return;
+						}
+						if(quiz == null) {
+							JOptionPane.showMessageDialog(
+								null, 
+								"Invalid file. Please select a valid one to import.", 
+								"Error",
 								JOptionPane.ERROR_MESSAGE
 							);
 							return;
@@ -743,7 +780,8 @@ public class UIManager implements Manager {
 					});
 				}).panelize()
 			)
-			.setPanelSize(300, 300)
+			.setMargin(64, 0)
+			.setPanelSize(300, 350)
 		);
 		
 		
@@ -914,6 +952,9 @@ public class UIManager implements Manager {
 							p.revalidate();
 							p.updateBounds();
 						});
+					
+					p.revalidate();
+					p.updateBounds();
 				})
 			.setPanelSize(1000, 720)
 			.setMargin(64, 0)
@@ -1010,7 +1051,8 @@ public class UIManager implements Manager {
 					});
 			})
 			.setPanelSize(1000, 720)
-			.setMargin(64, 0));
+			.setMargin(64, 0)
+			.scrollize());
 		
 		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 				.onOpen((Panel p) -> {
@@ -1101,7 +1143,8 @@ public class UIManager implements Manager {
 						});
 				})
 				.setPanelSize(1000, 720)
-				.setMargin(64, 0));
+				.setMargin(64, 0)
+				.scrollize());
 			
 		
 		mainTabPanel.openTabPanel("Take Quiz");
@@ -1245,7 +1288,7 @@ public class UIManager implements Manager {
 					nameSetter.setName(ip);
 					nameSetter.notify();
 				}
-			}).panelize().setPanelSize(500, 100))
+			}).panelize().setPanelSize(400, 100))
 		.setPanelSize(500, 300)
 		.setMargin(100, 100);
 		
