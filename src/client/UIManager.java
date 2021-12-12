@@ -390,6 +390,10 @@ public class UIManager implements Manager {
 		panel.onOpen((Panel __) -> {
 			if(panel.getMainPanel().getComponents().length > 1) {
 				Map<String, String> map = panel.getResultMap();
+
+				quiz.setCourse(map.get("Course Name"));
+				quiz.setName(map.get("Quiz Name"));
+				
 				List<Question> questions = quiz.getQuestions();
 				for(Question question: questions) {
 					int qid = question.getId();
@@ -463,33 +467,37 @@ public class UIManager implements Manager {
 				for(Answer answer: answers) {
 					String id = "Q-" + question.getId() + "-" + answer.getId();
 					String idPoints = "Q-" + question.getId() + "-" + answer.getId() + "-P";
-					panel.add(new Panel(new FlowLayout(FlowLayout.LEADING))
-						.add(new TextField("Answer #" + answerIndex, id, answer.getAnswer())
-							.panelize(300, 45, 0, 5))
-						.add(new TextField("Points", idPoints, Integer.toString(answer.getPoints()))
-								.panelize(100, 45, 0, 5))
-						.add(new Button("Remove Answer")
+					Panel answerPanel = new Panel(new FlowLayout(FlowLayout.LEADING))
+							.add(new TextField("Answer #" + answerIndex, id, answer.getAnswer())
+									.panelize(300, 45, 0, 5))
+								.add(new TextField("Points", idPoints, Integer.toString(answer.getPoints()))
+										.panelize(100, 45, 0, 5))
+								.setPanelSize(1000, 50);
+					if(!question.getQuestionType().equalsIgnoreCase("True or False")) {
+						answerPanel.add(new Button("Remove Answer")
 							.onClick((Panel ___) -> {
 								answers.remove(answer);
 								panel.runOnOpen();
-							}))
-						.setPanelSize(1000, 50)
-					);
+							}));
+					}
+					panel.add(answerPanel);
 					answerIndex += 1;
 				}
-				panel.add(new Panel(new FlowLayout(FlowLayout.LEADING))
-					.add(new Button("Add New Answer")
+				Panel questionModifyPanel = new Panel(new FlowLayout(FlowLayout.LEADING));
+				if(!question.getQuestionType().equalsIgnoreCase("True or False")) {
+					questionModifyPanel.add(new Button("Add New Answer")
 						.onClick((Panel ___) -> {
 							answers.add(new Answer("", false, 0, question.generateUniqueAnswerId()));
 							panel.runOnOpen();
-						}))
-					.add(new Button("Remove Question")
-						.onClick((Panel ___) -> {
-							quiz.getQuestions().remove(question);
-							panel.runOnOpen();
-						}))
-					.setPanelSize(1000, 50)
-				);
+						}));
+				}
+				questionModifyPanel.add(new Button("Remove Question")
+					.onClick((Panel ___) -> {
+						quiz.getQuestions().remove(question);
+						panel.runOnOpen();
+					}));
+				panel.add(questionModifyPanel
+					.setPanelSize(1000, 50));
 				panel.add(new GapComponent(10));
 				i += 1;
 			}
@@ -524,6 +532,8 @@ public class UIManager implements Manager {
 						.add(new Button("Delete Quiz")
 							.color(Aesthetics.BUTTON_WARNING)
 							.onClick((Panel p) -> {
+								panel.close();
+								mainPanel.open();
 								lms.getNetworkManagerClient()
 									.sendPacket(new DeleteQuizRequestPacket(quiz.getId()))
 									.onReceiveResponse((ResponsePacket resp) -> {
@@ -534,8 +544,6 @@ public class UIManager implements Manager {
 												"Success", 
 												JOptionPane.INFORMATION_MESSAGE
 											);
-											panel.close();
-											mainPanel.open();
 										} else {
 											JOptionPane.showMessageDialog(
 												null, 
@@ -543,8 +551,6 @@ public class UIManager implements Manager {
 												"Error", 
 												JOptionPane.ERROR_MESSAGE
 											);
-											panel.close();
-											mainPanel.open();
 										}
 									});
 							}))
@@ -583,6 +589,10 @@ public class UIManager implements Manager {
 					.onClick((Panel p) -> {
 						Map<String, String> map = p.getResultMap();
 						List<Question> questions = quiz.getQuestions();
+						
+						quiz.setCourse(map.get("Course Name"));
+						quiz.setName(map.get("Quiz Name"));
+						
 						for(Question question: questions) {
 							int qid = question.getId();
 							// Scrambled is taken care of.
@@ -603,6 +613,7 @@ public class UIManager implements Manager {
 										"Error", 
 										JOptionPane.ERROR_MESSAGE
 									);
+									return;
 								}
 							}
 						}
@@ -1067,6 +1078,8 @@ public class UIManager implements Manager {
 							
 							for(GradedQuiz gradedQuiz: userSubmissions) {
 								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
+								if(quiz == null)
+									continue;
 								
 								Panel panel = (new Panel())
 									.add(new Label(quiz.getCourse()))

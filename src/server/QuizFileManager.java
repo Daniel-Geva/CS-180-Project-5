@@ -41,10 +41,8 @@ public class QuizFileManager implements Manager {
 
     /// Gets the altered list of quizzes and writes them to a file
     public synchronized void save() {
-    	System.out.println("Adios");
         quizzes = lms.getQuizManager().getQuizList();
         this.writeQuizzes();
-    	System.out.println("Adios2");
     }
 
     ///reads the file that stores the quiz data and constructs an arraylist of quizzes out of it

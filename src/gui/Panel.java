@@ -262,7 +262,7 @@ public class Panel extends JLayeredPane {
 		this.currentTabId = id;
 		Panel p = tabPanels.get(this.currentTabId);
 		if(p == null) {
-			System.out.println("Tab " + this.currentTabId + " does not exist.");
+			//System.out.println("Tab " + this.currentTabId + " does not exist.");
 			return;
 		}
 		p.setVisible(true);
@@ -275,7 +275,7 @@ public class Panel extends JLayeredPane {
 		this.currentModalId = id;
 		Panel p = this.modals.get(this.currentModalId);
 		if(p == null) {
-			System.out.println("Modal " + currentModalId + " does not exist.");
+			//System.out.println("Modal " + currentModalId + " does not exist.");
 			return;
 		}
 		p.setBounds(0, 0, this.getWidth(), this.getHeight());
