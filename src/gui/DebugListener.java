@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
@@ -11,7 +10,6 @@ import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
-import javax.swing.border.StrokeBorder;
 
 public class DebugListener extends MouseAdapter {
 

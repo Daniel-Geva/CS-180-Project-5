@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 
 import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
@@ -230,8 +229,8 @@ public class UIManager implements Manager {
 								return;
 							}
 							overallPanel.addModal("submitted", new Panel()
-								.add(new Heading("Submit Quiz"))
-								.add(new Label("Successfully submitted quiz."))
+								.add(new Heading("Submitted the quiz"))
+								.add(new Label("Successfully submitted the quiz."))
 								.add(new Label("Would you like to see your score?"))
 								.add(new Panel()
 									.boxLayout(BoxLayout.X_AXIS)
@@ -248,7 +247,7 @@ public class UIManager implements Manager {
 									.setPanelSize(250, 50)
 									.setMargin(10, 0)
 								)
-								.setPanelSize(350, 230)
+								.setPanelSize(450, 230)
 							);
 							overallPanel.openModal("submitted");
 						});
@@ -296,7 +295,7 @@ public class UIManager implements Manager {
 				int chosenAnswerId = submission.getGradedQuizMap().get(question.getId());
 				int possibleAmt = 0;
 				for(Answer answer: question.getAnswers()) {
-					Label answerLabel = new Label(" - " + answer.getAnswer() + " - " + answer.getPoints() + " Points");
+					Label answerLabel = new Label(" - " + answer.getAnswer() + " - " + answer.getPoints() + " Point(s)");
 					panel.add(answerLabel);
 					if(chosenAnswerId == answer.getId()) {
 						chosenAnswer = answer;
