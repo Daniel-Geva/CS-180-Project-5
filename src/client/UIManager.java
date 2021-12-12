@@ -1288,6 +1288,7 @@ public class UIManager implements Manager {
 		.add(new TextField("Password"))
 		.add((new Panel())
 			.boxLayout(BoxLayout.X_AXIS)
+				.setPanelSize(300, 50)
 			.add((new Button("Create User"))
 					.onClick((Panel p) -> {
 						// Open Create User menu.
