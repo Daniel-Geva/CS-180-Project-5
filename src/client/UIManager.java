@@ -51,6 +51,7 @@ import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
 import packets.request.QuizRequestPacket;
 import packets.request.UpdateUserRequestPacket;
+import packets.response.DeleteQuizResponsePacket;
 import packets.response.GradedQuizListResponsePacket;
 import packets.response.GradedQuizResponsePacket;
 import packets.response.NewUserResponsePacket;
@@ -59,7 +60,10 @@ import packets.response.QuizResponsePacket;
 import packets.response.ResponsePacket;
 
 /**
- *
+ * The manager that is responsible for the User Interface (UI).
+ * It uses the User Interface Menu System to create menus that the user then interacts with.
+ * In init() it creates all of the menus, which sets up the structure of the UI,
+ * and then in run() it runs the start menu, which is used as the entry point to the rest of the UI.
  *
  * @author Aryan Jain
  * @author Isaac Fleetwood
@@ -82,7 +86,14 @@ public class UIManager implements Manager {
 	Panel loginPanel;
 	Panel mainPanel;
 	Panel mainTabPanel;
-	
+
+	/**
+	 *
+	 * Takes a list of quizzes and makes an ArrayList of all the courses the quizzes are from
+	 *
+	 * @param quizzes
+	 * @return
+	 */
 	private List<String> getCourses(List<Quiz> quizzes) {
 		ArrayList<String> courses = new ArrayList<String>();
 		for(Quiz q: quizzes) {
@@ -91,7 +102,7 @@ public class UIManager implements Manager {
 		}
 		return courses;
 	}
-	
+
 	private List<Quiz> getQuizzesFromCourse(List<Quiz> quizzes, String course) {
 		return quizzes.stream().filter((Quiz q) -> (
 			q.getCourse().equals(course)
@@ -351,6 +362,25 @@ public class UIManager implements Manager {
 
 	public Panel getModifyQuizPanel(Quiz quiz) {
 		Panel panel = new Panel();
+		
+		lms.getNetworkManagerClient()
+		.addPushHandler(new PushPacketHandler(DeleteQuizResponsePacket.class) {
+			@Override
+			public void handlePacket(ResponsePacket resp) {
+				DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
+				if(quiz.getId() == respDelQuiz.getQuizId()) {
+					panel.close();
+					JOptionPane.showMessageDialog(
+						null, 
+						"The quiz was deleted by another user.", 
+						"Error", 
+						JOptionPane.ERROR_MESSAGE
+					);
+					mainPanel.open();
+				}
+			}
+		});
+		
 		panel.setPanelSize(1000, 720);
 		panel.setMargin(96, 96);
 		panel.boxLayout(BoxLayout.Y_AXIS);
@@ -501,7 +531,8 @@ public class UIManager implements Manager {
 												"Success", 
 												JOptionPane.INFORMATION_MESSAGE
 											);
-											
+											panel.close();
+											mainPanel.open();
 										} else {
 											JOptionPane.showMessageDialog(
 												null, 
@@ -509,6 +540,8 @@ public class UIManager implements Manager {
 												"Error", 
 												JOptionPane.ERROR_MESSAGE
 											);
+											panel.close();
+											mainPanel.open();
 										}
 									});
 							}))

@@ -34,7 +34,7 @@ Responsible for establishing a connection to the server and creating threads to 
 ### RunnableHandleResponsePacket
 
 ### UIManager
-
+The manager that is responsible for the User Interface (UI). It uses the User Interface System to create menus that the user then interacts with. In `init()` it creates all of the menus, which sets up the structure of the UI, and then in `run()` it runs the start menu, which is used as the entry point to the rest of the UI.
 ### ClientFileWrapper
 Contains methods for importing a quiz from a file. `readImportFile()` is a special read method used for importing existing quizzes from a file. It is special so that the people creating the quiz on a new file will have an easier time writing it and won't have to write it in a way that makes it easy for the program to read.
 
