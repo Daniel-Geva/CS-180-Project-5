@@ -288,6 +288,8 @@ public class UIManager implements Manager {
 		
 		panel.add(new Heading("Quiz Submission")
 			.big().margin(30));
+		panel.add(new Label("Course Name: " + quiz.getCourse())
+			.setFontSize(18));
 		panel.add(new Label("Quiz Name: " + quiz.getName())
 			.setFontSize(18));
 		panel.add(new Label("Taken By: " + user.getName())
@@ -419,6 +421,7 @@ public class UIManager implements Manager {
 			panel.getMainPanel().removeAll();
 			
 			panel.add(new Heading("Modify Quiz").big().margin(30));
+			panel.add(new TextField("Course Name", "Course Name", quiz.getCourse()).panelize(300, 90, 0, 30));
 			panel.add(new TextField("Quiz Name", "Quiz Name", quiz.getName()).panelize(300, 90, 0, 30));
 
 			addMargin(panel.getPreviousComponent(), new int[] {0, 0, 30, 0});
@@ -693,6 +696,9 @@ public class UIManager implements Manager {
 						String name = map.get("Quiz Name");
 						String course = map.get("Course");
 						ArrayList<Question> questions = new ArrayList<Question>();
+						
+						
+						
 						Quiz quiz = new Quiz(name, this.getCurrentUser().getName(), -1, questions, false, course);
 						
 						lms.getNetworkManagerClient()
@@ -1016,15 +1022,25 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 			.onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-					.addPushHandler("quiz-list-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
+					.addPushHandler("graded-quiz-list-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
 						@Override
 						public void handlePacket(ResponsePacket resp) {
-							lms.getNetworkManagerClient().removePushHandler("quiz-list-submissions");
+							lms.getNetworkManagerClient().removePushHandler("graded-quiz-list-submissions");
 							SwingUtilities.invokeLater(() -> {
 								p.runOnOpen();
 							});
 						}
 					});
+				lms.getNetworkManagerClient()
+				.addPushHandler("quiz-list-my-submissions", new PushPacketHandler(QuizResponsePacket.class) {
+					@Override
+					public void handlePacket(ResponsePacket resp) {
+						lms.getNetworkManagerClient().removePushHandler("quiz-list-my-submissions");
+						SwingUtilities.invokeLater(() -> {
+							p.runOnOpen();
+						});
+					}
+				});
 				p.getMainPanel().removeAll();
 				p.add((new Heading("Submission List")).big());
 				lms.getNetworkManagerClient()
@@ -1110,15 +1126,25 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 				.onOpen((Panel p) -> {
 					lms.getNetworkManagerClient()
-						.addPushHandler("quiz-list-my-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
+						.addPushHandler("graded-quiz-list-my-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
 							@Override
 							public void handlePacket(ResponsePacket resp) {
-								lms.getNetworkManagerClient().removePushHandler("quiz-list-my-submissions");
+								lms.getNetworkManagerClient().removePushHandler("graded-quiz-list-my-submissions");
 								SwingUtilities.invokeLater(() -> {
 									p.runOnOpen();
 								});
 							}
 						});
+					lms.getNetworkManagerClient()
+					.addPushHandler("quiz-list-my-submissions", new PushPacketHandler(QuizResponsePacket.class) {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
+							lms.getNetworkManagerClient().removePushHandler("quiz-list-my-submissions");
+							SwingUtilities.invokeLater(() -> {
+								p.runOnOpen();
+							});
+						}
+					});
 					p.getMainPanel().removeAll();
 					p.add((new Heading("My Quiz Submission List")).big());
 					lms.getNetworkManagerClient()
@@ -1377,7 +1403,13 @@ public class UIManager implements Manager {
 
 	@Override
 	public void exit() {
-		
+		JOptionPane.showMessageDialog(
+			null, 
+			"The server disconnected. Press Okay to exit the program.", 
+			"Error",
+			JOptionPane.ERROR_MESSAGE
+		);
+		System.exit(0);
 	}
 	
 	public void run() {
