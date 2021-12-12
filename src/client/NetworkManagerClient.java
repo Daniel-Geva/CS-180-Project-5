@@ -1,5 +1,6 @@
 package client;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -128,7 +129,7 @@ public class NetworkManagerClient {
                 } while (!success);
                 while (true) {
                     try {
-                    	Object responseObj = ois.readObject();
+                        Object responseObj = ois.readObject();
                         if (!(responseObj instanceof ResponsePacket)) {
                             continue;
                         }
@@ -142,13 +143,15 @@ public class NetworkManagerClient {
                             for (String key : pushPacketHandlers.keySet()) {
                                 PushPacketHandler handler = pushPacketHandlers.get(key);
                                 if (handler.canHandle(response)) {
-                                	SwingUtilities.invokeLater(() -> {
+                                    SwingUtilities.invokeLater(() -> {
                                         handler.handlePacket(response);
                                     });
                                 }
                             }
                         }
-                    } catch (IOException | ClassNotFoundException e) {
+                    } catch (EOFException e) {
+                        lmsc.getUIManager().exit();
+                    }catch (IOException | ClassNotFoundException e) {
                     	return;
                     }
                 }
