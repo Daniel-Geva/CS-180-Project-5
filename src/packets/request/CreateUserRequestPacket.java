@@ -41,8 +41,11 @@ public class CreateUserRequestPacket extends RequestPacket {
         Searches for the user in the arraylist of all the users
         */
         if (mainServer.getUserManager().getUser(user.getUsername()) == null) {
-            //if the user cannot be found in that arraylist, then this new user is added to the list
-            //Operation is marked as successful
+            /*
+            if the user cannot be found in the Arraylist of all the users,
+            then this new user is created
+            Operation is marked as successful
+             */
             mainServer.getUserManager().addUser(user);
             mainServer.getUserFileManager().save();
             return new ResponsePacket(true, false);
