@@ -24,14 +24,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
 import datastructures.GradedQuiz;
 import datastructures.Manager;
 import datastructures.PushPacketHandler;
 import datastructures.Question;
 import datastructures.Quiz;
-import datastructures.Student;
 import datastructures.Teacher;
 import datastructures.User;
 import gui.Aesthetics;
@@ -43,18 +41,14 @@ import gui.Label;
 import gui.Panel;
 import gui.RadioButton;
 import gui.TextField;
-import packets.request.CreateUserRequestPacket;
 import packets.request.DeleteQuizRequestPacket;
-import packets.request.GradedQuizListRequestPacket;
 import packets.request.GradedQuizRequestPacket;
-import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
 import packets.request.QuizRequestPacket;
 import packets.request.UpdateUserRequestPacket;
 import packets.response.DeleteQuizResponsePacket;
 import packets.response.GradedQuizListResponsePacket;
 import packets.response.GradedQuizResponsePacket;
-import packets.response.NewUserResponsePacket;
 import packets.response.QuizListResponsePacket;
 import packets.response.QuizResponsePacket;
 import packets.response.ResponsePacket;
@@ -809,6 +803,25 @@ public class UIManager implements Manager {
 				}))
 			.setPanelSize(400, 200));
 		
+		mainPanel.addModal("user-settings-delete-verify", new Panel()
+				.add(new Heading("Delete User"))
+				.add(new Label("Are you sure you want to delete your account?"))
+				.add(new Panel()
+					.add(new Button("Cancel")
+						.onClick((Panel __) -> {
+							mainPanel.closeModal();
+						}))
+					.add(new Button("Yes, Delete my Account")
+						.onClick((Panel __) -> {
+							lms.getNetworkManagerClient()
+							.sendPacket(
+								null//new DeleteUserRequestPacket(this.getCurrentUser().getID())
+							)
+						}))
+					.setPanelSize(250, 50)
+				)
+				.setPanelSize(400, 200));
+		
 		mainTabPanel.addTabPanel("User Settings", (new Panel(new GridLayout(6, 1)))
 			.onOpen((Panel p) -> {
 				User user = this.getCurrentUser();
@@ -821,6 +834,12 @@ public class UIManager implements Manager {
 			.add(new TextField("Username"))
 			.add(new TextField("Password"))
 			.add(new GapComponent())
+			.add(new Button("Delete User")
+				.color(Aesthetics.BUTTON_WARNING)
+					.onClick((Panel p) -> {
+						mainPanel.openModal("user-settings-delete-verify");
+					}).panelize()
+				)
 			.add(new Button("Save Changes")
 				.onClick((Panel p) -> {
 					Map<String, String> results = p.getResultMap();
