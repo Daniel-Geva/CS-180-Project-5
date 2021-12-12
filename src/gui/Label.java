@@ -15,6 +15,12 @@ public class Label extends JLabel {
 		this.setFont(f);
 		this.setForeground(Aesthetics.GENERAL_FOREGROUND);
 	}
+	
+	public Label setFontSize(int size) {
+		Font f = new Font(this.getFont().getName(), Font.PLAIN, size);
+		this.setFont(f);
+		return this;
+	}
 
 	public Label center() {
 		this.setHorizontalAlignment(SwingConstants.CENTER);

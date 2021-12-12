@@ -16,10 +16,12 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 
 import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
@@ -112,7 +114,7 @@ public class UIManager implements Manager {
 		
 		int i = 1;
 		for(Question question: questions) {
-			panel.getPreviousComponent().setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 0));
+			addMargin(panel.getPreviousComponent(), new int[] {0, 0, 30, 0});
 			panel.add(new Label("\nQuestion #" + i));
 			panel.add(new Label(question.getQuestion()));
 			switch(question.getQuestionType()) {
@@ -137,7 +139,11 @@ public class UIManager implements Manager {
 							.toList()
 					);
 					dropdown.setSize(300, 30);
-					panel.add(new Panel().add(dropdown).setPanelSize(300, 30));
+					panel.add(new Panel()
+						.add(dropdown)
+						.setPanelSize(300, 30)
+						.alignLeft()
+					);
 					break;
 			}
 			i += 1;
@@ -179,9 +185,7 @@ public class UIManager implements Manager {
 			.setPanelSize(350, 200)
 		);
 		
-		
-		
-		panel.add(new Panel(new FlowLayout())
+		panel.add(new Panel()
 			.boxLayout(BoxLayout.X_AXIS)
 			.alignLeft()
 			.alignTop()
@@ -269,16 +273,22 @@ public class UIManager implements Manager {
 		panel.setMargin(64, 64);
 		panel.boxLayout(BoxLayout.Y_AXIS);
 		
-		panel.add(new Heading("Quiz Submission").big().margin(30));
-		panel.add(new Heading("Quiz Name: " + quiz.getName()));
-		panel.add(new Heading("Taken By: " + user.getName()));
-		panel.add(new Heading("Time: " + submission.getSubmissionTime()));
+		panel.add(new Heading("Quiz Submission")
+			.big().margin(30));
+		panel.add(new Label("Quiz Name: " + quiz.getName())
+			.setFontSize(18));
+		panel.add(new Label("Taken By: " + user.getName())
+			.setFontSize(18));
+		panel.add(new Label("Time: " + submission.getSubmissionTime())
+			.setFontSize(18));
+		panel.add(new Label("Score: " + submission.getScore(quiz))
+			.setFontSize(18));
 
 		ArrayList<Question> questions = quiz.getQuestions();
 		
 		int i = 1;
 		for(Question question: questions) {
-			panel.add(new Panel().setPanelSize(50, 50));
+			addMargin(panel.getPreviousComponent(), new int[] {0, 0, 30, 0});
 			panel.add(new Label("\nQuestion #" + i));
 			panel.add(new Label(question.getQuestion()));
 			Answer chosenAnswer = null;
@@ -309,8 +319,9 @@ public class UIManager implements Manager {
 		
 		panel.add(new Panel()
 			.boxLayout(BoxLayout.X_AXIS)
+			.alignLeft()
+			.alignTop()
 			.add(new Button("Exit")
-				.color(Aesthetics.BUTTON_WARNING)
 				.onClick((Panel p) -> {
 					overallPanel.close();
 					mainPanel.open();
@@ -323,6 +334,16 @@ public class UIManager implements Manager {
 		//pane.setSize(1000, 720);
 		overallPanel.add(pane);
 		return overallPanel;
+	}
+
+	private JComponent addMargin(JComponent component, int... margin) {
+		component.setBorder(
+			BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(margin[0], margin[1], margin[2], margin[3]),
+				component.getBorder()
+			)
+		);
+		return component;
 	}
 
 	public Panel getModifyQuizPanel(Quiz quiz) {
@@ -616,8 +637,8 @@ public class UIManager implements Manager {
 								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
 								
 								Panel panel = (new Panel())
+									.add(new Label(quiz.getCourse()))
 									.add(new Label(quiz.getName()))
-									.add(new Label(user.getName()))
 									.add(new Label("Score: " + gradedQuiz.getScore(quiz)))
 									.add(new Label(gradedQuiz.getSubmissionTime()))
 									.onClick(mainPanel, (Panel __) -> {

@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Dropdown extends JPanel {
 		this.resultKey = resultKey;
 		this.jComboBox = new JComboBox<String>(options);
 
-		this.setLayout(new GridLayout(1, 1));
+		this.setLayout(new FlowLayout(FlowLayout.LEADING));
 		this.add(jComboBox);
 
 		this.jComboBox.setForeground(Aesthetics.TEXT_FIELD_FOREGROUND);
