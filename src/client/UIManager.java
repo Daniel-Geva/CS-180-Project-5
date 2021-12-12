@@ -22,7 +22,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
@@ -106,7 +105,7 @@ public class UIManager implements Manager {
 		return courses;
 	}
 
-	//TODO:ADD documentation here
+	
 	private List<Quiz> getQuizzesFromCourse(List<Quiz> quizzes, String course) {
 		return quizzes.stream().filter((Quiz q) -> (
 			q.getCourse().equals(course)
@@ -376,7 +375,7 @@ public class UIManager implements Manager {
 		Panel panel = new Panel();
 		
 		lms.getNetworkManagerClient()
-		.addPushHandler("modify-check-delete-quiz", new PushPacketHandler(DeleteQuizResponsePacket.class) {
+		.addPushHandler("modify-check-delete-quiz", new PushPacketHandler() {
 			@Override
 			public void handlePacket(ResponsePacket resp) {
 				DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
@@ -391,7 +390,7 @@ public class UIManager implements Manager {
 					mainPanel.open();
 				}
 			}
-		});
+		}.addClass(DeleteQuizResponsePacket.class));
 		
 		panel.setPanelSize(1000, 720);
 		panel.setMargin(96, 96);
@@ -543,11 +542,13 @@ public class UIManager implements Manager {
 						.add(new Button("Delete Quiz")
 							.color(Aesthetics.BUTTON_WARNING)
 							.onClick((Panel p) -> {
-								panel.close();
-								mainPanel.open();
+								lms.getNetworkManagerClient()
+									.removePushHandler("modify-check-delete-quiz");
 								lms.getNetworkManagerClient()
 									.sendPacket(new DeleteQuizRequestPacket(quiz.getId()))
 									.onReceiveResponse((ResponsePacket resp) -> {
+										panel.close();
+										mainPanel.open();
 										if(resp.wasSuccess()) {
 											JOptionPane.showMessageDialog(
 												null, 
@@ -915,15 +916,16 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Take Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 			.onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-				.addPushHandler("quiz-list-take-quiz", new PushPacketHandler(QuizResponsePacket.class) {
-					@Override
-					public void handlePacket(ResponsePacket resp) {
-						lms.getNetworkManagerClient().removePushHandler("quiz-list-take-quiz");
-						SwingUtilities.invokeLater(() -> {
+				.addPushHandler("take-quiz", 
+					new PushPacketHandler() {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
 							p.runOnOpen();
-						});
+						}
 					}
-				});
+					.addClass(QuizResponsePacket.class)
+					.addClass(DeleteQuizResponsePacket.class)
+				);
 				p.getMainPanel().removeAll();
 				p.add((new Heading("Take Quiz")).big());
 				lms.getNetworkManagerClient()
@@ -1001,15 +1003,16 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Modify Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 				.onOpen((Panel p) -> {
 					lms.getNetworkManagerClient()
-					.addPushHandler("quiz-list-modify-quiz", new PushPacketHandler(QuizResponsePacket.class) {
-						@Override
-						public void handlePacket(ResponsePacket resp) {
-							lms.getNetworkManagerClient().removePushHandler("quiz-list-modify-quiz");
-							SwingUtilities.invokeLater(() -> {
+					.addPushHandler("modify-quiz", 
+						new PushPacketHandler() {
+							@Override
+							public void handlePacket(ResponsePacket resp) {
 								p.runOnOpen();
-							});
+							}
 						}
-					});
+						.addClass(QuizResponsePacket.class)
+						.addClass(DeleteQuizResponsePacket.class)
+					);
 					p.getMainPanel().removeAll();
 					p.add((new Heading("Modify Quiz")).big());
 					lms.getNetworkManagerClient()
@@ -1089,25 +1092,17 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 			.onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-					.addPushHandler("graded-quiz-list-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
+				.addPushHandler("quiz-submissions", 
+					new PushPacketHandler() {
 						@Override
 						public void handlePacket(ResponsePacket resp) {
-							lms.getNetworkManagerClient().removePushHandler("graded-quiz-list-submissions");
-							SwingUtilities.invokeLater(() -> {
-								p.runOnOpen();
-							});
-						}
-					});
-				lms.getNetworkManagerClient()
-				.addPushHandler("quiz-list-my-submissions", new PushPacketHandler(QuizResponsePacket.class) {
-					@Override
-					public void handlePacket(ResponsePacket resp) {
-						lms.getNetworkManagerClient().removePushHandler("quiz-list-my-submissions");
-						SwingUtilities.invokeLater(() -> {
 							p.runOnOpen();
-						});
+						}
 					}
-				});
+					.addClass(QuizResponsePacket.class)
+					.addClass(GradedQuizResponsePacket.class)
+					.addClass(DeleteQuizResponsePacket.class)
+				);
 				p.getMainPanel().removeAll();
 				p.add((new Heading("Submission List")).big());
 				lms.getNetworkManagerClient()
@@ -1195,25 +1190,17 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 				.onOpen((Panel p) -> {
 					lms.getNetworkManagerClient()
-						.addPushHandler("graded-quiz-list-my-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
+					.addPushHandler("my-quiz-submissions", 
+						new PushPacketHandler() {
 							@Override
 							public void handlePacket(ResponsePacket resp) {
-								lms.getNetworkManagerClient().removePushHandler("graded-quiz-list-my-submissions");
-								SwingUtilities.invokeLater(() -> {
-									p.runOnOpen();
-								});
-							}
-						});
-					lms.getNetworkManagerClient()
-					.addPushHandler("quiz-list-my-submissions", new PushPacketHandler(QuizResponsePacket.class) {
-						@Override
-						public void handlePacket(ResponsePacket resp) {
-							lms.getNetworkManagerClient().removePushHandler("quiz-list-my-submissions");
-							SwingUtilities.invokeLater(() -> {
 								p.runOnOpen();
-							});
+							}
 						}
-					});
+						.addClass(QuizResponsePacket.class)
+						.addClass(GradedQuizResponsePacket.class)
+						.addClass(DeleteQuizResponsePacket.class)
+					);
 					p.getMainPanel().removeAll();
 					p.add((new Heading("My Quiz Submission List")).big());
 					lms.getNetworkManagerClient()
@@ -1388,7 +1375,7 @@ public class UIManager implements Manager {
 									JOptionPane.INFORMATION_MESSAGE
 							);
 							lms.getNetworkManagerClient()
-							.addPushHandler("user-deletion-check", new PushPacketHandler(DeleteUserResponsePacket.class) {
+							.addPushHandler("user-deletion-check", new PushPacketHandler() {
 								@Override
 								public void handlePacket(ResponsePacket resp) {
 									DeleteUserResponsePacket deleteUserResp = (DeleteUserResponsePacket) resp;
@@ -1397,7 +1384,7 @@ public class UIManager implements Manager {
 										
 									}
 								}
-							});
+							}.addClass(DeleteUserResponsePacket.class));
 							loginPanel.close();
 							mainPanel.open();
 						}

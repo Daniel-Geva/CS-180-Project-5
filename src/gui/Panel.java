@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
@@ -365,6 +366,9 @@ public class Panel extends JLayeredPane {
 		this.registerListeners();
 		
 		JFrame f = new JFrame();
+		ImageIcon icon = new ImageIcon("FinalLogo.png");
+		f.setIconImage(icon.getImage());
+		f.setTitle("Darkspace");
 		f.setSize(prefWidth, prefHeight);
 		f.setLocationRelativeTo(null);
 		f.setBackground(Color.DARK_GRAY);
@@ -373,7 +377,6 @@ public class Panel extends JLayeredPane {
 		f.setResizable(false);
 		f.add(this);
 		f.setVisible(true);
-		f.setName("Darkspace");
 		this.frame = f;
 		
 		this.setBounds(0, 0, prefWidth, prefHeight);
