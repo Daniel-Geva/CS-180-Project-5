@@ -128,6 +128,25 @@ public class UIManager implements Manager {
 		panel.boxLayout(BoxLayout.Y_AXIS);
 		panel.alignLeft();
 		
+		lms.getNetworkManagerClient()
+		.addPushHandler("modify-check-delete-quiz", new PushPacketHandler() {
+			@Override
+			public void handlePacket(ResponsePacket resp) {
+				DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
+				if(quiz.getId() == respDelQuiz.getQuizId()) {
+					panel.close();
+					JOptionPane.showMessageDialog(
+						null, 
+						"The quiz was deleted by another user. Going back to the main menu.", 
+						"Error",
+						JOptionPane.ERROR_MESSAGE
+					);
+					mainPanel.open();
+				}
+			}
+		}.addClass(DeleteQuizResponsePacket.class));
+		
+		
 		panel.add(new Heading("Quiz Session").big().margin(30));
 		panel.add(new Heading(quiz.getName()));
 
@@ -903,6 +922,7 @@ public class UIManager implements Manager {
 							mainPanel.openModal("user-settings-error");
 							return;
 						}
+						mainPanel.runOnOpen();
 						mainPanel.openModal("user-settings-success");
 					});
 				}).panelize()
@@ -1203,9 +1223,11 @@ public class UIManager implements Manager {
 					);
 					p.getMainPanel().removeAll();
 					p.add((new Heading("My Quiz Submission List")).big());
+					
 					lms.getNetworkManagerClient()
 						.sendPacket(new GradedQuizListRequestPacket(this.getCurrentUser()))
 						.onReceiveResponse((ResponsePacket resp) -> {
+							
 							GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
 							List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
 							if(gradedQuizzes == null) {
@@ -1226,6 +1248,8 @@ public class UIManager implements Manager {
 							
 							for(GradedQuiz gradedQuiz: userSubmissions) {
 								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
+								if(quiz == null)
+									continue;
 								
 								Panel panel = (new Panel())
 									.add(new Label(quiz.getCourse()))
@@ -1272,10 +1296,10 @@ public class UIManager implements Manager {
 							}
 							
 							p.revalidate();
-							p.repaint();
-							//mainTabPanel.revalidate();
 							p.updateBounds();
 						});
+					p.revalidate();
+					p.updateBounds();
 				})
 				.setPanelSize(1000, 720)
 				.setMargin(64, 0)
@@ -1473,7 +1497,7 @@ public class UIManager implements Manager {
 	public void exit() {
 		JOptionPane.showMessageDialog(
 			null, 
-			"The server disconnected. Press Okay to exit the program.", 
+			"The server disconnected. Press Ok to exit the program.", 
 			"Error",
 			JOptionPane.ERROR_MESSAGE
 		);

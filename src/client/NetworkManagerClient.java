@@ -69,7 +69,7 @@ public class NetworkManagerClient {
                         socket = new Socket(nameSetter.getName(), 4040);
 
                         oos = new ObjectOutputStream(socket.getOutputStream());
-
+                        
                         success = true;
                         synchronized(connectionSuccessLock) {
                         	connectionSuccessLock.notifyAll();
@@ -96,7 +96,10 @@ public class NetworkManagerClient {
                         	synchronized (lmsc.getNetworkManagerClient()) {
                                 RequestPacket request = packetQueue.keySet().iterator().next();
                                 queue.add(packetQueue.get(request));
+                                
                                 oos.writeObject(request);
+                            	oos.reset();
+                            	
                                 packetQueue.remove(request);
                             }
                         } catch (IOException e) {
@@ -129,6 +132,7 @@ public class NetworkManagerClient {
                 while (true) {
                     try {
                         Object responseObj = ois.readObject();
+                        
                         if (!(responseObj instanceof ResponsePacket)) {
                             continue;
                         }
