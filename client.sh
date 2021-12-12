@@ -1,3 +1,3 @@
-javac ./src/**/*.java ./src/**/**/*.java
+javac -cp src src/client/LearningManagementSystemClient.java
 java -cp src client.LearningManagementSystemClient
-rm -rf ./src/**/*.class ./src/**/**/*.class
+

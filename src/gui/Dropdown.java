@@ -47,6 +47,7 @@ public class Dropdown extends JPanel {
 	public Dropdown(String name, String resultKey, String[] options) {
 		this.label = new JLabel(name);
 		this.name = name;
+		this.resultKey = resultKey;
 		this.jComboBox = new JComboBox<String>(options);
 		this.setLayout(new GridLayout(2, 1));
 		this.add(label);
@@ -58,13 +59,23 @@ public class Dropdown extends JPanel {
 		
 		this.setBackground(Aesthetics.GENERAL_BACKGROUND);
 	}
+	@Override
+	public void setSize(int x, int y) {
+		super.setSize(x, y);
+		if(label == null) {
+			this.jComboBox.setSize(x, y);
+		} else {
+			this.label.setSize(x, y/2);
+			this.jComboBox.setSize(x, y/2);
+		}
+	}
 	
 	public String getSelection() {
 		return (String) this.jComboBox.getSelectedItem();
 	}
 	
 	public String getResultKey() {
-		return this.name;
+		return this.resultKey;
 	}
 	
 	public Dropdown margin(int margin) {

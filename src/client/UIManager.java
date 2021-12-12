@@ -19,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
@@ -48,6 +49,7 @@ import packets.request.QuizListRequestPacket;
 import packets.request.QuizRequestPacket;
 import packets.request.UpdateUserRequestPacket;
 import packets.response.GradedQuizListResponsePacket;
+import packets.response.GradedQuizResponsePacket;
 import packets.response.NewUserResponsePacket;
 import packets.response.QuizListResponsePacket;
 import packets.response.ResponsePacket;
@@ -65,7 +67,7 @@ public class UIManager implements Manager {
 
 	LearningManagementSystemClient lms;
 	
-	User currentUser = new Teacher(49100, "Person 1", "username", "passa");
+	User currentUser = new Teacher(49100, "Person 21", "username", "passa");
 	
 	public UIManager(LearningManagementSystemClient lms) {
 		this.lms = lms;
@@ -99,7 +101,8 @@ public class UIManager implements Manager {
 		Panel panel = new Panel();
 		panel.setMargin(64, 64);
 		panel.boxLayout(BoxLayout.Y_AXIS);
-
+		panel.alignLeft();
+		
 		panel.add(new Heading("Quiz Session").big().margin(30));
 		panel.add(new Heading(quiz.getName()));
 
@@ -109,7 +112,7 @@ public class UIManager implements Manager {
 		
 		int i = 1;
 		for(Question question: questions) {
-			panel.add(new Panel().setPanelSize(50, 50));
+			panel.getPreviousComponent().setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 0));
 			panel.add(new Label("\nQuestion #" + i));
 			panel.add(new Label(question.getQuestion()));
 			switch(question.getQuestionType()) {
@@ -133,7 +136,8 @@ public class UIManager implements Manager {
 							.map((Answer a) -> a.getAnswer())
 							.toList()
 					);
-					panel.add(dropdown);
+					dropdown.setSize(300, 30);
+					panel.add(new Panel().add(dropdown).setPanelSize(300, 30));
 					break;
 			}
 			i += 1;
@@ -160,7 +164,6 @@ public class UIManager implements Manager {
 		overallPanel.addModal("submit-error", new Panel()
 			.add(new Heading("Error"))
 			.add(new Label("An error occurred in submitting."))
-			.add(new Label(""))
 			.add(new Panel()
 				.boxLayout(BoxLayout.X_AXIS)
 				.add(new Button("Close")
@@ -178,8 +181,10 @@ public class UIManager implements Manager {
 		
 		
 		
-		panel.add(new Panel()
+		panel.add(new Panel(new FlowLayout())
 			.boxLayout(BoxLayout.X_AXIS)
+			.alignLeft()
+			.alignTop()
 			.add(new Button("Cancel")
 				.color(Aesthetics.BUTTON_WARNING)
 				.onClick((Panel p) -> {
@@ -259,7 +264,7 @@ public class UIManager implements Manager {
 	
 	private Panel getSubmissionPanel(GradedQuiz submission, Quiz quiz, User user) {
 		Panel overallPanel = new Panel();
-		overallPanel.setPanelSize(1000, 720);
+		overallPanel.setPanelSize(500, 720);
 		overallPanel.setMargin(0, 20);
 		Panel panel = new Panel();
 		panel.setMargin(64, 64);
@@ -311,7 +316,7 @@ public class UIManager implements Manager {
 					overallPanel.close();
 					mainPanel.open();
 				}))
-			.setPanelSize(200, 50)
+			.setPanelSize(300, 50)
 		);
 
 		JScrollPane pane = new JScrollPane(panel.getMainPanel());
@@ -574,13 +579,26 @@ public class UIManager implements Manager {
 		
 		mainTabPanel.addTabPanel("Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 			.onOpen((Panel p) -> {
+				lms.getNetworkManagerClient()
+					.addPushHandler(new PushPacketHandler(GradedQuizResponsePacket.class) {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
+							lms.getNetworkManagerClient().removePushHandler(this);
+							SwingUtilities.invokeLater(() -> {
+								p.runOnOpen();
+							});
+						}
+					});
 				p.getMainPanel().removeAll();
 				p.add((new Heading("Submission List")).big());
 				lms.getNetworkManagerClient()
 					.sendPacket(new GradedQuizListRequestPacket())
 					.onReceiveResponse((ResponsePacket resp) -> {
+						System.out.println("EDT: " + Thread.currentThread());
 						GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
+						System.out.println(listResp);
 						List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
+						System.out.println(gradedQuizzes);
 						if(gradedQuizzes == null) {
 							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
 							p.revalidate();
@@ -599,12 +617,14 @@ public class UIManager implements Manager {
 								.toList();
 							
 							for(GradedQuiz gradedQuiz: userSubmissions) {
+								System.out.println(gradedQuiz);
+								System.out.println(gradedQuiz.getSubmissionTime());
 								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
 								
 								Panel panel = (new Panel())
 									.add(new Label(quiz.getName()))
 									.add(new Label(user.getName()))
-									//.add(new Label(gradedQuiz.getScore(quiz)))
+									.add(new Label("Score: " + gradedQuiz.getScore(quiz)))
 									.add(new Label(gradedQuiz.getSubmissionTime()))
 									.onClick(mainPanel, (Panel __) -> {
 										mainPanel.addModal("Quiz-" + quiz.getId(), 
@@ -645,8 +665,11 @@ public class UIManager implements Manager {
 								
 							}
 						}
-						
+
+						System.out.println("GUI Is updated.");
 						p.revalidate();
+						p.repaint();
+						//mainTabPanel.revalidate();
 						p.updateBounds();
 					});
 			})
@@ -713,7 +736,8 @@ public class UIManager implements Manager {
 		.add(new Heading("Darkspace").center())
 		.add(new TextField("Username"))
 		.add(new TextField("Password"))
-		.add((new Panel(new FlowLayout()))
+		.add((new Panel())
+			.boxLayout(BoxLayout.X_AXIS)
 			.add((new Button("Create User"))
 					.onClick((Panel p) -> {
 						// Open Create User menu.
@@ -833,14 +857,7 @@ public class UIManager implements Manager {
 	}
 	
 	public void run() {
-		lms.getNetworkManagerClient()
-			.addPushHandler(new PushPacketHandler(ResponsePacket.class) {
-				@Override
-				public void handlePacket(ResponsePacket resp) {
-					System.out.println("Push " + resp);
-				}
-			});
-		this.hostnamePanel.open();
+		this.mainPanel.open();
 	}
 	
 	public Scanner getScanner() {

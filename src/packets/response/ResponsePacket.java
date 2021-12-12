@@ -33,4 +33,8 @@ public class ResponsePacket implements Serializable {
         return push;
     }
 
+	public void setPush(boolean push) {
+		this.push = push;
+	}
+
 }

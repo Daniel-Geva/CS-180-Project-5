@@ -177,6 +177,7 @@ public class Panel extends JLayeredPane {
 	}
 	
 	public Panel boxLayout(int boxlayout) {
+		//this.setLayout(new BoxLayout(this, boxlayout));
 		this.mainPanel.setLayout(new BoxLayout(this.mainPanel, boxlayout));
 		return this;
 	}
@@ -214,7 +215,9 @@ public class Panel extends JLayeredPane {
 		int hei = this.getHeight();
 		
 		if(this.prefWidth != 0) {
-			mainPanel.setBounds(wid/2 - this.prefWidth/2, hei/2 - this.prefHeight/2, prefWidth, prefHeight);
+			int x = (int) ((wid-this.prefWidth)*this.getAlignmentX());
+			int y = (int) ((hei-this.prefHeight)*this.getAlignmentY());
+			mainPanel.setBounds(x, y, prefWidth, prefHeight);
 		} else {
 			mainPanel.setBounds(0, 0, wid, hei);
 		}
@@ -497,4 +500,31 @@ public class Panel extends JLayeredPane {
 			}
 		}
 	}
+
+	public JComponent getPreviousComponent() {
+		return this.prevComponent;
+	}
+
+	public Panel alignLeft() {
+		this.setAlignmentX(Component.LEFT_ALIGNMENT);
+		mainPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		return this;
+	}
+
+	public Panel alignTop() {
+		this.setAlignmentY(Component.TOP_ALIGNMENT);
+		mainPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+		return this;
+	}
+	
+	public Panel alignRight() {
+		this.setAlignmentX(1.0f);
+		return this;
+	}
+
+	public Panel alignBottom() {
+		this.setAlignmentY(1.0f);
+		return this;
+	}
+	
 }

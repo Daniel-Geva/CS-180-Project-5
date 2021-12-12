@@ -31,7 +31,7 @@ public class NetworkManagerClient {
 	LearningManagementSystemClient lmsc;
     HashMap<RequestPacket, ResponsePacketHandler> packetQueue;
     
-    public static final boolean DEBUG_ENABLED = false;
+    public static final boolean DEBUG_ENABLED = true;
     
     final NameSetter nameSetter;
     final Object connectionSuccessLock = new Object();
@@ -69,6 +69,7 @@ public class NetworkManagerClient {
                         socket = new Socket(nameSetter.getName(), 4040);
                         
                         oos = new ObjectOutputStream(socket.getOutputStream());
+                        
                         success = true;
                         synchronized(connectionSuccessLock) {
                         	connectionSuccessLock.notifyAll();
@@ -84,7 +85,8 @@ public class NetworkManagerClient {
                 while (true) {
                 	synchronized(packetQueue) {
                 		try {
-							packetQueue.wait();
+							if(packetQueue.size() == 0)
+								packetQueue.wait();
 						} catch (InterruptedException e) {
 							return;
 						}
@@ -131,6 +133,7 @@ public class NetworkManagerClient {
                             continue;
                         }
                         ResponsePacket response = (ResponsePacket) responseObj;
+                        System.out.println(response);
                         if (!response.getPush()) {
                             ResponsePacketHandler handler = queue.remove();
                             SwingUtilities.invokeLater(() -> {
@@ -139,8 +142,9 @@ public class NetworkManagerClient {
                         } else {
                             for (PushPacketHandler handler : pushPacketHandlers) {
                                 if (handler.canHandle(response)) {
-                                    handler.handlePacket(response);
-                                    return;
+                                	SwingUtilities.invokeLater(() -> {
+                                        handler.handlePacket(response);
+                                    });
                                 }
                             }
                         }

@@ -129,6 +129,9 @@ public class GradedQuiz implements Serializable { // should students be able to 
                     best = answer;
                 }
             }
+            if(chosen != null)
+            	earnedPoints += chosen.getPoints();
+            possiblePoints += best.getPoints();
         }
         return String.format("%s/%s", earnedPoints, possiblePoints);
     }
