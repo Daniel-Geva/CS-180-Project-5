@@ -26,9 +26,9 @@ public class DeleteQuizRequestPacket extends RequestPacket{
                 }
             }
             lms.getGradedQuizManager().setGradedQuiz(gradedQuizList);
-            return new DeleteQuizResponsePacket(true);
+            return new DeleteQuizResponsePacket(true, id);
         } else {
-            return new DeleteQuizResponsePacket(false);
+            return new DeleteQuizResponsePacket(false, id);
         }
     }
 }
