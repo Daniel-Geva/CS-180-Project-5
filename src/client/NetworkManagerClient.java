@@ -27,12 +27,12 @@ import packets.response.ResponsePacket;
  */
 
 public class NetworkManagerClient {
-    
+
 	LearningManagementSystemClient lmsc;
     HashMap<RequestPacket, ResponsePacketHandler> packetQueue;
-    
+
     public static final boolean DEBUG_ENABLED = false;
-    
+
     final NameSetter nameSetter;
     final Object connectionSuccessLock = new Object();
 
@@ -40,9 +40,9 @@ public class NetworkManagerClient {
 
     Thread inputThread;
     Thread outputThread;
-    
+
     Queue<ResponsePacketHandler> queue = new LinkedList<>();
-    ArrayList<PushPacketHandler> pushPacketHandlers = new ArrayList<>();
+    HashMap<String, PushPacketHandler> pushPacketHandlers = new HashMap<>();
 
     public NetworkManagerClient (LearningManagementSystemClient lmsc) {
         this.lmsc = lmsc;
@@ -59,7 +59,7 @@ public class NetworkManagerClient {
             	boolean success = false;
                 do {
                     try {
-                    	if(DEBUG_ENABLED) 
+                    	if(DEBUG_ENABLED)
                     		nameSetter.setName("127.0.0.1");
                     	else {
 	                        synchronized (nameSetter) {
@@ -67,9 +67,9 @@ public class NetworkManagerClient {
 	                        }
                     	}
                         socket = new Socket(nameSetter.getName(), 4040);
-                        
+
                         oos = new ObjectOutputStream(socket.getOutputStream());
-                        
+
                         success = true;
                         synchronized(connectionSuccessLock) {
                         	connectionSuccessLock.notifyAll();
@@ -140,7 +140,8 @@ public class NetworkManagerClient {
                                 handler.handlePacket(response);
                             });
                         } else {
-                            for (PushPacketHandler handler : pushPacketHandlers) {
+                            for (String key : pushPacketHandlers.keySet()) {
+                                PushPacketHandler handler = pushPacketHandlers.get(key);
                                 if (handler.canHandle(response)) {
                                 	SwingUtilities.invokeLater(() -> {
                                         handler.handlePacket(response);
@@ -160,13 +161,13 @@ public class NetworkManagerClient {
     }
 
     ///Adds the push packet handler from the list
-    public void addPushHandler(PushPacketHandler pPHandler) {
-        pushPacketHandlers.add(pPHandler);
+    public void addPushHandler(String id, PushPacketHandler pPHandler) {
+        pushPacketHandlers.put(id, pPHandler);
     }
 
     ///Removes a push packet handler from the list
-    public void removePushHandler(PushPacketHandler pPHandler) {
-        pushPacketHandlers.remove(pPHandler);
+    public void removePushHandler(String id) {
+        pushPacketHandlers.remove(id);
     }
 
     ///Closes the threads upon exit
