@@ -221,7 +221,6 @@ public class UIManager implements Manager {
 					lms.getNetworkManagerClient()
 						.sendPacket(new GradedQuizRequestPacket(submission))
 						.onReceiveResponse((ResponsePacket resp) -> {
-							System.out.println("Submitted");
 							if(!resp.wasSuccess()) {
 								overallPanel.openModal("submit-error");
 								return;
@@ -594,11 +593,8 @@ public class UIManager implements Manager {
 				lms.getNetworkManagerClient()
 					.sendPacket(new GradedQuizListRequestPacket())
 					.onReceiveResponse((ResponsePacket resp) -> {
-						System.out.println("EDT: " + Thread.currentThread());
 						GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
-						System.out.println(listResp);
 						List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
-						System.out.println(gradedQuizzes);
 						if(gradedQuizzes == null) {
 							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
 							p.revalidate();
@@ -617,8 +613,6 @@ public class UIManager implements Manager {
 								.toList();
 							
 							for(GradedQuiz gradedQuiz: userSubmissions) {
-								System.out.println(gradedQuiz);
-								System.out.println(gradedQuiz.getSubmissionTime());
 								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
 								
 								Panel panel = (new Panel())
@@ -665,8 +659,7 @@ public class UIManager implements Manager {
 								
 							}
 						}
-
-						System.out.println("GUI Is updated.");
+						
 						p.revalidate();
 						p.repaint();
 						//mainTabPanel.revalidate();

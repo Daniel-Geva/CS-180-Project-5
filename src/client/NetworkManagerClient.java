@@ -126,14 +126,11 @@ public class NetworkManagerClient {
                 } while (!success);
                 while (true) {
                     try {
-                    	//System.out.println("Reading");
                     	Object responseObj = ois.readObject();
-                    	//System.out.println("Received " + responseObj);
                         if (!(responseObj instanceof ResponsePacket)) {
                             continue;
                         }
                         ResponsePacket response = (ResponsePacket) responseObj;
-                        System.out.println(response);
                         if (!response.getPush()) {
                             ResponsePacketHandler handler = queue.remove();
                             SwingUtilities.invokeLater(() -> {
