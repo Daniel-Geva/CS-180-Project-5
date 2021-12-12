@@ -93,12 +93,13 @@ public class NetworkManagerClient {
                 	}
                     while (packetQueue.size() != 0) {
                         try {
-                        	// TODO ConcurrentModificationException
-                            RequestPacket request = packetQueue.keySet().iterator().next();
-                            System.out.println(request);
-                            queue.add(packetQueue.get(request));
-                            oos.writeObject(request);
-                            packetQueue.remove(request);
+                        	synchronized (lmsc.getNetworkManagerClient()) {
+                                RequestPacket request = packetQueue.keySet().iterator().next();
+                                System.out.println(request);
+                                queue.add(packetQueue.get(request));
+                                oos.writeObject(request);
+                                packetQueue.remove(request);
+                            }
                         } catch (IOException e) {
                             return;
                         }
@@ -160,12 +161,12 @@ public class NetworkManagerClient {
         this.outputThread.start();
     }
 
-    ///Adds the push packet handler from the list
+    ///Adds the push packet handler to the HashMap
     public void addPushHandler(String id, PushPacketHandler pPHandler) {
         pushPacketHandlers.put(id, pPHandler);
     }
 
-    ///Removes a push packet handler from the list
+    ///Removes a push packet handler from the HashMap
     public void removePushHandler(String id) {
         pushPacketHandlers.remove(id);
     }
@@ -177,7 +178,7 @@ public class NetworkManagerClient {
     }
 
     ///Method used by the UIManger in order to add a packet to the packetQueue to be sent
-    public ResponsePacketHandler sendPacket(RequestPacket requestPacket) {
+    public synchronized ResponsePacketHandler sendPacket(RequestPacket requestPacket) {
         ResponsePacketHandler handler = new ResponsePacketHandler();
         this.packetQueue.put(requestPacket, handler);
     	synchronized(packetQueue) {
