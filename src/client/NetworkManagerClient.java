@@ -95,7 +95,6 @@ public class NetworkManagerClient {
                         try {
                         	synchronized (lmsc.getNetworkManagerClient()) {
                                 RequestPacket request = packetQueue.keySet().iterator().next();
-                                System.out.println(request);
                                 queue.add(packetQueue.get(request));
                                 oos.writeObject(request);
                                 packetQueue.remove(request);
@@ -134,7 +133,6 @@ public class NetworkManagerClient {
                             continue;
                         }
                         ResponsePacket response = (ResponsePacket) responseObj;
-                        System.out.println(response);
                         if (!response.getPush()) {
                             ResponsePacketHandler handler = queue.remove();
                             SwingUtilities.invokeLater(() -> {
