@@ -24,12 +24,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
 import datastructures.GradedQuiz;
 import datastructures.Manager;
 import datastructures.PushPacketHandler;
 import datastructures.Question;
 import datastructures.Quiz;
+import datastructures.Student;
 import datastructures.Teacher;
 import datastructures.User;
 import gui.Aesthetics;
@@ -41,14 +43,19 @@ import gui.Label;
 import gui.Panel;
 import gui.RadioButton;
 import gui.TextField;
+import packets.request.CreateUserRequestPacket;
 import packets.request.DeleteQuizRequestPacket;
+import packets.request.DeleteUserRequestPacket;
+import packets.request.GradedQuizListRequestPacket;
 import packets.request.GradedQuizRequestPacket;
+import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
 import packets.request.QuizRequestPacket;
 import packets.request.UpdateUserRequestPacket;
 import packets.response.DeleteQuizResponsePacket;
 import packets.response.GradedQuizListResponsePacket;
 import packets.response.GradedQuizResponsePacket;
+import packets.response.NewUserResponsePacket;
 import packets.response.QuizListResponsePacket;
 import packets.response.QuizResponsePacket;
 import packets.response.ResponsePacket;
@@ -821,11 +828,29 @@ public class UIManager implements Manager {
 							mainPanel.closeModal();
 						}))
 					.add(new Button("Yes, Delete my Account")
+						.color(Aesthetics.BUTTON_WARNING)
 						.onClick((Panel __) -> {
 							lms.getNetworkManagerClient()
-							.sendPacket(
-								null//new DeleteUserRequestPacket(this.getCurrentUser().getID())
-							)
+								.sendPacket(new DeleteUserRequestPacket(this.getCurrentUser().getID()))
+								.onReceiveResponse((ResponsePacket resp) -> {
+									mainPanel.close();
+									loginPanel.open();
+									if(resp.wasSuccess()) {
+										JOptionPane.showMessageDialog(
+											null, 
+											"Successfully deleted your account.",
+											"Success",
+											JOptionPane.INFORMATION_MESSAGE
+										);
+									} else {
+										JOptionPane.showMessageDialog(
+											null, 
+											"Unable to delete your account because it doesn't exit.",
+											"Error",
+											JOptionPane.ERROR_MESSAGE
+										);
+									}
+								});
 						}))
 					.setPanelSize(250, 50)
 				)
