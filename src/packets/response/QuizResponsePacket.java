@@ -31,4 +31,8 @@ public class QuizResponsePacket extends ResponsePacket{
         return quizToReturn;
     }
 
+    public void deleteQuiz() {
+
+    }
+
 }
