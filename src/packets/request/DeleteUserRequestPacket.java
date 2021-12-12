@@ -2,6 +2,7 @@ package packets.request;
 
 import datastructures.User;
 
+import packets.response.DeleteUserResponsePacket;
 import packets.response.ResponsePacket;
 import server.LearningManagementSystemServer;
 
@@ -19,15 +20,14 @@ public class DeleteUserRequestPacket extends RequestPacket{
         /*
           If the user doesn't exist in the ArrayList of Users in UserManager file,
           then the operation is marked as false
-
-         */
+        */
         if (!(mainServer.getUserManager().getUserById(id).getUsername() == null)) {
             //Operation is marked as successful
             mainServer.getUserManager().removeUserByID(id);
             mainServer.getUserFileManager().save();
-            return new ResponsePacket(true, false);
+            return new DeleteUserResponsePacket(id);
         } else {
-            //If the condition turns out to be false, then the operation is marked as false
+            //If the condition turns out to be false, then the operation is marked as unsuccessful
             return new ResponsePacket(false, false);
         }
     }
