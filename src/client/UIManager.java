@@ -364,7 +364,7 @@ public class UIManager implements Manager {
 		Panel panel = new Panel();
 		
 		lms.getNetworkManagerClient()
-		.addPushHandler(new PushPacketHandler(DeleteQuizResponsePacket.class) {
+		.addPushHandler("modify-check-delete-quiz", new PushPacketHandler(DeleteQuizResponsePacket.class) {
 			@Override
 			public void handlePacket(ResponsePacket resp) {
 				DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
@@ -842,10 +842,10 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Take Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 			.onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-				.addPushHandler(new PushPacketHandler(QuizResponsePacket.class) {
+				.addPushHandler("quiz-list-take-quiz", new PushPacketHandler(QuizResponsePacket.class) {
 					@Override
 					public void handlePacket(ResponsePacket resp) {
-						lms.getNetworkManagerClient().removePushHandler(this);
+						lms.getNetworkManagerClient().removePushHandler("quiz-list-take-quiz");
 						SwingUtilities.invokeLater(() -> {
 							p.runOnOpen();
 						});
@@ -928,10 +928,10 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Modify Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 				.onOpen((Panel p) -> {
 					lms.getNetworkManagerClient()
-					.addPushHandler(new PushPacketHandler(QuizResponsePacket.class) {
+					.addPushHandler("quiz-list-modify-quiz", new PushPacketHandler(QuizResponsePacket.class) {
 						@Override
 						public void handlePacket(ResponsePacket resp) {
-							lms.getNetworkManagerClient().removePushHandler(this);
+							lms.getNetworkManagerClient().removePushHandler("quiz-list-modify-quiz");
 							SwingUtilities.invokeLater(() -> {
 								p.runOnOpen();
 							});
@@ -1016,10 +1016,10 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 			.onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-					.addPushHandler(new PushPacketHandler(GradedQuizResponsePacket.class) {
+					.addPushHandler("quiz-list-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
 						@Override
 						public void handlePacket(ResponsePacket resp) {
-							lms.getNetworkManagerClient().removePushHandler(this);
+							lms.getNetworkManagerClient().removePushHandler("quiz-list-submissions");
 							SwingUtilities.invokeLater(() -> {
 								p.runOnOpen();
 							});
@@ -1110,10 +1110,10 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 				.onOpen((Panel p) -> {
 					lms.getNetworkManagerClient()
-						.addPushHandler(new PushPacketHandler(GradedQuizResponsePacket.class) {
+						.addPushHandler("quiz-list-my-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
 							@Override
 							public void handlePacket(ResponsePacket resp) {
-								lms.getNetworkManagerClient().removePushHandler(this);
+								lms.getNetworkManagerClient().removePushHandler("quiz-list-my-submissions");
 								SwingUtilities.invokeLater(() -> {
 									p.runOnOpen();
 								});
