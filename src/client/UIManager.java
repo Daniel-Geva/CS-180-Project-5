@@ -646,6 +646,8 @@ public class UIManager implements Manager {
 				).setPanelSize(400, 50)
 			);
 			
+			panel.add(new GapComponent(1000));
+			
 			panel.revalidate();
 			panel.updateBounds();
 		});
@@ -858,7 +860,7 @@ public class UIManager implements Manager {
 				)
 				.setPanelSize(400, 200));
 		
-		mainTabPanel.addTabPanel("User Settings", (new Panel(new GridLayout(6, 1)))
+		mainTabPanel.addTabPanel("User Settings", (new Panel(new GridLayout(7, 1)))
 			.onOpen((Panel p) -> {
 				User user = this.getCurrentUser();
 				p.setInput("Name", user.getName());
