@@ -30,9 +30,9 @@ This documentation can be very useful for getting an overview of how certain par
 ### NetworkManagerClient
 Responsible for establishing a connection to the server and creating threads to send information back and forth. `init()` creates two threads, one for receiving objects and one for sending objects, so that the NetworkManagerClient can handle normal request and response packets as well as push packets sent to update the client when necessary.
 ### ResponsePacketHandler
-
+Interprets incoming packets in context provided by a RunnableHandleResponsePacket and makes sure that the recieved packet is not null.
 ### RunnableHandleResponsePacket
-
+An interface used to assign context to the received packets. Implemented and used by many other classes in order to propertly execute the `handlePacket()` method.
 ### UIManager
 The manager that is responsible for the User Interface (UI). It uses the User Interface System to create menus that the user then interacts with. In `init()` it creates all of the menus, which sets up the structure of the UI, and then in `run()` it runs the start menu, which is used as the entry point to the rest of the UI.
 ### ClientFileWrapper
