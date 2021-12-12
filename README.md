@@ -137,9 +137,11 @@ This packet serves as a bridge for communication between the client side to serv
 #### LoginUserRequestPacket
 Once the user enters the username and password and clicks on the submit button to log in to the system, the client side connects with the server to send the information, process that information, and authenticates the identity of the user based on their inputs.
 #### QuizListRequestPacket
-
+Enables the client to request a list of quizzes.  The list returned can be filtered by name, author, course, and all quizzes.
 #### QuizRequestPacket
-
+Requests a specific quiz.  Can also be used when creating a new quiz to create that quiz.
+#### DeleteQuizRequestPacket
+If a quiz exists with the specified ID, deletes that quiz and all associated quiz submissions.
 #### RequestPacket
 
 #### UpdateUserRequestPacket
@@ -151,9 +153,11 @@ Once the user enters the username and password and clicks on the submit button t
 #### NewUserResponsePacket
 Stores the user that has logged in to the program as an object.
 #### QuizListResponsePacket
-
+Sends the requested list of quizzes back to the client
 #### QuizResponsePacket
-
+Returns a requested quiz to the user.  If any changes were made to the quizzes or a new quiz was created, pushes the change to all users connected.
+#### DeleteQuizResponsePacket
+Tells the client if a quiz was succesfully deleted, and if it was pushes the updated quiz list to all clients.
 #### ResponsePacket
 
 
