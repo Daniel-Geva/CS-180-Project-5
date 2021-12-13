@@ -8,9 +8,11 @@ import datastructures.GradedQuiz;
 import datastructures.Manager;
 
 /**
- * Reads and writes files with graded quiz information for initialization and storage
+ * Reads and writes files with graded quiz
+ * information for initialization and storage
  * <p>
- * Contains an ArrayList of graded quizzes from storage that will be passed to GradedQuizManager.
+ * Contains an ArrayList of graded quizzes
+ * from storage that will be passed to GradedQuizManager.
  * <p>
  *
  * @author Daniel Geva
