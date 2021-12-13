@@ -161,6 +161,8 @@ Returns a requested graded quiz to the user. If any changes were made to the gra
 
 #### NewUserResponsePacket
 Stores the user that has logged in to the program as an object.
+#### ChangeUserResponsePacket
+Sends a packet from server to client to inform the client the user information has been changed. This packet is used for recognizing type of change in user information
 #### QuizListResponsePacket
 Sends the requested list of quizzes back to the client
 #### QuizResponsePacket
