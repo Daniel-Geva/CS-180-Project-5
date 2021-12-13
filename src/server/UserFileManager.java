@@ -39,24 +39,6 @@ public class UserFileManager implements Manager {
         this.save();
     }
 
-    /*
-    public void debugPrint(ArrayList<?> list) {
-        System.out.println(list.toString());
-        for(Object o: list) {
-            System.out.println(o.toString());
-        }
-        System.out.println("0000");
-    }
-
-    public void debugPrint(Object[] list) {
-        System.out.println(list.toString());
-        for(Object o: list) {
-            System.out.println(o.toString());
-        }
-        System.out.println("0000");
-    }
-     */
-
     ///gets the altered arraylist of users from UserManager after the program finishes, to be written to a file
     public synchronized void save() {
         this.users = lms.getUserManager().getUsers();

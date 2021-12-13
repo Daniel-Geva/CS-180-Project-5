@@ -1,4 +1,5 @@
 package server;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -51,7 +52,6 @@ public class QuizManager implements Manager {
 	 */
 	public void removeQuiz(int id) {
 		synchronized (quizLock) {
-			int startingListLength = quizList.size();
 			for (int i = 0; i < quizList.size(); i++) {
 				if (quizList.get(i).getId() == id) {
 					quizList.remove(i);

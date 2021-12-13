@@ -14,13 +14,17 @@ public class UpdateUserRequestPacket extends RequestPacket {
 	
 	@Override
 	public ResponsePacket serverHandle(LearningManagementSystemServer mainServer) {
+		
 		User oldUser = mainServer.getUserManager().getUserById(this.user.getID());
 		User sameUsernameUser = mainServer.getUserManager().getUser(this.user.getUsername());
+		
 		if(sameUsernameUser != null && sameUsernameUser.getID() != this.user.getID())
 			return new ResponsePacket(false, false);
+		
 		oldUser.setName(user.getName());
 		oldUser.setUsername(user.getUsername());
 		oldUser.setPassword(user.getPassword());
+		
         mainServer.getUserFileManager().save();
 		return new ResponsePacket(true, false);
 	}

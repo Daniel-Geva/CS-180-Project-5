@@ -1,9 +1,8 @@
 package packets.request;
+
 import java.io.Serializable;
 
 import datastructures.GradedQuiz;
-import datastructures.Quiz;
-import datastructures.User;
 import packets.response.GradedQuizResponsePacket;
 import server.LearningManagementSystemServer;
 

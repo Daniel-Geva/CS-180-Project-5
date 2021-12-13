@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -70,7 +69,7 @@ public class NetworkManagerClient {
                         socket = new Socket(nameSetter.getName(), 4040);
 
                         oos = new ObjectOutputStream(socket.getOutputStream());
-
+                        
                         success = true;
                         synchronized(connectionSuccessLock) {
                         	connectionSuccessLock.notifyAll();
@@ -97,7 +96,10 @@ public class NetworkManagerClient {
                         	synchronized (lmsc.getNetworkManagerClient()) {
                                 RequestPacket request = packetQueue.keySet().iterator().next();
                                 queue.add(packetQueue.get(request));
+                                
                                 oos.writeObject(request);
+                            	oos.reset();
+                            	
                                 packetQueue.remove(request);
                             }
                         } catch (IOException e) {
@@ -130,6 +132,7 @@ public class NetworkManagerClient {
                 while (true) {
                     try {
                         Object responseObj = ois.readObject();
+                        
                         if (!(responseObj instanceof ResponsePacket)) {
                             continue;
                         }
