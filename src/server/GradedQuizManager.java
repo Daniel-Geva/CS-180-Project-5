@@ -47,9 +47,12 @@ public class GradedQuizManager implements Manager {
         }
     }
 
+    /**
+     * Deletes all graded quizzes associated with a student
+     * @param studentID The student ID of the graded quizzes that needs ot be deleted
+     */
     public void deleteAllByStudentID(int studentID) {
         synchronized (gradedQuizList) {
-        	// TODO What is this????
             int size = gradedQuizList.size() - 1;
         }
         for (int size = gradedQuizList.size() - 1; size >= 0; size--) {  // iterates backwards to prevent
@@ -62,9 +65,14 @@ public class GradedQuizManager implements Manager {
         }
     }
 
+    /**
+     * Searches the list of graded quizzes by ID
+     * @param id ID of graded quiz
+     * @return graded quiz
+     */
     public GradedQuiz searchGradedQuizByID(String id) {
         synchronized (gradedQuizList) {
-            for (int i = 0; i <gradedQuizList.size(); i++) {
+            for (int i = 0; i < gradedQuizList.size(); i++) {
                 if (gradedQuizList.get(i).getID().equals(id)) {
                     return gradedQuizList.get(i);
                 }
