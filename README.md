@@ -115,7 +115,7 @@ The class used for reading and writing to file. It contains static methods that 
 The manager that holds the list of all graded quizzes. It also provides a method for searching for graded quizzes by course, and a method to delete all graded quizzes taken by a certain student.
 
 ### LearningManagementSystemServer
-This class contains all of the managers that are stored on the server - quizManager, gradedQuizManeger, UserManager, and all of those file managers.  When the server is started those are all initialized.  This is also used for the client managers to retrieve information from one another.
+This class contains all the managers that are stored on the server - quizManager, gradedQuizManeger, UserManager, and all of those file managers.  When the server is started those are all initialized.  This is also used for the client managers to retrieve information from one another.
 
 ### NetworkManagerServer
 This handles requests for information from the client, including sending push packets to all clients if something needs to be changed.  It also starts the server on initialization.  It utilizes multithreading in order to simultaneously be able to send and receive packets while also always listening for push packets.
@@ -161,6 +161,8 @@ Returns a requested graded quiz to the user. If any changes were made to the gra
 
 #### NewUserResponsePacket
 Stores the user that has logged in to the program as an object.
+#### ChangeUserResponsePacket
+Sends a packet from server to client to inform the client the user information has been changed. This packet is used for recognizing type of change in user information
 #### QuizListResponsePacket
 Sends the requested list of quizzes back to the client
 #### QuizResponsePacket

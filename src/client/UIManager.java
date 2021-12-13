@@ -963,7 +963,7 @@ public class UIManager implements Manager {
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
 				    .addPushHandler("take-quiz", 
-						new PushPacketHandler() {
+					   new PushPacketHandler() {
 							@Override
 							public void handlePacket(ResponsePacket resp) {
 								p.runOnOpen();
@@ -1053,7 +1053,7 @@ public class UIManager implements Manager {
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
 				    .addPushHandler("modify-quiz", 
-						new PushPacketHandler() {
+					   new PushPacketHandler() {
 							@Override
 							public void handlePacket(ResponsePacket resp) {
 								p.runOnOpen();
@@ -1144,7 +1144,7 @@ public class UIManager implements Manager {
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
 				    .addPushHandler("quiz-submissions", 
-						new PushPacketHandler() {
+					   new PushPacketHandler() {
 							@Override
 							public void handlePacket(ResponsePacket resp) {
 								p.runOnOpen();
@@ -1245,7 +1245,7 @@ public class UIManager implements Manager {
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
 				    .addPushHandler("my-quiz-submissions", 
-						new PushPacketHandler() {
+					   new PushPacketHandler() {
 							@Override
 							public void handlePacket(ResponsePacket resp) {
 								p.runOnOpen();
