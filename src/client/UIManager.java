@@ -962,13 +962,12 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Take Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-				    .addPushHandler("take-quiz", 
-					   new PushPacketHandler() {
-							@Override
-							public void handlePacket(ResponsePacket resp) {
-								p.runOnOpen();
-							}
+				    .addPushHandler("take-quiz", new PushPacketHandler() {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
+							p.runOnOpen();
 						}
+					}
 					    .addClass(QuizResponsePacket.class)
 					    .addClass(DeleteQuizResponsePacket.class)
 					    .addClass(ChangeUserResponsePacket.class)
