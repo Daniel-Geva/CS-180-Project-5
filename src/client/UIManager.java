@@ -145,7 +145,7 @@ public class UIManager implements Manager {
 						mainPanel.open();
 					}
 				}
-			}.addClass(DeleteQuizResponsePacket.class));
+		   }.addClass(DeleteQuizResponsePacket.class));
 		
 		
 		panel.add(new Heading("Quiz Session").big().margin(30));
@@ -175,12 +175,12 @@ public class UIManager implements Manager {
 					break;
 				case "Dropdown":
 					Dropdown dropdown = new Dropdown(
-						Integer.toString(question.getId()), 
-						question.getAnswers()
+					   Integer.toString(question.getId()), 
+					   question.getAnswers()
 						    .stream()
 						    .map((Answer a) -> a.getAnswer())
 						    .toList(),
-						question.getAnswers()
+					   question.getAnswers()
 						    .stream()
 						    .map((Answer a) -> a.getId())
 						    .toList()
@@ -252,10 +252,10 @@ public class UIManager implements Manager {
 					for (Question q: quiz.getQuestions()) {
 						if (!resultMap.containsKey(Integer.toString(q.getId()))) {
 							JOptionPane.showMessageDialog(
-								null, 
-								"Please answer all of the questions and try to submit again.", 
-								"Error", 
-								JOptionPane.ERROR_MESSAGE
+							    null, 
+							    "Please answer all of the questions and try to submit again.", 
+							    "Error", 
+							    JOptionPane.ERROR_MESSAGE
 							);
 							return;
 						}
@@ -283,12 +283,12 @@ public class UIManager implements Manager {
 							    .add(new Panel()
 								    .boxLayout(BoxLayout.X_AXIS)
 								    .add(new Button("No")
-									    .onClick((Panel __) -> {
+									    .onClick((Panel unusedPanel) -> {
 											overallPanel.close();
 											mainPanel.open();
 										}))
 								    .add(new Button("Yes")
-									    .onClick((Panel __) -> {
+									    .onClick((Panel unusedPanel) -> {
 											overallPanel.close();
 											getSubmissionPanel(submission, quiz, this.getCurrentUser()).open();
 										}))
@@ -345,7 +345,8 @@ public class UIManager implements Manager {
 				int chosenAnswerId = submission.getGradedQuizMap().get(question.getId());
 				int possibleAmt = 0;
 				for (Answer answer: question.getAnswers()) {
-					Label answerLabel = new Label(" - " + answer.getAnswer() + " - " + answer.getPoints() + " Point(s)");
+					String answerString = " - " + answer.getAnswer() + " - " + answer.getPoints() + " Point(s)";
+					Label answerLabel = new Label(answerString);
 					panel.add(answerLabel);
 					if (chosenAnswerId == answer.getId()) {
 						chosenAnswer = answer;
@@ -387,9 +388,9 @@ public class UIManager implements Manager {
 
 	private JComponent addMargin(JComponent component, int... margin) {
 		component.setBorder(
-			BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(margin[0], margin[1], margin[2], margin[3]),
-				component.getBorder()
+		    BorderFactory.createCompoundBorder(
+			   BorderFactory.createEmptyBorder(margin[0], margin[1], margin[2], margin[3]),
+			   component.getBorder()
 			)
 		);
 		return component;
@@ -399,28 +400,31 @@ public class UIManager implements Manager {
 		Panel panel = new Panel();
 		
 		lms.getNetworkManagerClient()
-	    .addPushHandler("modify-check-delete-quiz", new PushPacketHandler() {
-			@Override
-			public void handlePacket(ResponsePacket resp) {
-				DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
-				if (quiz.getId() == respDelQuiz.getQuizId()) {
-					panel.close();
-					JOptionPane.showMessageDialog(
-						null, 
-						"The quiz was deleted by another user.", 
-						"Error", 
-						JOptionPane.ERROR_MESSAGE
-					);
-					mainPanel.open();
+		    .addPushHandler("modify-check-delete-quiz", 
+	    		new PushPacketHandler() {
+					@Override
+					public void handlePacket(ResponsePacket resp) {
+						DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
+						if (quiz.getId() == respDelQuiz.getQuizId()) {
+							panel.close();
+							JOptionPane.showMessageDialog(
+							    null, 
+							    "The quiz was deleted by another user.", 
+							    "Error", 
+							    JOptionPane.ERROR_MESSAGE
+							);
+							mainPanel.open();
+						}
+					}
 				}
-			}
-		}.addClass(DeleteQuizResponsePacket.class));
+			    .addClass(DeleteQuizResponsePacket.class)
+    		);
 		
 		panel.setPanelSize(1000, 720);
 		panel.setMargin(96, 96);
 		panel.boxLayout(BoxLayout.Y_AXIS);
 		panel.alignLeft();
-		panel.onOpen((Panel __) -> {
+		panel.onOpen((Panel unusedPanel) -> {
 			if (panel.getMainPanel().getComponents().length > 1) {
 				Map<String, String> map = panel.getResultMap();
 
@@ -467,7 +471,7 @@ public class UIManager implements Manager {
 			
 			panel.add(scrambledLabel);
 			panel.add(new Button("Toggle Scrambled")
-			    .onClick((Panel ___) -> {
+			    .onClick((Panel unusedPanel2) -> {
 					quiz.setScrambled(!quiz.isScrambled());
 					scrambledLabel.setText("Questions Scrambled: " + (quiz.isScrambled() ? "Yes" : "No"));
 				}));
@@ -509,7 +513,7 @@ public class UIManager implements Manager {
 							    .setPanelSize(1000, 50);
 					if (!question.getQuestionType().equalsIgnoreCase("True or False")) {
 						answerPanel.add(new Button("Remove Answer")
-						    .onClick((Panel ___) -> {
+						    .onClick((Panel unusedPanel2) -> {
 								answers.remove(answer);
 								panel.runOnOpen();
 							}));
@@ -520,13 +524,13 @@ public class UIManager implements Manager {
 				Panel questionModifyPanel = new Panel(new FlowLayout(FlowLayout.LEADING));
 				if (!question.getQuestionType().equalsIgnoreCase("True or False")) {
 					questionModifyPanel.add(new Button("Add New Answer")
-					    .onClick((Panel ___) -> {
+					    .onClick((Panel unusedPanel2) -> {
 							answers.add(new Answer("", false, 0, question.generateUniqueAnswerId()));
 							panel.runOnOpen();
 						}));
 				}
 				questionModifyPanel.add(new Button("Remove Question")
-				    .onClick((Panel ___) -> {
+				    .onClick((Panel unusedPanel2) -> {
 						quiz.getQuestions().remove(question);
 						panel.runOnOpen();
 					}));
@@ -595,7 +599,7 @@ public class UIManager implements Manager {
 				);
 
 			panel.add(new Button("Add New Question")
-			    .onClick((Panel ___) -> {
+			    .onClick((Panel unusedPanel2) -> {
 					quiz.getQuestions().add(
 						new Question(
 							new ArrayList<Answer>(),
@@ -696,7 +700,7 @@ public class UIManager implements Manager {
 		    .add(new TextField("Quiz Name"))
 		    .add(new Panel(new FlowLayout())
 			    .add(new Button("Cancel")
-				    .onClick((Panel __) -> {
+				    .onClick((Panel unusedPanel) -> {
 						mainPanel.closeModal();
 					}))
 			    .add(new Button("Import From File")
@@ -776,43 +780,43 @@ public class UIManager implements Manager {
 				    .add(new Label("Logged in as " + this.getCurrentUser().getName()).center())
 				    .compSetSize(280, 50)
 				    .add((new Button("Take Quiz"))
-					    .onClick((Panel __) -> {
+					    .onClick((Panel unusedPanel) -> {
 							mainTabPanel.openTabPanel("Take Quiz");
 						}))
 				    .compSetSize(280, 35);
 				if (this.getCurrentUser() instanceof Teacher) {
 					panel
 					    .add((new Button("Modify Quiz"))
-						    .onClick((Panel __) -> {
+						    .onClick((Panel unusedPanel) -> {
 								mainTabPanel.openTabPanel("Modify Quiz");
 							}))
 					    .compSetSize(280, 35)
 					    .add((new Button("Quiz Submissions"))
-						    .onClick((Panel __) -> {
+						    .onClick((Panel unusedPanel) -> {
 								mainTabPanel.openTabPanel("Quiz Submissions");
 							}))
 					    .compSetSize(280, 35)
 					    .add(new Button("Create Quiz")
-						    .onClick((Panel __) -> {
+						    .onClick((Panel unusedPanel) -> {
 								mainPanel.openModal("create-quiz");
 							}))
 					    .compSetSize(280, 35);
 				} else {
 					panel
 					    .add((new Button("My Quiz Submissions"))
-						    .onClick((Panel __) -> {
+						    .onClick((Panel unusedPanel) -> {
 								mainTabPanel.openTabPanel("My Quiz Submissions");
 							}))
 					    .compSetSize(280, 35);
 				}
 				panel
 				    .add((new Button("User Settings"))
-					    .onClick((Panel __) -> {
+					    .onClick((Panel unusedPanel) -> {
 							mainTabPanel.openTabPanel("User Settings");
 						}))
 				    .compSetSize(280, 35)
 				    .add((new Button("Logout"))
-					    .onClick((Panel __) -> {
+					    .onClick((Panel unusedPanel) -> {
 							mainPanel.close();
 							mainTabPanel.openTabPanel("Take Quiz");
 							loginPanel.open();
@@ -829,7 +833,7 @@ public class UIManager implements Manager {
 		    .add(new Label("No fields can be empty."))
 		    .add(new Label("Verify all fields have values in them."))
 		    .add(new Button("Okay")
-			    .onClick((Panel __) -> {
+			    .onClick((Panel unusedPanel) -> {
 					mainPanel.closeModal();
 				}))
 		    .setPanelSize(400, 200));
@@ -838,7 +842,7 @@ public class UIManager implements Manager {
 		    .add(new Label("A user with that username already exists."))
 		    .add(new Label("Please use a different one."))
 		    .add(new Button("Okay")
-			    .onClick((Panel __) -> {
+			    .onClick((Panel unusedPanel) -> {
 					mainPanel.closeModal();
 				}))
 		    .setPanelSize(400, 200));
@@ -846,7 +850,7 @@ public class UIManager implements Manager {
 		mainPanel.addModal("user-settings-success", new Panel()
 		    .add(new Label("Successfully updated your details."))
 		    .add(new Button("Okay")
-			    .onClick((Panel __) -> {
+			    .onClick((Panel unusedPanel) -> {
 					mainPanel.closeModal();
 				}))
 		    .setPanelSize(400, 200));
@@ -857,12 +861,12 @@ public class UIManager implements Manager {
 			    .add(new Panel()
 				    .boxLayout(BoxLayout.X_AXIS)
 				    .add(new Button("Cancel")
-					    .onClick((Panel __) -> {
+					    .onClick((Panel unusedPanel) -> {
 							mainPanel.closeModal();
 						}))
 				    .add(new Button("Yes, Delete my Account")
 					    .color(Aesthetics.BUTTON_WARNING)
-					    .onClick((Panel __) -> {
+					    .onClick((Panel unusedPanel) -> {
 							lms.getNetworkManagerClient()
 							    .sendPacket(new DeleteUserRequestPacket(this.getCurrentUser().getID()))
 							    .onReceiveResponse((ResponsePacket resp) -> {
@@ -983,7 +987,7 @@ public class UIManager implements Manager {
 								    .add(new Label(quiz.getName()))
 								    .add(new Label("Author: " + quiz.getAuthor()))
 								    .add(new Label("Questions: " + quiz.getQuestions().size()))
-								    .onClick(mainPanel, (Panel __) -> {
+								    .onClick(mainPanel, (Panel unusedPanel) -> {
 										mainPanel.addModal("Quiz-" + quiz.getId(), 
 											(new Panel())
 										    .boxLayout(BoxLayout.Y_AXIS)
@@ -995,14 +999,14 @@ public class UIManager implements Manager {
 										    .add(new Panel()
 											    .boxLayout(BoxLayout.X_AXIS)
 											    .add((new Button("Take Quiz"))
-												    .onClick((Panel __2) -> {
+												    .onClick((Panel unusedPanel2) -> {
 														mainPanel.closeModal();
 														mainPanel.close();
 														mainTabPanel.openTabPanel("Take Quiz");
 														getTakeQuizPanel(quiz).open();
 													}))
 											    .add((new Button("Cancel"))
-												    .onClick((Panel __2) -> {
+												    .onClick((Panel unusedPanel2) -> {
 														mainPanel.closeModal();
 													}))
 											    .setPanelSize(299, 48)
@@ -1072,7 +1076,7 @@ public class UIManager implements Manager {
 									    .add(new Label(quiz.getName()))
 									    .add(new Label("Author: " + quiz.getAuthor()))
 									    .add(new Label("Questions: " + quiz.getQuestions().size()))
-									    .onClick(mainPanel, (Panel __) -> {
+									    .onClick(mainPanel, (Panel unusedPanel) -> {
 											mainPanel.addModal("Quiz-" + quiz.getId(), 
 												(new Panel())
 											    .boxLayout(BoxLayout.Y_AXIS)
@@ -1083,14 +1087,14 @@ public class UIManager implements Manager {
 											    .add((new Panel())
 												    .boxLayout(BoxLayout.X_AXIS) 
 												    .add((new Button("Modify Quiz"))
-													    .onClick((Panel __2) -> {
+													    .onClick((Panel unusedPanel2) -> {
 															mainPanel.closeModal();
 															mainPanel.close();
 															mainTabPanel.openTabPanel("Take Quiz");
 															getModifyQuizPanel(quiz).open();
 														}))
 												    .add((new Button("Cancel"))
-													    .onClick((Panel __2) -> {
+													    .onClick((Panel unusedPanel2) -> {
 															mainPanel.closeModal();
 														}))
 												    .setPanelSize(300, 48)
@@ -1173,7 +1177,7 @@ public class UIManager implements Manager {
 								    .add(new Label(quiz.getName()))
 								    .add(new Label("Score: " + gradedQuiz.getScore(quiz)))
 								    .add(new Label(gradedQuiz.getSubmissionTime()))
-								    .onClick(mainPanel, (Panel __) -> {
+								    .onClick(mainPanel, (Panel unusedPanel) -> {
 										mainPanel.addModal("Quiz-" + quiz.getId(), 
 											(new Panel())
 										    .boxLayout(BoxLayout.Y_AXIS)
@@ -1184,14 +1188,14 @@ public class UIManager implements Manager {
 										    .add((new Panel())
 											    .boxLayout(BoxLayout.X_AXIS) 
 											    .add((new Button("View Submission"))
-												    .onClick((Panel __2) -> {
+												    .onClick((Panel unusedPanel2) -> {
 														mainPanel.closeModal();
 														mainPanel.close();
 														mainTabPanel.openTabPanel("Take Quiz");
 														getSubmissionPanel(gradedQuiz, quiz, user).open();
 													}))
 											    .add((new Button("Cancel"))
-												    .onClick((Panel __2) -> {
+												    .onClick((Panel unusedPanel2) -> {
 														mainPanel.closeModal();
 													}))
 											    .setPanelSize(300, 48)
@@ -1273,7 +1277,7 @@ public class UIManager implements Manager {
 								    .add(new Label(quiz.getName()))
 								    .add(new Label("Score: " + gradedQuiz.getScore(quiz)))
 								    .add(new Label(gradedQuiz.getSubmissionTime()))
-								    .onClick(mainPanel, (Panel __) -> {
+								    .onClick(mainPanel, (Panel unusedPanel) -> {
 										mainPanel.addModal("Quiz-" + quiz.getId(), 
 											(new Panel())
 										    .boxLayout(BoxLayout.Y_AXIS)
@@ -1284,14 +1288,14 @@ public class UIManager implements Manager {
 										    .add((new Panel())
 											    .boxLayout(BoxLayout.X_AXIS) 
 											    .add((new Button("View Submission"))
-												    .onClick((Panel __2) -> {
+												    .onClick((Panel unusedPanel2) -> {
 														mainPanel.closeModal();
 														mainPanel.close();
 														mainTabPanel.openTabPanel("Take Quiz");
 														getSubmissionPanel(gradedQuiz, quiz, user).open();
 													}))
 											    .add((new Button("Cancel"))
-												    .onClick((Panel __2) -> {
+												    .onClick((Panel unusedPanel2) -> {
 														mainPanel.closeModal();
 													}))
 											    .setPanelSize(300, 48)
@@ -1456,7 +1460,7 @@ public class UIManager implements Manager {
 					connectionStatusPanel
 					    .add(new Label("Unable to connect to the server."))
 					    .add((new Button("Try Again"))
-						    .onClick((Panel __) -> {
+						    .onClick((Panel unusedPanel) -> {
 								connectionStatusPanel.close();
 								connectionStatusPanel.getMainPanel().removeAll();
 								connectionStatusPanel
