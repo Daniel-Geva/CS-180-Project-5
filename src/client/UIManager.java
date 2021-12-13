@@ -153,7 +153,8 @@ public class UIManager implements Manager {
 						mainPanel.open();
 					}
 				}
-		   }.addClass(DeleteQuizResponsePacket.class));
+		    }
+		    .addClass(DeleteQuizResponsePacket.class));
 		
 		
 		panel.add(new Heading("Quiz Session").big().margin(30));
@@ -183,12 +184,12 @@ public class UIManager implements Manager {
 					break;
 				case "Dropdown":
 					Dropdown dropdown = new Dropdown(
-					   Integer.toString(question.getId()), 
-					   question.getAnswers()
+					    Integer.toString(question.getId()), 
+					    question.getAnswers()
 						    .stream()
 						    .map((Answer a) -> a.getAnswer())
 						    .toList(),
-					   question.getAnswers()
+					    question.getAnswers()
 						    .stream()
 						    .map((Answer a) -> a.getId())
 						    .toList()
@@ -309,7 +310,8 @@ public class UIManager implements Manager {
 						});
 					
 				})
-			).setPanelSize(200, 50)
+			)
+		    .setPanelSize(200, 50)
 		);
 
 		JScrollPane pane = new JScrollPane(panel.getMainPanel());
@@ -454,14 +456,14 @@ public class UIManager implements Manager {
 						try {
 							if (map.containsKey(prefix + "-P"))
 								answer.setPointValue(Integer.parseInt(map.get(prefix + "-P")));
-						} catch(NumberFormatException e) {
+						} catch (NumberFormatException e) {
 							JOptionPane.showMessageDialog(
-								null,
-								"Invalid point values. " +
-								"Please enter a valid input when entering the point values of a question. " +
-								"The point values must be an integer.", 
-								"Error", 
-								JOptionPane.ERROR_MESSAGE
+							    null,
+							    "Invalid point values. " +
+							    "Please enter a valid input when entering the point values of a question. " +
+							    "The point values must be an integer.", 
+							    "Error", 
+							    JOptionPane.ERROR_MESSAGE
 							);
 						}
 					}
@@ -490,8 +492,8 @@ public class UIManager implements Manager {
 				addMargin(panel.getPreviousComponent(), new int[] {0, 0, 60, 0});
 				panel.add(new Label("\nQuestion #" + i));
 				Dropdown questionTypeDropdown = new Dropdown("QT-" + question.getId(), new String[] {
-						"Multiple Choice", "True or False", "Dropdown"
-					})
+				    "Multiple Choice", "True or False", "Dropdown"
+				})
 				    .onChange((String choice) -> {
 						if (question.getQuestionType().equalsIgnoreCase(choice))
 							return;
@@ -587,17 +589,17 @@ public class UIManager implements Manager {
 									mainPanel.open();
 									if (resp.wasSuccess()) {
 										JOptionPane.showMessageDialog(
-											null, 
-											"Successfully deleted the quiz.", 
-											"Success", 
-											JOptionPane.INFORMATION_MESSAGE
+										    null, 
+										    "Successfully deleted the quiz.", 
+										    "Success", 
+										    JOptionPane.INFORMATION_MESSAGE
 										);
 									} else {
 										JOptionPane.showMessageDialog(
-											null, 
-											"Unable to delete the quiz.", 
-											"Error", 
-											JOptionPane.ERROR_MESSAGE
+										    null, 
+										    "Unable to delete the quiz.", 
+										    "Error", 
+										    JOptionPane.ERROR_MESSAGE
 										);
 									}
 								});
@@ -609,11 +611,11 @@ public class UIManager implements Manager {
 			panel.add(new Button("Add New Question")
 			    .onClick((Panel unusedPanel2) -> {
 					quiz.getQuestions().add(
-						new Question(
-							new ArrayList<Answer>(),
-							"", 
-							quiz.generateUniqueQuestionId(), 
-							"Multiple Choice"
+					    new Question(
+						   new ArrayList<Answer>(),
+						   "", 
+						   quiz.generateUniqueQuestionId(), 
+						   "Multiple Choice"
 						)
 					);
 					panel.runOnOpen();
@@ -652,14 +654,14 @@ public class UIManager implements Manager {
 								answer.setAnswer(map.get(prefix));
 								try {
 									answer.setPointValue(Integer.parseInt(map.get(prefix + "-P")));
-								} catch(NumberFormatException e) {
+								} catch (NumberFormatException e) {
 									JOptionPane.showMessageDialog(
-										null,
-										"Invalid point values. " +
-										"Please enter a valid input when entering the point values of a question. " +
-										"The point values must be an integer.", 
-										"Error", 
-										JOptionPane.ERROR_MESSAGE
+									    null,
+									    "Invalid point values. " +
+									    "Please enter a valid input when entering the point values of a question. " +
+									    "The point values must be an integer.", 
+									    "Error", 
+									    JOptionPane.ERROR_MESSAGE
 									);
 									return;
 								}
@@ -670,17 +672,17 @@ public class UIManager implements Manager {
 						    .sendPacket(new QuizRequestPacket(quiz))
 						    .onReceiveResponse((ResponsePacket resp) -> {
 								JOptionPane.showMessageDialog(
-									null, 
-									"Successfully saved the quiz. Going back to the main menu.",
-									"Success",
-									JOptionPane.INFORMATION_MESSAGE
+								    null, 
+								    "Successfully saved the quiz. Going back to the main menu.",
+								    "Success",
+								    JOptionPane.INFORMATION_MESSAGE
 								);
 								panel.close();
 								mainPanel.open();
 							});
-						
 					})
-				).setPanelSize(400, 50)
+				)
+			    .setPanelSize(400, 50)
 			);
 			
 			panel.add(new GapComponent(1000));
@@ -723,21 +725,21 @@ public class UIManager implements Manager {
 						Quiz quiz;
 						try {
 							quiz = ClientFileWrapper.importQuiz(lms, f, name, course);
-						} catch(Exception e) {
+						} catch (Exception e) {
 							JOptionPane.showMessageDialog(
-								null, 
-								"An error occurred when attempting to import the quiz. Invalid file format.", 
-								"Error", 
-								JOptionPane.ERROR_MESSAGE
+							    null, 
+							    "An error occurred when attempting to import the quiz. Invalid file format.", 
+							    "Error", 
+							    JOptionPane.ERROR_MESSAGE
 							);
 							return;
 						}
 						if (quiz == null) {
 							JOptionPane.showMessageDialog(
-								null, 
-								"Invalid file. Please select a valid one to import.", 
-								"Error",
-								JOptionPane.ERROR_MESSAGE
+							    null, 
+							    "Invalid file. Please select a valid one to import.", 
+							    "Error",
+							    JOptionPane.ERROR_MESSAGE
 							);
 							return;
 						}
@@ -832,7 +834,8 @@ public class UIManager implements Manager {
 				    .compSetSize(280, 35);
 				mainPanel.refreshComponents();
 			})
-	    .setPanelSize(280, 720));
+		    .setPanelSize(280, 720)
+	    );
 		
 		mainPanel.add(mainTabPanel
 		    .setPanelSize(1000, 720));
@@ -884,17 +887,17 @@ public class UIManager implements Manager {
 									loginPanel.open();
 									if (resp.wasSuccess()) {
 										JOptionPane.showMessageDialog(
-											null, 
-											"Successfully deleted your account.",
-											"Success",
-											JOptionPane.INFORMATION_MESSAGE
+										    null, 
+										    "Successfully deleted your account.",
+										    "Success",
+										    JOptionPane.INFORMATION_MESSAGE
 										);
 									} else {
 										JOptionPane.showMessageDialog(
-											null, 
-											"Unable to delete your account because it doesn't exit.",
-											"Error",
-											JOptionPane.ERROR_MESSAGE
+										    null, 
+										    "Unable to delete your account because it doesn't exit.",
+										    "Error",
+										    JOptionPane.ERROR_MESSAGE
 										);
 									}
 								});
@@ -939,15 +942,15 @@ public class UIManager implements Manager {
 					user.setPassword(password);
 					
 					lms.getNetworkManagerClient()
-				    .sendPacket(new UpdateUserRequestPacket(user))
-				    .onReceiveResponse((ResponsePacket packet) -> {
-						if (!packet.wasSuccess()) {
-							mainPanel.openModal("user-settings-error");
-							return;
-						}
-						mainPanel.runOnOpen();
-						mainPanel.openModal("user-settings-success");
-					});
+					    .sendPacket(new UpdateUserRequestPacket(user))
+					    .onReceiveResponse((ResponsePacket packet) -> {
+							if (!packet.wasSuccess()) {
+								mainPanel.openModal("user-settings-error");
+								return;
+							}
+							mainPanel.runOnOpen();
+							mainPanel.openModal("user-settings-success");
+						});
 				}).panelize()
 			)
 		    .setMargin(64, 0)
@@ -959,17 +962,17 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Take Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-			    .addPushHandler("take-quiz", 
-					new PushPacketHandler() {
-						@Override
-						public void handlePacket(ResponsePacket resp) {
-							p.runOnOpen();
+				    .addPushHandler("take-quiz", 
+						new PushPacketHandler() {
+							@Override
+							public void handlePacket(ResponsePacket resp) {
+								p.runOnOpen();
+							}
 						}
-					}
-				    .addClass(QuizResponsePacket.class)
-				    .addClass(DeleteQuizResponsePacket.class)
-				    .addClass(ChangeUserResponsePacket.class)
-				);
+					    .addClass(QuizResponsePacket.class)
+					    .addClass(DeleteQuizResponsePacket.class)
+					    .addClass(ChangeUserResponsePacket.class)
+					);
 				lms.getNetworkManagerClient()
 				    .sendPacket(new QuizListRequestPacket("All", "", false))
 				    .onReceiveResponse((ResponsePacket resp) -> {
@@ -978,7 +981,9 @@ public class UIManager implements Manager {
 						QuizListResponsePacket listResp = (QuizListResponsePacket) resp;
 						List<Quiz> quizzes = listResp.getListOfQuizzesResponse();
 						if (quizzes == null) {
-							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
+							String name1 = "Unable to get a list of quizzes. ";
+							String name2 = "Please verify the server is up or try again later.";
+							p.add(new Heading(name1 + name2));
 							p.revalidate();
 							return;
 						}
@@ -996,8 +1001,7 @@ public class UIManager implements Manager {
 								    .add(new Label("Author: " + quiz.getAuthor()))
 								    .add(new Label("Questions: " + quiz.getQuestions().size()))
 								    .onClick(mainPanel, (Panel unusedPanel) -> {
-										mainPanel.addModal("Quiz-" + quiz.getId(), 
-											(new Panel())
+										mainPanel.addModal("Quiz-" + quiz.getId(), (new Panel())
 										    .boxLayout(BoxLayout.Y_AXIS)
 										    .alignLeft()
 										    .add(new Heading(quiz.getName()))
@@ -1025,9 +1029,9 @@ public class UIManager implements Manager {
 										mainPanel.openModal("Quiz-" + quiz.getId());
 									});
 								panel.getMainPanel().setBorder(
-									BorderFactory.createCompoundBorder(
-										BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
-										BorderFactory.createEmptyBorder(20, 20, 20, 20)
+								    BorderFactory.createCompoundBorder(
+									   BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+									   BorderFactory.createEmptyBorder(20, 20, 20, 20)
 									)
 								);
 								panel.setPanelSize(200, 100);
@@ -1048,17 +1052,17 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Modify Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-			    .addPushHandler("modify-quiz", 
-					new PushPacketHandler() {
-						@Override
-						public void handlePacket(ResponsePacket resp) {
-							p.runOnOpen();
+				    .addPushHandler("modify-quiz", 
+						new PushPacketHandler() {
+							@Override
+							public void handlePacket(ResponsePacket resp) {
+								p.runOnOpen();
+							}
 						}
-					}
-				    .addClass(QuizResponsePacket.class)
-				    .addClass(DeleteQuizResponsePacket.class)
-				    .addClass(ChangeUserResponsePacket.class)
-				);
+					    .addClass(QuizResponsePacket.class)
+					    .addClass(DeleteQuizResponsePacket.class)
+					    .addClass(ChangeUserResponsePacket.class)
+					);
 				lms.getNetworkManagerClient()
 				    .sendPacket(new QuizListRequestPacket("All", "", false))
 				    .onReceiveResponse((ResponsePacket resp) -> {
@@ -1067,7 +1071,9 @@ public class UIManager implements Manager {
 						QuizListResponsePacket listResp = (QuizListResponsePacket) resp;
 						List<Quiz> quizzes = listResp.getListOfQuizzesResponse();
 						if (quizzes == null) {
-							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
+							String name1 = "Unable to get a list of quizzes. ";
+							String name2 = "Please verify the server is up or try again later.";
+							p.add(new Heading(name1 + name2));
 							p.revalidate();
 							return;
 						}
@@ -1075,7 +1081,6 @@ public class UIManager implements Manager {
 						for (String course: courses) {
 							p.add(new Heading(course));
 							p.compSetSize(1000, 80);
-							
 							
 							List<Quiz> quizzesCourse = getQuizzesFromCourse(quizzes, course);
 							
@@ -1085,8 +1090,7 @@ public class UIManager implements Manager {
 								    .add(new Label("Author: " + quiz.getAuthor()))
 								    .add(new Label("Questions: " + quiz.getQuestions().size()))
 								    .onClick(mainPanel, (Panel unusedPanel) -> {
-										mainPanel.addModal("Quiz-" + quiz.getId(), 
-											(new Panel())
+										mainPanel.addModal("Quiz-" + quiz.getId(), (new Panel())
 										    .boxLayout(BoxLayout.Y_AXIS)
 										    .add(new Heading(quiz.getName()))
 										    .add(new Label("Course: " + quiz.getCourse()))
@@ -1113,9 +1117,9 @@ public class UIManager implements Manager {
 										mainPanel.openModal("Quiz-" + quiz.getId());
 									});
 								panel.getMainPanel().setBorder(
-									BorderFactory.createCompoundBorder(
-										BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
-										BorderFactory.createEmptyBorder(20, 20, 20, 20)
+								    BorderFactory.createCompoundBorder(
+									   BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+									   BorderFactory.createEmptyBorder(20, 20, 20, 20)
 									)
 								);
 								panel.setPanelSize(200, 100);
@@ -1139,18 +1143,18 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-			    .addPushHandler("quiz-submissions", 
-					new PushPacketHandler() {
-						@Override
-						public void handlePacket(ResponsePacket resp) {
-							p.runOnOpen();
+				    .addPushHandler("quiz-submissions", 
+						new PushPacketHandler() {
+							@Override
+							public void handlePacket(ResponsePacket resp) {
+								p.runOnOpen();
+							}
 						}
-					}
-				    .addClass(QuizResponsePacket.class)
-				    .addClass(GradedQuizResponsePacket.class)
-				    .addClass(DeleteQuizResponsePacket.class)
-				    .addClass(ChangeUserResponsePacket.class)
-				);
+					    .addClass(QuizResponsePacket.class)
+					    .addClass(GradedQuizResponsePacket.class)
+					    .addClass(DeleteQuizResponsePacket.class)
+					    .addClass(ChangeUserResponsePacket.class)
+					);
 				lms.getNetworkManagerClient()
 				    .sendPacket(new GradedQuizListRequestPacket())
 				    .onReceiveResponse((ResponsePacket resp) -> {
@@ -1159,7 +1163,9 @@ public class UIManager implements Manager {
 						GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
 						List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
 						if (gradedQuizzes == null) {
-							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
+							String name1 = "Unable to get a list of quizzes. ";
+							String name2 = "Please verify the server is up or try again later.";
+							p.add(new Heading(name1 + name2));
 							p.revalidate();
 							return;
 						}
@@ -1171,7 +1177,7 @@ public class UIManager implements Manager {
 							List<GradedQuiz> userSubmissions = gradedQuizzes
 							    .stream()
 							    .filter((GradedQuiz submission) -> (
-									submission.getStudentID() == user.getID()
+								    submission.getStudentID() == user.getID()
 								))
 							    .toList();
 							
@@ -1186,8 +1192,7 @@ public class UIManager implements Manager {
 								    .add(new Label("Score: " + gradedQuiz.getScore(quiz)))
 								    .add(new Label(gradedQuiz.getSubmissionTime()))
 								    .onClick(mainPanel, (Panel unusedPanel) -> {
-										mainPanel.addModal("Quiz-" + quiz.getId(), 
-											(new Panel())
+										mainPanel.addModal("Quiz-" + quiz.getId(), (new Panel())
 										    .boxLayout(BoxLayout.Y_AXIS)
 										    .add(new Heading(quiz.getName()))
 										    .add(new Label("Course: " + quiz.getCourse()))
@@ -1214,9 +1219,9 @@ public class UIManager implements Manager {
 										mainPanel.openModal("Quiz-" + quiz.getId());
 									});
 								panel.getMainPanel().setBorder(
-									BorderFactory.createCompoundBorder(
-										BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
-										BorderFactory.createEmptyBorder(20, 20, 20, 20)
+								    BorderFactory.createCompoundBorder(
+									   BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+									   BorderFactory.createEmptyBorder(20, 20, 20, 20)
 									)
 								);
 								panel.setPanelSize(200, 100);
@@ -1239,18 +1244,18 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-			    .addPushHandler("my-quiz-submissions", 
-					new PushPacketHandler() {
-						@Override
-						public void handlePacket(ResponsePacket resp) {
-							p.runOnOpen();
+				    .addPushHandler("my-quiz-submissions", 
+						new PushPacketHandler() {
+							@Override
+							public void handlePacket(ResponsePacket resp) {
+								p.runOnOpen();
+							}
 						}
-					}
-				    .addClass(QuizResponsePacket.class)
-				    .addClass(GradedQuizResponsePacket.class)
-				    .addClass(DeleteQuizResponsePacket.class)
-				    .addClass(ChangeUserResponsePacket.class)
-				);
+					    .addClass(QuizResponsePacket.class)
+					    .addClass(GradedQuizResponsePacket.class)
+					    .addClass(DeleteQuizResponsePacket.class)
+					    .addClass(ChangeUserResponsePacket.class)
+					);
 				
 				lms.getNetworkManagerClient()
 				    .sendPacket(new GradedQuizListRequestPacket(this.getCurrentUser()))
@@ -1260,7 +1265,9 @@ public class UIManager implements Manager {
 						GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
 						List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
 						if (gradedQuizzes == null) {
-							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
+							String name1 = "Unable to get a list of quizzes. ";
+							String name2 = "Please verify the server is up or try again later.";
+							p.add(new Heading(name1 + name2));
 							p.revalidate();
 							return;
 						}
@@ -1271,7 +1278,7 @@ public class UIManager implements Manager {
 						List<GradedQuiz> userSubmissions = gradedQuizzes
 						    .stream()
 						    .filter((GradedQuiz submission) -> (
-								submission.getStudentID() == user.getID()
+							    submission.getStudentID() == user.getID()
 							))
 						    .toList();
 						
@@ -1286,8 +1293,7 @@ public class UIManager implements Manager {
 							    .add(new Label("Score: " + gradedQuiz.getScore(quiz)))
 							    .add(new Label(gradedQuiz.getSubmissionTime()))
 							    .onClick(mainPanel, (Panel unusedPanel) -> {
-									mainPanel.addModal("Quiz-" + quiz.getId(), 
-										(new Panel())
+									mainPanel.addModal("Quiz-" + quiz.getId(), (new Panel())
 									    .boxLayout(BoxLayout.Y_AXIS)
 									    .add(new Heading(quiz.getName()))
 									    .add(new Label("Course: " + quiz.getCourse()))
@@ -1344,7 +1350,7 @@ public class UIManager implements Manager {
 		    .add(new TextField("Username"))
 		    .add(new TextField("Password"))
 		    .add(new Dropdown("User Type", "User Type", new String[] {
-			   "Student", "Teacher"
+			    "Student", "Teacher"
 			}))
 		    .add((new Panel(new FlowLayout()))
 			    .add((new Button("Cancel"))
