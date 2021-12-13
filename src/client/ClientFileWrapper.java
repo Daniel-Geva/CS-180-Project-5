@@ -23,7 +23,13 @@ import java.util.ArrayList;
 
 public class ClientFileWrapper {
 
-    ///A version of readFile that is specific for importing quizzes in a file
+    /**
+     * A version of readFile that is specific for importing quizzes in a file
+     *
+     * @param f - A file that contains a pre-made quiz
+     *
+     * @return contents - A ArrayList of Strings that contain the information from the file
+     */
     public static ArrayList<String> readImportFile(File f) {
         ArrayList<String> contents = new ArrayList<>();
             try (BufferedReader br = new BufferedReader(new FileReader(f))) {
@@ -56,7 +62,16 @@ public class ClientFileWrapper {
         return contents;
     }
 
-    ///Creates and returns a quiz object generated from a file, with some values provided by UI
+    /**
+     * Creates and returns a quiz object generated from a file, with some values provided by UI
+     *
+     * @param lmsc - The Learning Management System Client used to get additional information for creating a quiz
+     * @param f - A file that contains a pre-made quiz
+     * @param name - The name of the author of the quiz
+     * @param course - The name of the course the quiz will go under
+     *
+     * @return quiz - A quiz object constructed from the provided information and the information in the file
+     */
     public static Quiz importQuiz(LearningManagementSystemClient lmsc, File f, String name, String course) {
         String user = lmsc.getUIManager().getCurrentUser().getName();
         int quizId = 0;

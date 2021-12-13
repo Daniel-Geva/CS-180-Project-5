@@ -50,7 +50,9 @@ public class NetworkManagerClient {
         this.nameSetter = new NameSetter();
     }
 
-    ///Connects to the server and initializes the two threads that send and receive objects
+    /**
+     * Connects to the server and initializes the two threads that send and receive objects
+     */
     public void init() {
         this.outputThread = new Thread(new Runnable() {
             @Override
@@ -166,23 +168,40 @@ public class NetworkManagerClient {
         this.outputThread.start();
     }
 
-    ///Adds the push packet handler to the HashMap
+    /**
+     * Adds the push packet handler to the HashMap
+     *
+     * @param id - Identifier for the respective PushPacketHandler
+     * @param pPHandler - A PushPacketHandler to be paired with an id
+     */
     public void addPushHandler(String id, PushPacketHandler pPHandler) {
         pushPacketHandlers.put(id, pPHandler);
     }
 
-    ///Removes a push packet handler from the HashMap
+    /**
+     * Removes a push packet handler from the HashMap
+     *
+     * @param id - Identifier for the respective PushPacketHandler
+     */
     public void removePushHandler(String id) {
         pushPacketHandlers.remove(id);
     }
 
-    ///Closes the threads upon exit
+    /**
+     * Closes the threads upon exit
+     */
     public void exit() {
     	this.outputThread.interrupt();
     	this.inputThread.interrupt();
     }
 
-    ///Method used by the UIManger in order to add a packet to the packetQueue to be sent
+    /**
+     * Method used by the UIManger in order to add a packet to the packetQueue to be sent
+     *
+     * @param requestPacket - RequestPacket to be sent to the Server
+     *
+     * @return handler - A ResponsePacketHandler to be paired with the ResponsePacket received from the server
+     */
     public synchronized ResponsePacketHandler sendPacket(RequestPacket requestPacket) {
         ResponsePacketHandler handler = new ResponsePacketHandler();
         this.packetQueue.put(requestPacket, handler);
@@ -192,32 +211,64 @@ public class NetworkManagerClient {
         return handler;
     }
 
-    ///A class used to set the IP address and deal with errors
+    /**
+     * A class used to set the IP address and deal with errors
+     */
     class NameSetter {
         String name = "";
         Runnable errorRunnable = () -> {};
         Runnable successRunnable = () -> {};
 
+        /**
+         * Sets the errorRunnable field
+         *
+         * @param errorRunnable - A Runnable to set errorRunnable
+         */
         public void setErrorRunnable(Runnable errorRunnable) {
             this.errorRunnable = errorRunnable;
         }
 
+        /**
+         * Gets the errorRunnable field
+         *
+         * @return errorRunnable - A Runnable used to handle errors
+         */
         public Runnable getErrorRunnable() {
             return errorRunnable;
         }
 
+        /**
+         * Gets the successRunnable field
+         *
+         * @return successRunnable - A Runnable used for successes
+         */
         public Runnable getSuccessRunnable() {
 			return successRunnable;
 		}
 
+        /**
+         * Gets the IP address
+         *
+         * @return name - The IP address (String) to be given to the socket
+         */
 		public String getName() {
             return name;
         }
 
+        /**
+         * Sets the IP address
+         *
+         * @param name - The IP address (String) to be given to the socket
+         */
         public void setName(String name) {
             this.name = name;
         }
 
+        /**
+         * Sets the successRunnable field
+         *
+         * @param runnable - A Runnable to set successRunnable
+         */
 		public void setSuccessRunnable(Runnable runnable) {
 			this.successRunnable = runnable;
 		}
