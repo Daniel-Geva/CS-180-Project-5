@@ -130,7 +130,6 @@ The manager that is responsible for keeping track of users and providing functio
 ## Packet Classes
 
 ### Request Packet Classes
-//TODO
 
 #### CreateUserRequestPacket
 This packet serves as a bridge for communication between the client side to server communication. Information is sent from the client to the server once the user chooses the option to create a user in the GUI. This class provides the server class with the information to create a new user based on user inputs.
@@ -148,16 +147,14 @@ Requests a specific quiz.  Can also be used when creating a new quiz to create t
 #### DeleteQuizRequestPacket
 If a quiz exists with the specified ID, deletes that quiz and all associated quiz submissions.
 #### RequestPacket
-//TODO
-
+The super class for all response packets.
 #### UpdateUserRequestPacket
 //TODO
 
-### Response Packet Classes
-//TODO
+## Response Packet Classes
 
 #### GradedQuizResponsePacket
-//TODO
+Returns a requested graded quiz to the user. If any changes were made to the graded quizzes or a new graded quiz was created, pushes the change to all users connected.
 
 #### NewUserResponsePacket
 Stores the user that has logged in to the program as an object.
@@ -170,7 +167,7 @@ Tells the client if a quiz was succesfully deleted, and if it was pushes the upd
 #### DeleteUserResponsePacket
 This connects the server with the client and tells the client side that account deletion for the current user has been done successfully and the interface should go back to the login screen.
 #### ResponsePacket
-//TODO
+The super class for all response packets.
 
 
 
