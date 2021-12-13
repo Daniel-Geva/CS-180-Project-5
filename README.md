@@ -26,6 +26,7 @@ This documentation can be very useful for getting an overview of how certain par
 ## Client Classes
 
 ### LearningManagementSystemClient
+//TODO
 
 ### NetworkManagerClient
 Responsible for establishing a connection to the server and creating threads to send information back and forth. `init()` creates two threads, one for receiving objects and one for sending objects, so that the NetworkManagerClient can handle normal request and response packets as well as push packets sent to update the client when necessary.
@@ -129,6 +130,7 @@ The manager that is responsible for keeping track of users and providing functio
 ## Packet Classes
 
 ### Request Packet Classes
+//TODO
 
 #### CreateUserRequestPacket
 This packet serves as a bridge for communication between the client side to server communication. Information is sent from the client to the server once the user chooses the option to create a user in the GUI. This class provides the server class with the information to create a new user based on user inputs.
@@ -146,12 +148,16 @@ Requests a specific quiz.  Can also be used when creating a new quiz to create t
 #### DeleteQuizRequestPacket
 If a quiz exists with the specified ID, deletes that quiz and all associated quiz submissions.
 #### RequestPacket
+//TODO
 
 #### UpdateUserRequestPacket
+//TODO
 
 ### Response Packet Classes
+//TODO
 
 #### GradedQuizResponsePacket
+//TODO
 
 #### NewUserResponsePacket
 Stores the user that has logged in to the program as an object.
@@ -164,6 +170,7 @@ Tells the client if a quiz was succesfully deleted, and if it was pushes the upd
 #### DeleteUserResponsePacket
 This connects the server with the client and tells the client side that account deletion for the current user has been done successfully and the interface should go back to the login screen.
 #### ResponsePacket
+//TODO
 
 
 
