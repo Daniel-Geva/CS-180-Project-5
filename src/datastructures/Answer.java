@@ -34,7 +34,7 @@ public class Answer implements Serializable {
      * @return {@link #isCorrect}
      */
     public boolean isCorrect() {
-            return isCorrect;
+        return isCorrect;
     }
 
     /**
@@ -43,7 +43,7 @@ public class Answer implements Serializable {
      * @return {@link #points}
      */
     public int getPoints() {
-            return points;
+        return points;
     }
     /**
      * Sets a new answer
@@ -75,7 +75,7 @@ public class Answer implements Serializable {
      * @return id - the unique id for the question
      */
     public int getId() {
-            return id;
+        return id;
     }
     /**
      * Returns answer string
@@ -83,7 +83,7 @@ public class Answer implements Serializable {
      * @return {@link #answer}
      */
     public String getAnswer() {
-            return answer;
+        return answer;
     }
     /**
      * Returns the answer as a string for the answer class's toString

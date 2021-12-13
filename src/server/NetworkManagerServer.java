@@ -94,16 +94,6 @@ public class NetworkManagerServer {
                                 
                                 
                             } catch (EOFException e) {
-                                // Client disconnected.
-                            	
-                            	// TODO Maybe we want to do this?
-                            	// We didn't have it, and it seems fine, but seems like a good idea?
-                            	/*
-                            	synchronized(stacks) {
-                            		stacks.remove(stack);
-                            	}
-                            	thread2.interrupt();
-                            	*/
                                 return;
                             } catch (ClassNotFoundException e) {
                                 continue;
@@ -131,21 +121,19 @@ public class NetworkManagerServer {
 	                                    	oos.reset();
 	                                    }
 	                                } catch (IOException e) { 
-	                                	// TODO Does this run when client disconects?
-	                                	// If so, should we return, so the thread dies?
+	                                	return;
 	                                }
 	                            }
 	                        }
 	                    }
 	                }
 	            });
-            
                 thread.start();
                 thread2.start();
             }
 
         } catch (IOException e) {
-
+            return;
         }
 
     }

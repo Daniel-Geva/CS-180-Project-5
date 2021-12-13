@@ -1,5 +1,13 @@
 package packets.response;
 
+/**
+ * Gives clients access to id of quiz deleted, along with if a quiz was deleted
+ *
+ * @author Liam Kelly
+ *
+ * @version December 12, 2021
+ *
+ **/
 public class DeleteQuizResponsePacket extends ResponsePacket {
     boolean success;
     int id;
