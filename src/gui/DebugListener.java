@@ -31,7 +31,12 @@ public class DebugListener extends MouseAdapter {
 		// INST = new DebugListener();
 		INST = new MouseAdapter() { };
 	}
-	
+
+	/**
+	 * Highlights a component when the mouse enters it
+	 *
+	 * @param e - MouseEvent used to get the component the mouse is in
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		JComponent component = (JComponent) e.getSource();
@@ -47,6 +52,12 @@ public class DebugListener extends MouseAdapter {
 		    i.top + 1, i.left + 1, i.bottom + 1, i.right +1, Color.BLUE
 		));
 	}
+
+	/**
+	 * Unhighlights a component when the mouse leaves it
+	 *
+	 * @param e - MouseEvent used to get the component the mouse leaves
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
 		JComponent component = (JComponent) e.getSource();
