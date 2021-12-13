@@ -20,11 +20,11 @@ public class UpdateUserRequestPacket extends RequestPacket {
 		User oldUser = mainServer.getUserManager().getUserById(this.user.getID());
 		User sameUsernameUser = mainServer.getUserManager().getUser(this.user.getUsername());
 		
-		if(sameUsernameUser != null && sameUsernameUser.getID() != this.user.getID())
+		if (sameUsernameUser != null && sameUsernameUser.getID() != this.user.getID())
 			return new ResponsePacket(false, false);
 		
-		for(Quiz q: mainServer.getQuizManager().getQuizList()) {
-			if(q.getAuthor().equals(oldUser.getName())) {
+		for (Quiz q: mainServer.getQuizManager().getQuizList()) {
+			if (q.getAuthor().equals(oldUser.getName())) {
 				q.setAuthor(user.getName());
 			}
 		}
