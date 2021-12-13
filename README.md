@@ -8,7 +8,8 @@ Project 5 Presentation submitted on Brightspace by Sean Lee
 Project 5 submitted on Vocareum by Liam Kelly
 
 # Compilation Instructions
-To compile and run the project, run the `compile_and_run.sh` script found in the root project directory. This script will compile all of the java classes, run the main class, and then clean away all of the .class files once the program has exited.
+To compile and run the server, run the `server.sh` script found in the root project directory. This script will compile all of the java classes, and run the main client class.
+To compile and run the client, run the `client.sh` script found in the root project directory. This script will compile all of the java classes, and run the main server class.
 
 _Note: If the script is ran on Windows (or any system that doesn't support .sh scripts), you can also compile the project normally via the javac command or via an IDE._
 
@@ -16,7 +17,7 @@ _Note: If the script is ran on Windows (or any system that doesn't support .sh s
 Voccheck (the script used by Vocareum to check coding style) only runs on .java files in the root directory. As such, it does not run with our project structure that is organized inside of directories. Because of this, we have provided a handy script `run_voccheck.sh` that will run voccheck on all of our .java files in our source code. Run `run_voccheck.sh` in Vocareum to view the output of voccheck on our code. If you want, you can also view the source code of the script to verify it is properly checking our code.
 
 ## Importing File Instructions
-The instructions for importing quizzes from a file can be found in `ImportExample.txt`. If you would like to see an example of a file formatted properly to be imported, view `TestImport.txt`.
+The instructions for importing quizzes from a file can be found in `ImportExample.txt`. 
 
 ## Javadoc Information
 We have included Javadocs alongside our code which can be found in `/doc`. These javadocs include each of our classes, with documentation regarding what each class does and what many of the methods in each class also do. 
@@ -28,7 +29,7 @@ This documentation can be very useful for getting an overview of how certain par
 ## Client Classes
 
 ### LearningManagementSystemClient
-//TODO
+The main class for the client. Contains the NetworkManagerClient and the UIManager. Intializes the managers and starts the UI.
 
 ### NetworkManagerClient
 Responsible for establishing a connection to the server and creating threads to send information back and forth. `init()` creates two threads, one for receiving objects and one for sending objects, so that the NetworkManagerClient can handle normal request and response packets as well as push packets sent to update the client when necessary.
@@ -76,12 +77,18 @@ This is a wrapper around GradedQuiz that includes fetching the names of the quiz
 ## GUI Classes
 
 ### Aesthetics
+A class containing all of the constants for the GUI. Is used for easily changing the aesthetics of the GUI.
 
 ### Button
+A class that extends JButton to encapsulate the functionality of a button and extend it to work with the GUI framework.
+Allows registering of an `onClick` function that runs whenever the button is clicked.
 
 ### DebugListener
+A class used for identifying the placement and size of panels when debugging. This class is not used in the final project.
+However, in the future, if we wished to debug, this class would be very important for GUI debugging.
 
 ### Dropdown
+A class that representing a dropdown in a panel. It contains a JComboBox. The class allows for intertwining with the rest of the GUI.
 
 ### DynamicLabel
 
