@@ -169,7 +169,9 @@ public class QuizFileManager implements Manager {
      *
      * @param questions - An ArrayList of Questions from the Quiz
      *
-     * @return retVal - A String containing all the information from the questions and answers in a format to be written to a file
+     * @return retVal - A String containing all the information
+     * from the questions and answers in a format to be written to a file
+     *
      */
     public String formatQuestions(ArrayList<Question> questions) {
         String retVal = "";
@@ -211,7 +213,8 @@ public class QuizFileManager implements Manager {
     }
 
     /**
-     * Directly sets the value of quizzes, the ArrayList of quizzes. Used for getting an updated version of the quizzes when saving information
+     * Directly sets the value of quizzes, the ArrayList of quizzes. Used for getting
+     * an updated version of the quizzes when saving information
      *
      * @param quizzes - An ArrayList of quizzes
      */

@@ -25,11 +25,6 @@ public class Quiz implements Listable, Serializable {
     private int id;
     private boolean scrambled;
     private String course;
-    //private Object idLock = new Object();
-    //private Object nameLock = new Object();
-    //private Object authorLock = new Object();
-    //private Object scrambledLock = new Object();
-    //private Object courseLock = new Object();
 
     public Quiz(String name, String author, int id, ArrayList<Question> questions,  boolean scrambled, String course) {
         this.name = name;
@@ -48,15 +43,13 @@ public class Quiz implements Listable, Serializable {
      * @return max - a unique id for a new question object
      */
     public int generateUniqueQuestionId() {
-        //synchronized (idLock) {
-            int max = 0;
-            for (Question q : questions) {
-                if (q.getId() > max) {
-                    max = q.getId();
-                }
+        int max = 0;
+        for (Question q : questions) {
+            if (q.getId() > max) {
+                max = q.getId();
             }
-            return max + 1;
-        //}
+        }
+        return max + 1;
     }
     /**
      * Returns id of the quiz
@@ -88,9 +81,7 @@ public class Quiz implements Listable, Serializable {
      * @param name - the new name of the quiz
      */
     public void setName(String name) {
-        //synchronized (nameLock) {
-            this.name = name;
-        //}
+        this.name = name;
     }
     /**
      * Sets quiz author
@@ -98,9 +89,7 @@ public class Quiz implements Listable, Serializable {
      * @param author - the new name of the author of the quiz
      */
     public void setAuthor(String author) {
-        //synchronized (authorLock) {
-            this.author = author;
-        //}
+        this.author = author;
     }
     /**
      * Sets quiz ID
@@ -108,9 +97,7 @@ public class Quiz implements Listable, Serializable {
      * @param idParameter - the new ID of the quiz
      */
     public void setID(int idParameter) {
-        //synchronized (idLock) {
-            this.id = idParameter;
-        //}
+        this.id = idParameter;
     }
     /**
      * Sets quiz scrambled boolean
@@ -118,9 +105,7 @@ public class Quiz implements Listable, Serializable {
      * @param scrambled - whether the teacher wants the quiz questions to be in random order
      */
     public void setScrambled(boolean scrambled) {
-        //synchronized (scrambledLock) {
-            this.scrambled = scrambled;
-        //}
+        this.scrambled = scrambled;
     }
     /**
      * Returns true if the quiz needs to be scrambled
@@ -138,9 +123,7 @@ public class Quiz implements Listable, Serializable {
      *
      */
     public void scrambleQuestions() {
-        //synchronized (scrambledLock) {
-            Collections.shuffle(questions);
-        //}
+        Collections.shuffle(questions);
     }
     /**
      * Returns the name of the quiz
@@ -164,9 +147,7 @@ public class Quiz implements Listable, Serializable {
      * @param course - String containing the name of the course the quiz is a part of
      */
     public void setCourse(String course) {
-        //synchronized (courseLock) {
-            this.course = course;
-        //}
+        this.course = course;
     }
     /**
      * Returns a synopsis of the attributes of a quiz

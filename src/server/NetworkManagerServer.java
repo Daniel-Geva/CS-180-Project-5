@@ -48,7 +48,7 @@ public class NetworkManagerServer {
 
             while (true) {
             	final ArrayDeque<ResponsePacket> stack = new ArrayDeque<ResponsePacket>();
-            	synchronized(stacks) {
+            	synchronized (stacks) {
             		stacks.add(stack);
             	}
                 final Socket socket = ss.accept();
@@ -74,7 +74,7 @@ public class NetworkManagerServer {
                                 // Send the packet to the user that requested is as a normal (non-push) packet.
                                 boolean push = response.getPush();
                                 response.setPush(false);
-                                synchronized(oos) {
+                                synchronized (oos) {
                                 	oos.writeObject(response);
                                 	oos.reset();
                                 }
@@ -83,8 +83,8 @@ public class NetworkManagerServer {
                                 // If it is to be pushed, send it to everyone else.
                                 if (response.getPush()) {
                                     synchronized (stacks) {
-                                    	for(ArrayDeque<ResponsePacket> extStack: stacks) {
-                                    		synchronized(extStack) {
+                                    	for (ArrayDeque<ResponsePacket> extStack: stacks) {
+                                    		synchronized (extStack) {
                                                 extStack.push(response);
                                                 extStack.notifyAll();
                                     		}
@@ -123,10 +123,10 @@ public class NetworkManagerServer {
 	                        synchronized (stack) {
 	                        	try {
 									stack.wait();
-								} catch (InterruptedException e1) {return;}
+								} catch (InterruptedException e1) { return; }
 	                            while (!stack.isEmpty()) {
 	                                try {
-	                                    synchronized(oos) {
+	                                    synchronized (oos) {
 	                                    	oos.writeObject(stack.pop());
 	                                    	oos.reset();
 	                                    }
