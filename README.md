@@ -33,14 +33,20 @@ The main class for the client. Contains the NetworkManagerClient and the UIManag
 
 ### NetworkManagerClient
 Responsible for establishing a connection to the server and creating threads to send information back and forth. `init()` creates two threads, one for receiving objects and one for sending objects, so that the NetworkManagerClient can handle normal request and response packets as well as push packets sent to update the client when necessary.
+### PushPacketHandler
+Is used for catching push packets and running their associated callback functions.
+
 ### ResponsePacketHandler
 Interprets incoming packets in context provided by a RunnableHandleResponsePacket and makes sure that the recieved packet is not null.
+
 ### RunnableHandleResponsePacket
 An interface used to assign context to the received packets. Implemented and used by many other classes in order to propertly execute the `handlePacket()` method.
 ### UIManager
 The manager that is responsible for the User Interface (UI). It uses the User Interface System to create menus that the user then interacts with. In `init()` it creates all of the menus, which sets up the structure of the UI, and then in `run()` it runs the start menu, which is used as the entry point to the rest of the UI.
 ### ClientFileWrapper
 Contains methods for importing a quiz from a file. `readImportFile()` is a special read method used for importing existing quizzes from a file. It is special so that the people creating the quiz on a new file will have an easier time writing it and won't have to write it in a way that makes it easy for the program to read.
+### Manager
+The interface that all managers extend. Includs a `init` method and an `exit` method.
 
 ## Datastructure Classes
 
@@ -148,6 +154,9 @@ This communicates between the client side and the server side. Information is se
 #### GradedQuizListRequestPacket
 Is used for requesting the list of quiz submissions by students. Can specify for a list of submissions by a specific user.
 
+#### GradedQuizRequestPacket
+Is used for requesting a specific graded quiz.
+
 #### LoginUserRequestPacket
 Once the user enters the username and password and clicks on the submit button to log in to the system, the client side connects with the server to send the information, process that information, and authenticates the identity of the user based on their inputs.
 #### QuizListRequestPacket
@@ -178,6 +187,12 @@ Returns a requested quiz to the user.  If any changes were made to the quizzes o
 Tells the client if a quiz was succesfully deleted, and if it was pushes the updated quiz list to all clients.
 #### DeleteUserResponsePacket
 This connects the server with the client and tells the client side that account deletion for the current user has been done successfully and the interface should go back to the login screen.
+#### GradedQuizListResponsePacket
+A response packet containing the list of graded quizzes requested from GradedQuizRequestPacket
+
+#### GradedQuizResponsePacket
+A response packet containing the specific graded quiz that was requested.
+
 #### ResponsePacket
 The super class for all response packets.
 
