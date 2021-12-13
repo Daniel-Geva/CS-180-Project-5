@@ -6,6 +6,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+/**
+ * Encapsulation of JLabel, helps with creating a Heading in the GUI along with setting all the needed aesthetics of it.
+ *
+ * @author Isaac Fleetwood
+ * @version 1.0.0
+ */
+
 public class Heading extends JLabel {
 
 	public Heading(String text) {

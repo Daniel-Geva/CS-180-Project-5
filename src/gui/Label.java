@@ -6,6 +6,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+/**
+ * Encapsulation of JLabel, helps with creating a label along with setting all the needed aesthetics
+ *
+ * @author Isaac Fleetwood
+ * @version 1.0.0
+ */
+
 public class Label extends JLabel {
 
 	public Label(String text) {

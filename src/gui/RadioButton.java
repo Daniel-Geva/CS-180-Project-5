@@ -2,6 +2,14 @@ package gui;
 
 import javax.swing.JRadioButton;
 
+/**
+ * Helps with RadioButton creation and contains all the methods related to it.
+ * It is an encapsulation of the JRadioButton
+ *
+ * @author Isaac Fleetwood
+ * @version 1.0.0
+ */
+
 public class RadioButton extends JRadioButton {
 
 	private String resultKey;
