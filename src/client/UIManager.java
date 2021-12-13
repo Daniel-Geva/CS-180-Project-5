@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -414,6 +413,8 @@ public class UIManager implements Manager {
 	    		new PushPacketHandler() {
 					@Override
 					public void handlePacket(ResponsePacket resp) {
+						if(!panel.isOpen())
+							return;
 						DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
 						if (quiz.getId() == respDelQuiz.getQuizId()) {
 							panel.close();
@@ -642,12 +643,39 @@ public class UIManager implements Manager {
 						
 						quiz.setCourse(map.get("Course Name"));
 						quiz.setName(map.get("Quiz Name"));
-						
+
+						if(quiz.getName().isBlank() || quiz.getCourse().isBlank()) {
+							JOptionPane.showMessageDialog(
+							    null,
+							    "The quiz name or course cannot be blank.", 
+							    "Error", 
+							    JOptionPane.ERROR_MESSAGE
+							);
+							return;
+						}
+						if(questions.size() == 0) {
+							JOptionPane.showMessageDialog(
+							    null,
+							    "There must be atleast one question.", 
+							    "Error", 
+							    JOptionPane.ERROR_MESSAGE
+							);
+							return;
+						}
 						for (Question question: questions) {
 							int qid = question.getId();
 							// Scrambled is taken care of.
 							question.setQuestionType(map.get("QT-" + qid));
 							question.setQuestion(map.get("Q-" + qid));
+							if(question.getAnswers().size() == 0) {
+								JOptionPane.showMessageDialog(
+								    null,
+								    "All questions must have atleast one answer.", 
+								    "Error", 
+								    JOptionPane.ERROR_MESSAGE
+								);
+								return;
+							}
 							for (Answer answer: question.getAnswers()) {
 								int aid = answer.getId();
 								String prefix = "Q-" + qid + "-" + aid;
@@ -718,6 +746,15 @@ public class UIManager implements Manager {
 						Map<String, String> map = panel.getResultMap();
 						String name = map.get("Quiz Name");
 						String course = map.get("Course");
+						if(name.isBlank() || course.isBlank()) {
+							JOptionPane.showMessageDialog(
+							    null, 
+							    "One of the fields are blank. Please fill all of them in.",
+							    "Error",
+							    JOptionPane.ERROR_MESSAGE
+							);
+							return;
+						}
 						JFileChooser fileChooser = new JFileChooser();
 						
 						fileChooser.showOpenDialog(null);
@@ -746,6 +783,8 @@ public class UIManager implements Manager {
 						lms.getNetworkManagerClient()
 						    .sendPacket(new QuizRequestPacket(quiz))
 						    .onReceiveResponse((ResponsePacket resp) -> {
+								panel.setInput("Quiz Name", "");
+								panel.setInput("Course", "");
 								JOptionPane.showMessageDialog(null, "Successfully imported the quiz.");
 								mainPanel.closeModal();
 								mainPanel.close();
@@ -759,15 +798,24 @@ public class UIManager implements Manager {
 						Map<String, String> map = panel.getResultMap();
 						String name = map.get("Quiz Name");
 						String course = map.get("Course");
+						if(name.isBlank() || course.isBlank()) {
+							JOptionPane.showMessageDialog(
+							    null, 
+							    "One of the fields are blank. Please fill all of them in.",
+							    "Error",
+							    JOptionPane.ERROR_MESSAGE
+							);
+							return;
+						}
 						ArrayList<Question> questions = new ArrayList<Question>();
-						
-						
 						
 						Quiz quiz = new Quiz(name, this.getCurrentUser().getName(), -1, questions, false, course);
 						
 						lms.getNetworkManagerClient()
 						    .sendPacket(new QuizRequestPacket(quiz))
 						    .onReceiveResponse((ResponsePacket resp) -> {
+								panel.setInput("Quiz Name", "");
+								panel.setInput("Course", "");
 								JOptionPane.showMessageDialog(null, "Successfully created the quiz.");
 								mainPanel.closeModal();
 								mainPanel.close();
@@ -986,6 +1034,12 @@ public class UIManager implements Manager {
 							p.revalidate();
 							return;
 						}
+						if (quizzes.isEmpty()) {
+							p.add(new Heading("There are no quizzes to list."));
+							p.revalidate();
+							p.updateBounds();
+							return;
+						}
 						List<String> courses = getCourses(quizzes);
 						for (String course: courses) {
 							p.add(new Heading(course));
@@ -1073,6 +1127,12 @@ public class UIManager implements Manager {
 							String name2 = "Please verify the server is up or try again later.";
 							p.add(new Heading(name1 + name2));
 							p.revalidate();
+							return;
+						}
+						if (quizzes.isEmpty()) {
+							p.add(new Heading("There are no quizzes to list."));
+							p.revalidate();
+							p.updateBounds();
 							return;
 						}
 						List<String> courses = getCourses(quizzes);
@@ -1179,6 +1239,13 @@ public class UIManager implements Manager {
 								))
 							    .toList();
 							
+							if (userSubmissions.isEmpty()) {
+								p.add(new Heading("There are no submissions to list."));
+								p.revalidate();
+								p.updateBounds();
+								return;
+							}
+							
 							for (GradedQuiz gradedQuiz: userSubmissions) {
 								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
 								if (quiz == null)
@@ -1268,6 +1335,13 @@ public class UIManager implements Manager {
 							p.revalidate();
 							return;
 						}
+						
+						if (gradedQuizzes.isEmpty()) {
+							p.add(new Heading("There are no submissions to list."));
+							p.revalidate();
+							p.updateBounds();
+							return;
+						}
 						User user = this.getCurrentUser();
 						p.add(new Heading(user.getName()));
 						p.compSetSize(1000, 80);
@@ -1343,9 +1417,9 @@ public class UIManager implements Manager {
 		
 		loginPanel.addModal("Create User", (new Panel(new GridLayout(6, 1)))
 		    .add(new Heading("Create User"))
-		    .add(new TextField("Name"))
-		    .add(new TextField("Username"))
-		    .add(new TextField("Password"))
+		    .add(new TextField("Name", "Create-Name"))
+		    .add(new TextField("Username", "Create-Username"))
+		    .add(new TextField("Password", "Create-Password"))
 		    .add(new Dropdown("User Type", "User Type", new String[] {
 			    "Student", "Teacher"
 			}))
@@ -1357,10 +1431,22 @@ public class UIManager implements Manager {
 			    .add((new Button("Create User"))
 				    .onClick((Panel p) -> {
 						Map<String, String> result = p.getResultMap();
-						String name = result.get("Name");
-						String username = result.get("Username");
-						String password = result.get("Password");
+						String name = result.get("Create-Name");
+						String username = result.get("Create-Username");
+						String password = result.get("Create-Password");
 						String userType = result.get("User Type");
+						if(name.isBlank() || username.isBlank() || password.isBlank()) {
+							JOptionPane.showMessageDialog(
+							    null, 
+							    "One or more fields are empty. Please fill them all in.",
+							    "Error",
+							    JOptionPane.ERROR_MESSAGE
+							);
+							return;
+						}
+						p.setInput("Create-Name", "");
+						p.setInput("Create-Username", "");
+						p.setInput("Create-Password", "");
 						User user = null;
 						switch(userType) {
 							case "Student":
@@ -1439,7 +1525,13 @@ public class UIManager implements Manager {
 											DeleteUserResponsePacket deleteUserResp = (DeleteUserResponsePacket) resp;
 											int userId = deleteUserResp.getId();
 											if (getCurrentUser() != null && userId == getCurrentUser().getID()) {
-												
+												JOptionPane.showMessageDialog(
+												    null,
+												    "Your account has been deleted. Exiting the program.",
+												    "Deleted Account",
+												    JOptionPane.ERROR_MESSAGE
+												);
+												System.exit(0);
 											}
 										}
 									}
@@ -1542,10 +1634,6 @@ public class UIManager implements Manager {
 	
 	public void run() {
 		this.hostnamePanel.open();
-	}
-	
-	public Scanner getScanner() {
-		return null;
 	}
 	
 	public void setCurrentUser(User user) {

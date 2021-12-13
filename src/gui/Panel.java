@@ -45,6 +45,7 @@ import javax.swing.JPanel;
  */
 public class Panel extends JLayeredPane {
 
+	private boolean isOpen;
     private JFrame frame;
 
     private JComponent prevComponent;
@@ -356,7 +357,6 @@ public class Panel extends JLayeredPane {
         this.runOnOpen();
         this.updateBounds();
         this.registerListeners();
-
         JFrame f = new JFrame();
         ImageIcon icon = new ImageIcon("FinalLogo.png");
         f.setIconImage(icon.getImage());
@@ -370,6 +370,7 @@ public class Panel extends JLayeredPane {
         f.add(this);
         f.setVisible(true);
         this.frame = f;
+        this.isOpen = true;
 
         this.setBounds(0, 0, prefWidth, prefHeight);
         registerDebug(this);
@@ -377,6 +378,7 @@ public class Panel extends JLayeredPane {
 
     public void close() {
         this.frame.setVisible(false);
+        this.isOpen = false;
     }
 
     public Map<String, String> getResultMap() {
@@ -544,5 +546,9 @@ public class Panel extends JLayeredPane {
         });
         return this;
     }
+
+	public boolean isOpen() {
+		return this.isOpen;
+	}
 
 }
