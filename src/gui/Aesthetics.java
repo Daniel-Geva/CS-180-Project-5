@@ -2,6 +2,12 @@ package gui;
 
 import java.awt.Color;
 
+/**
+ * A class containing constants defined for the color scheme and aesthetic of the program
+ *
+ * @author Isaac Fleetwood
+ * @version December 12, 2021
+ */
 public class Aesthetics {
 
 	public static final Color GENERAL_BACKGROUND = new Color(45, 45, 45, 255);
