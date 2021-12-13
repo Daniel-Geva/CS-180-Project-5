@@ -30,7 +30,8 @@ public class QuizRequestPacket extends RequestPacket {
 
 
     /**
-     * Sends response packet to the client
+     * Sends response packet to the client and replaces the quiz if changes were made to it.
+     * Also allows the user to add a quiz to QuizManager
      *
      * @param lms
      * @return a new response packet with the requested quiz

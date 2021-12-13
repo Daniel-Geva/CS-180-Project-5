@@ -7,6 +7,15 @@ import server.LearningManagementSystemServer;
 
 import java.util.ArrayList;
 
+/**
+ * Deletes a quiz and associated graded quizzes, specified by quiz id
+ *
+ * @author Liam Kelly
+ *
+ * @version December 12, 2021
+ *
+ **/
+
 public class DeleteQuizRequestPacket extends RequestPacket{
     int id;
 
@@ -14,7 +23,12 @@ public class DeleteQuizRequestPacket extends RequestPacket{
         this.id = id;
     }
 
-
+    /** Removes a quiz and all associated graded quizzes
+     * Also creates a response packet and returns it
+     *
+     * @param lms
+     * @return ResponsePacket - packet containing success, push, and id variables
+     */
     public ResponsePacket serverHandle(LearningManagementSystemServer lms) {
         if (lms.getQuizManager().searchQuizByID(id) != null) {
             lms.getQuizManager().removeQuiz(id);

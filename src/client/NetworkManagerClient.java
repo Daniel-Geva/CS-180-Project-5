@@ -101,6 +101,7 @@ public class NetworkManagerClient {
                                 packetQueue.remove(request);
                             }
                         } catch (IOException e) {
+                            e.printStackTrace();
                             return;
                         }
                     }
@@ -152,6 +153,7 @@ public class NetworkManagerClient {
                     } catch (EOFException e) {
                         lmsc.getUIManager().exit();
                     }catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
                     	return;
                     }
                 }
