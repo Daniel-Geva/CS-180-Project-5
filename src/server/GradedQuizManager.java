@@ -87,7 +87,6 @@ public class GradedQuizManager implements Manager {
      */
     public void removeQuiz(String id) {
         synchronized (gradedQuizList) {
-        	// TODO Uh, unused?
             int startingListLength = gradedQuizList.size();
             for (int i = 0; i < gradedQuizList.size(); i++) {
                 if (gradedQuizList.get(i).getID().equals(id)) {
