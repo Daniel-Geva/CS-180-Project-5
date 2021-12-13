@@ -1051,13 +1051,12 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Modify Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-				    .addPushHandler("modify-quiz", 
-					   new PushPacketHandler() {
-							@Override
-							public void handlePacket(ResponsePacket resp) {
-								p.runOnOpen();
-							}
+				    .addPushHandler("modify-quiz", new PushPacketHandler() {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
+							p.runOnOpen();
 						}
+					}
 					    .addClass(QuizResponsePacket.class)
 					    .addClass(DeleteQuizResponsePacket.class)
 					    .addClass(ChangeUserResponsePacket.class)
@@ -1243,13 +1242,12 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-				    .addPushHandler("my-quiz-submissions", 
-					   new PushPacketHandler() {
-							@Override
-							public void handlePacket(ResponsePacket resp) {
-								p.runOnOpen();
-							}
+				    .addPushHandler("my-quiz-submissions", new PushPacketHandler() {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
+							p.runOnOpen();
 						}
+					}
 					    .addClass(QuizResponsePacket.class)
 					    .addClass(GradedQuizResponsePacket.class)
 					    .addClass(DeleteQuizResponsePacket.class)
