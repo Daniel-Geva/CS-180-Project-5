@@ -51,9 +51,7 @@ public class Answer implements Serializable {
      * @param answer - the new answer String
      */
     public void setAnswer(String answer) {
-        //synchronized (answerLock) {
-            this.answer = answer;
-        //}
+        this.answer = answer;
     }
     /**
      * Sets a new point value for the question
@@ -61,9 +59,7 @@ public class Answer implements Serializable {
      * @param pointsParameter - the new point value
      */
     public void setPointValue(int pointsParameter) {
-        //synchronized (pointLock) {
-            this.points = pointsParameter;
-        //}
+        this.points = pointsParameter;
     }
     /**
      * Sets the new question id
@@ -71,9 +67,7 @@ public class Answer implements Serializable {
      * @param idParameter - the new unique id for the answer
      */
     public void setID(int idParameter) {
-        //synchronized (idLock) {
-            this.id = idParameter;
-        //}
+        this.id = idParameter;
     }
     /**
      * Returns the question's unique id

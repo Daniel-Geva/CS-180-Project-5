@@ -18,10 +18,6 @@ public class Question implements Listable, Serializable {
     String question;
     int id;
     String questionType;
-    //private Object lockQuestionType = new Object();
-    //private Object lockId = new Object();
-    //private Object lockQuestion = new Object();
-    //private Object lockAnswer = new Object();
 
     public Question(ArrayList<Answer> answers, String question, int id, String questionType) {
         this.answers = answers;
@@ -35,15 +31,13 @@ public class Question implements Listable, Serializable {
      * @return max - a new unique id
      */
     public int generateUniqueAnswerId() {
-        //synchronized (lockId) {
-            int max = 0;
-            for (Answer a : answers) {
-                if (a.getId() > max) {
-                    max = a.getId();
-                }
+        int max = 0;
+        for (Answer a : answers) {
+            if (a.getId() > max) {
+                max = a.getId();
             }
-            return max + 1;
-        //}
+        }
+        return max + 1;
     }
     /**
      * Returns the question string, with a limit of 20 characters
@@ -99,9 +93,7 @@ public class Question implements Listable, Serializable {
      * @param id - the new unique id for the quiz
      */
     public void setId(int id) {
-        //synchronized (lockId) {
-            this.id = id;
-        //}
+        this.id = id;
     }
     /**
      * Returns the unique quiz id
@@ -125,9 +117,7 @@ public class Question implements Listable, Serializable {
      * @param questionType - the type of question
      */
     public void setQuestionType(String questionType) {
-        //synchronized (lockQuestionType) {
-            this.questionType = questionType;
-        //}
+        this.questionType = questionType;
     }
     /**
      * Returns the question as it will be displayed to the user
@@ -141,8 +131,12 @@ public class Question implements Listable, Serializable {
         }
         return s;
     }
-    
-    // TODO Comment
+
+    /**
+     * Sets the question variable
+     *
+     * @param question
+     */
     public void setQuestion(String question) {
     	this.question = question;
     }
