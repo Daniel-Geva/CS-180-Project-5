@@ -1072,6 +1072,7 @@ public class UIManager implements Manager {
 							return;
 						}
 						if (quizzes.isEmpty()) {
+							p.add(new Panel().setPanelSize(900, 10));
 							p.add(new Heading("There are no quizzes to list."));
 							p.revalidate();
 							p.updateBounds();
@@ -1171,6 +1172,7 @@ public class UIManager implements Manager {
 							return;
 						}
 						if (quizzes.isEmpty()) {
+							p.add(new Panel().setPanelSize(900, 10));
 							p.add(new Heading("There are no quizzes to list."));
 							p.revalidate();
 							p.updateBounds();
@@ -1271,6 +1273,15 @@ public class UIManager implements Manager {
 							p.revalidate();
 							return;
 						}
+						
+						if (gradedQuizzes.isEmpty()) {
+							p.add(new Panel().setPanelSize(900, 10));
+							p.add(new Heading("There are no submissions to list."));
+							p.revalidate();
+							p.updateBounds();
+							return;
+						}
+						
 						List<User> users  = getUsers(gradedQuizzes, listResp.getUsers());
 						for (User user: users) {
 							p.add(new Heading(user.getName()));
@@ -1284,6 +1295,7 @@ public class UIManager implements Manager {
 							    .toList();
 							
 							if (userSubmissions.isEmpty()) {
+								p.add(new Panel().setPanelSize(900, 10));
 								p.add(new Heading("There are no submissions to list."));
 								p.revalidate();
 								p.updateBounds();
@@ -1384,6 +1396,7 @@ public class UIManager implements Manager {
 						}
 						
 						if (gradedQuizzes.isEmpty()) {
+							p.add(new Panel().setPanelSize(900, 10));
 							p.add(new Heading("There are no submissions to list."));
 							p.revalidate();
 							p.updateBounds();
