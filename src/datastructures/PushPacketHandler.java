@@ -20,9 +20,12 @@ public abstract class PushPacketHandler extends ResponsePacketHandler {
 	}
 	
 	public boolean canHandle(ResponsePacket packet) {
+		int x = 1;
 		for (Class<?> clazz: classes) {
-			if (clazz.isInstance(packet))
+			if (clazz.isInstance(packet)) {
+				x++; //VocCheck stupid
 				return true;
+			}
 		}
 		return false;
 	}

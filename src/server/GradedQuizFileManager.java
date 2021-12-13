@@ -8,9 +8,11 @@ import datastructures.GradedQuiz;
 import datastructures.Manager;
 
 /**
- * Reads and writes files with graded quiz information for initialization and storage
+ * Reads and writes files with graded quiz
+ * information for initialization and storage
  * <p>
- * Contains an ArrayList of graded quizzes from storage that will be passed to GradedQuizManager.
+ * Contains an ArrayList of graded quizzes
+ * from storage that will be passed to GradedQuizManager.
  * <p>
  *
  * @author Daniel Geva
@@ -82,16 +84,15 @@ public class GradedQuizFileManager implements Manager {
      * Used to create the Hashmap
      *
      * @param contents - a string containing the information required to create a hashmap with separator characters
-     *
      * @return map - constructed hashmap with all the information from contents
      */
     public HashMap<Integer, Integer> createHashmap(String contents) {
         HashMap<Integer, Integer> map = new HashMap<>();
         String[] list = contents.split("//", -1);
         //Two "//" forward slashes are used to separate the key/value pairs from each other
-        if(list[0].isBlank()) 
-        	return map;
-        
+        if (list[0].isBlank())
+            return map;
+
         for (int i = 0; i < list.length; i++) {
             String[] parts = list[i].split(",,", 2); //Two ",," commas are used to separate the key and value
             Integer questionId = Integer.parseInt(parts[0]);
@@ -127,8 +128,8 @@ public class GradedQuizFileManager implements Manager {
      * Used to format the Hashmap to be written
      *
      * @param map - hashmap from the GradedQuiz containing the questions and answers
-     *
-     * @return mapList - string of all the questions and answers from the hashmap in the proper format to be written to a file
+     * @return mapList - string of all the questions and answers from the hashmap in the
+     * proper format to be written to a file
      */
     public String formatHashmap(HashMap<Integer, Integer> map) {
         StringJoiner joiner = new StringJoiner("//");

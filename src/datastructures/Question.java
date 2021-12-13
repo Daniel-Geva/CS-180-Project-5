@@ -1,20 +1,21 @@
 package datastructures;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+
 /**
  * Stores one Question, including multiple answers
  * <p>
  * Contains an ArrayList of answers, along with the string of the question to be asked.
  * <p>
  *
- *
  * @author Liam Kelly
  * @version 11/14/21
  * @see Quiz
  */
 public class Question implements Listable, Serializable {
-	
-	ArrayList<Answer> answers;
+
+    ArrayList<Answer> answers;
     String question;
     int id;
     String questionType;
@@ -25,6 +26,7 @@ public class Question implements Listable, Serializable {
         this.id = id;
         this.questionType = questionType;
     }
+
     /**
      * Returns a unique id for an answer
      *
@@ -39,6 +41,7 @@ public class Question implements Listable, Serializable {
         }
         return max + 1;
     }
+
     /**
      * Returns the question string, with a limit of 20 characters
      *
@@ -51,6 +54,7 @@ public class Question implements Listable, Serializable {
         }
         return retVal;
     }
+
     /**
      * Returns the list of answers with the highest point value
      *
@@ -59,34 +63,37 @@ public class Question implements Listable, Serializable {
     public ArrayList<Answer> getBestAnswers() {
         int bestAnswerPointValue = 0;
         ArrayList<Answer> bestAnswers = new ArrayList<Answer>();
-        for (Answer a: answers) {
+        for (Answer a : answers) {
             if (a.getPoints() > bestAnswerPointValue) {
                 bestAnswerPointValue = a.getPoints();
             }
         }
-        for (Answer a: answers) {
+        for (Answer a : answers) {
             if (a.getPoints() == bestAnswerPointValue) {
                 bestAnswers.add(a);
             }
         }
         return bestAnswers;
     }
+
     /**
      * Returns the list of answers
      *
      * @return answers - the list of answers to this question
      */
     public ArrayList<Answer> getAnswers() {
-            return answers;
+        return answers;
     }
+
     /**
      * Returns the String representation of the question
      *
      * @return question - The question string
      */
     public String getQuestion() {
-            return question;
+        return question;
     }
+
     /**
      * Changes the quiz ID to a new ID
      *
@@ -95,22 +102,25 @@ public class Question implements Listable, Serializable {
     public void setId(int id) {
         this.id = id;
     }
+
     /**
      * Returns the unique quiz id
      *
      * @return id - the unique id for the quiz
      */
     public int getId() {
-            return id;
+        return id;
     }
+
     /**
      * Returns the question type
      *
      * @return questionType - the type of question
      */
     public String getQuestionType() {
-            return questionType;
+        return questionType;
     }
+
     /**
      * Returns the question type
      *
@@ -119,6 +129,7 @@ public class Question implements Listable, Serializable {
     public void setQuestionType(String questionType) {
         this.questionType = questionType;
     }
+
     /**
      * Returns the question as it will be displayed to the user
      *
@@ -138,7 +149,7 @@ public class Question implements Listable, Serializable {
      * @param question
      */
     public void setQuestion(String question) {
-    	this.question = question;
+        this.question = question;
     }
-    
+
 }
