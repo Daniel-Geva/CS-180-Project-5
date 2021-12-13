@@ -26,6 +26,7 @@ This documentation can be very useful for getting an overview of how certain par
 ## Client Classes
 
 ### LearningManagementSystemClient
+//TODO
 
 ### NetworkManagerClient
 Responsible for establishing a connection to the server and creating threads to send information back and forth. `init()` creates two threads, one for receiving objects and one for sending objects, so that the NetworkManagerClient can handle normal request and response packets as well as push packets sent to update the client when necessary.
@@ -127,7 +128,6 @@ The manager that holds the list of every created quiz.  It also provides methods
 The manager that is responsible for keeping track of users and providing functionalities such as `addUser()` or `authenticator()`. This manager performs actions that mainly require iterating through all the Users. For example, searching a user by his username or generating a unique id for each user is done through this class.
 
 ## Packet Classes
-//TODO
 
 ### Request Packet Classes
 //TODO
