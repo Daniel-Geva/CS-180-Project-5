@@ -57,7 +57,7 @@ public class Quiz implements Listable, Serializable {
      * @return id - quiz-specific identifier
      */
     public int getId() {
-            return id;
+        return id;
     }
     /**
      * Returns name of the quiz
@@ -65,7 +65,7 @@ public class Quiz implements Listable, Serializable {
      * @return name - name given to the quiz by a teacher
      */
     public String getName() {
-            return name;
+        return name;
     }
     /**
      * Returns author of the quiz
@@ -73,7 +73,7 @@ public class Quiz implements Listable, Serializable {
      * @return author - the name of the teacher who created the quiz
      */
     public String getAuthor() {
-            return author;
+        return author;
     }
     /**
      * Sets quiz name
@@ -113,7 +113,7 @@ public class Quiz implements Listable, Serializable {
      * @return scrambled - whether the quiz questions should be in random order
      */
     public boolean isScrambled() {
-            return scrambled;
+        return scrambled;
     }
     /**
      * Randomized the order of questions in the questions arrayList
@@ -131,7 +131,7 @@ public class Quiz implements Listable, Serializable {
      * @return name - a string containing the quiz's name
      */
     public String getListName() {
-            return name;
+        return name;
     }
     /**
      * Returns the name of the course the quiz is a part of
@@ -139,7 +139,7 @@ public class Quiz implements Listable, Serializable {
      * @return course - A string containing the course name
      */
     public String getCourse() {
-            return course;
+        return course;
     }
     /**
      * Sets the course name for the quiz
