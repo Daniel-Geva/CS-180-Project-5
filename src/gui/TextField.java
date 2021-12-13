@@ -7,6 +7,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * Helps with JTextField creation and contains all the methods related to it.
+ * It is an encapsulation of JPanel
+ * @author Isaac Fleetwood
+ * @version 1.0.0
+ */
+
 public class TextField extends JPanel {
 
 	private String resultKey;
