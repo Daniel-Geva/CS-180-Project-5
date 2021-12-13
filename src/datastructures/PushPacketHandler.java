@@ -6,6 +6,12 @@ import java.util.List;
 import client.ResponsePacketHandler;
 import packets.response.ResponsePacket;
 
+/**
+ * Handles the push packets when they are received
+ *
+ * @author Isaac Fleetwood
+ * @version December 12, 2021
+ */
 public abstract class PushPacketHandler extends ResponsePacketHandler {
 
 	List<Class<?>> classes;
