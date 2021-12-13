@@ -49,7 +49,7 @@ public class DebugListener extends MouseAdapter {
 			i = component.getBorder().getBorderInsets(component);
 		}
 		component.setBorder(BorderFactory.createMatteBorder(
-		    i.top + 1, i.left + 1, i.bottom + 1, i.right +1, Color.BLUE
+		    i.top + 1, i.left + 1, i.bottom + 1, i.right + 1, Color.BLUE
 		));
 	}
 
