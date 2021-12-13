@@ -28,7 +28,9 @@ public class QuizFileManager implements Manager {
         this.quizzes = this.readQuizzes();
     }
 
-    /// Sets the QuizManager's arraylist of quizzes after reading the saved data
+    /**
+     * Sets the QuizManager's arraylist of quizzes after reading the saved data
+     */
     @Override
     public void init() {
         lms.getQuizManager().setQuizList(quizzes);
@@ -39,13 +41,19 @@ public class QuizFileManager implements Manager {
         this.save();
     }
 
-    /// Gets the altered list of quizzes and writes them to a file
+    /**
+     * Gets the altered list of quizzes and writes them to a file
+     */
     public synchronized void save() {
         quizzes = lms.getQuizManager().getQuizList();
         this.writeQuizzes();
     }
 
-    ///reads the file that stores the quiz data and constructs an arraylist of quizzes out of it
+    /**
+     * Reads the file that stores the quiz data and constructs an arraylist of quizzes out of it
+     *
+     * @return tempQuizzes - ArrayList of Quizzes to be passed to QuizManager
+     */
     public ArrayList<Quiz> readQuizzes() {
         ArrayList<Quiz> tempQuizzes = new ArrayList<>();
         String path = "./data/quizzes.txt";
@@ -73,7 +81,13 @@ public class QuizFileManager implements Manager {
         return tempQuizzes;
     }
 
-    ///Used to create the arraylist of questions that a quiz takes in its constructor
+    /**
+     * Used to create the arraylist of questions that a quiz takes in its constructor
+     *
+     * @param questionList - String containing all the information required to construct a question
+     *
+     * @return questions - ArrayList of Questions containing the questions for the quiz
+     */
     public ArrayList<Question> readQuestions(String questionList) {
         ArrayList<Question> questions = new ArrayList<>();
 
@@ -97,7 +111,13 @@ public class QuizFileManager implements Manager {
         return questions;
     }
 
-    ///Used to create the arraylist of answers that a question takes in its constructor
+    /**
+     * Used to create the arraylist of answers that a question takes in its constructor
+     *
+     * @param answerList - String containing all the information required to construct the answers to a question
+     *
+     * @return answers - ArrayList of Answers containing the answers for the question
+     */
     public ArrayList<Answer> readAnswers(String answerList) {
         ArrayList<Answer> answers = new ArrayList<>();
 
@@ -120,7 +140,11 @@ public class QuizFileManager implements Manager {
         return answers;
     }
 
-    ///Writes the arraylist of quizzes "quizzes" to a file for storage
+    /**
+     * Writes the arraylist of quizzes "quizzes" to a file for storage
+     *
+     * @return success - whether the writing succeeded
+     */
     private boolean writeQuizzes() {
         ArrayList<String> writableQuizzes = new ArrayList<>();
         String path = "./data/quizzes.txt";
@@ -140,7 +164,13 @@ public class QuizFileManager implements Manager {
         return FileWrapper.writeFile(path, writableQuizzes);
     }
 
-    ///Used to format the arraylist of questions to be written
+    /**
+     * Used to format the arraylist of questions to be written
+     *
+     * @param questions - An ArrayList of Questions from the Quiz
+     *
+     * @return retVal - A String containing all the information from the questions and answers in a format to be written to a file
+     */
     public String formatQuestions(ArrayList<Question> questions) {
         String retVal = "";
         for (int i = 0; i < questions.size(); i++) {
@@ -157,7 +187,13 @@ public class QuizFileManager implements Manager {
         return retVal;
     }
 
-    ///Used to format the arraylist of answers to be written
+    /**
+     * Used to format the arraylist of answers to be written
+     *
+     * @param answers - ArrayList of answers form the questions
+     *
+     * @return retVal - A String of all the information from the answers formatted to be written to a file
+     */
     public String formatAnswers(ArrayList<Answer> answers) {
         String retVal = "";
         for (int i = 0; i < answers.size(); i++) {
@@ -174,6 +210,11 @@ public class QuizFileManager implements Manager {
         return retVal;
     }
 
+    /**
+     * Directly sets the value of quizzes, the ArrayList of quizzes. Used for getting an updated version of the quizzes when saving information
+     *
+     * @param quizzes - An ArrayList of quizzes
+     */
     public void setQuizzes(ArrayList<Quiz> quizzes) {
         this.quizzes = quizzes;
     }
