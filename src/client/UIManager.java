@@ -975,7 +975,8 @@ public class UIManager implements Manager {
 									} else {
 										JOptionPane.showMessageDialog(
 										    null, 
-										    "Unable to delete your account because it doesn't exit. Going back to the login menu.",
+										    "Unable to delete your account because it doesn't exit. ." +
+										    "Going back to the login menu",
 										    "Error",
 										    JOptionPane.ERROR_MESSAGE
 										);
