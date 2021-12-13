@@ -20,7 +20,8 @@ public class GradedQuizListResponsePacket extends ResponsePacket {
 	List<User> users;
 	List<Quiz> quizzes;
 
-    public GradedQuizListResponsePacket(List<GradedQuiz> gradedQuizzes, LearningManagementSystemServer lms, boolean push) {
+    public GradedQuizListResponsePacket(List<GradedQuiz> gradedQuizzes,
+										LearningManagementSystemServer lms, boolean push) {
         super(true, push);
         this.gradedQuizzes = gradedQuizzes;
         this.users = lms.getUserManager().getUsers();
