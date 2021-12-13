@@ -6,6 +6,17 @@ import packets.response.ChangeUserResponsePacket;
 import packets.response.ResponsePacket;
 import server.LearningManagementSystemServer;
 
+/**
+ *
+ * Sends a packet from client to server so that user information can be updated in real-time on the GUI
+ *
+ * @author Isaac Fleetwood
+ * @author Aryan Jain
+ *
+ * @version 1.0.0
+ *
+ */
+
 public class UpdateUserRequestPacket extends RequestPacket {
 
 	User user;
