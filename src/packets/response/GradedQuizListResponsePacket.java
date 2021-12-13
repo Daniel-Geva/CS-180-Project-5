@@ -7,6 +7,12 @@ import datastructures.Quiz;
 import datastructures.User;
 import server.LearningManagementSystemServer;
 
+/**
+ * Gets the requested list of the graded quizzes to be returned to the client
+ *
+ * @author Issac Fleetwod
+ * @version December 9, 2021
+ */
 public class GradedQuizListResponsePacket extends ResponsePacket {
 	
 	// Need all 3 lists to cross reference IDs to their respective lists.
