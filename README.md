@@ -127,8 +127,10 @@ The manager that holds the list of every created quiz.  It also provides methods
 The manager that is responsible for keeping track of users and providing functionalities such as `addUser()` or `authenticator()`. This manager performs actions that mainly require iterating through all the Users. For example, searching a user by his username or generating a unique id for each user is done through this class.
 
 ## Packet Classes
+//TODO
 
 ### Request Packet Classes
+//TODO
 
 #### CreateUserRequestPacket
 This packet serves as a bridge for communication between the client side to server communication. Information is sent from the client to the server once the user chooses the option to create a user in the GUI. This class provides the server class with the information to create a new user based on user inputs.
@@ -146,12 +148,16 @@ Requests a specific quiz.  Can also be used when creating a new quiz to create t
 #### DeleteQuizRequestPacket
 If a quiz exists with the specified ID, deletes that quiz and all associated quiz submissions.
 #### RequestPacket
+//TODO
 
 #### UpdateUserRequestPacket
+//TODO
 
 ### Response Packet Classes
+//TODO
 
 #### GradedQuizResponsePacket
+//TODO
 
 #### NewUserResponsePacket
 Stores the user that has logged in to the program as an object.
@@ -164,6 +170,7 @@ Tells the client if a quiz was succesfully deleted, and if it was pushes the upd
 #### DeleteUserResponsePacket
 This connects the server with the client and tells the client side that account deletion for the current user has been done successfully and the interface should go back to the login screen.
 #### ResponsePacket
+//TODO
 
 
 
