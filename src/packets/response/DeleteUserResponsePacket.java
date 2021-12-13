@@ -14,7 +14,7 @@ package packets.response;
  *
  */
 
-public class DeleteUserResponsePacket extends ResponsePacket{
+public class DeleteUserResponsePacket extends ResponsePacket {
     int id;
 
     public DeleteUserResponsePacket(int id) {

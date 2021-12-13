@@ -18,7 +18,7 @@ import server.LearningManagementSystemServer;
  *
  */
 
-public class DeleteUserRequestPacket extends RequestPacket{
+public class DeleteUserRequestPacket extends RequestPacket {
 
     int id;
 

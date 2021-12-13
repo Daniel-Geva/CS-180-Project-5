@@ -17,7 +17,7 @@ import server.LearningManagementSystemServer;
  *
  */
 
-public class LoginUserRequestPacket extends RequestPacket{
+public class LoginUserRequestPacket extends RequestPacket {
     
 	private String username;
     private String password;
