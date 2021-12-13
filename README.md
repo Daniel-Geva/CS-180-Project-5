@@ -8,8 +8,8 @@ Project 5 Presentation submitted on Brightspace by Sean Lee
 Project 5 submitted on Vocareum by Liam Kelly
 
 # Compilation Instructions
-To compile and run the server, run the `server.sh` script found in the root project directory. This script will compile all of the java classes, and run the main client class.
-To compile and run the client, run the `client.sh` script found in the root project directory. This script will compile all of the java classes, and run the main server class.
+To compile and run the server, run the `server.sh` script found in the root project directory. This script will compile all of the java classes, and run the main server class.
+To compile and run the client, run the `client.sh` script found in the root project directory. This script will compile all of the java classes, and run the main client class.
 
 _Note: If the script is ran on Windows (or any system that doesn't support .sh scripts), you can also compile the project normally via the javac command or via an IDE._
 
