@@ -22,7 +22,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import client.NetworkManagerClient.NameSetter;
 import datastructures.Answer;
@@ -45,6 +44,7 @@ import gui.RadioButton;
 import gui.TextField;
 import packets.request.CreateUserRequestPacket;
 import packets.request.DeleteQuizRequestPacket;
+import packets.request.DeleteUserRequestPacket;
 import packets.request.GradedQuizListRequestPacket;
 import packets.request.GradedQuizRequestPacket;
 import packets.request.LoginUserRequestPacket;
@@ -52,6 +52,7 @@ import packets.request.QuizListRequestPacket;
 import packets.request.QuizRequestPacket;
 import packets.request.UpdateUserRequestPacket;
 import packets.response.DeleteQuizResponsePacket;
+import packets.response.DeleteUserResponsePacket;
 import packets.response.GradedQuizListResponsePacket;
 import packets.response.GradedQuizResponsePacket;
 import packets.response.NewUserResponsePacket;
@@ -60,6 +61,7 @@ import packets.response.QuizResponsePacket;
 import packets.response.ResponsePacket;
 
 /**
+ *
  * The manager that is responsible for the User Interface (UI).
  * It uses the User Interface Menu System to create menus that the user then interacts with.
  * In init() it creates all of the menus, which sets up the structure of the UI,
@@ -103,12 +105,20 @@ public class UIManager implements Manager {
 		return courses;
 	}
 
+	
 	private List<Quiz> getQuizzesFromCourse(List<Quiz> quizzes, String course) {
 		return quizzes.stream().filter((Quiz q) -> (
 			q.getCourse().equals(course)
 		)).toList();
 	}
-	
+
+	/**
+	 *
+	 * This is the method that is responsible that
+	 *
+	 * @param quiz
+	 * @return
+	 */
 	private Panel getTakeQuizPanel(Quiz quiz) {
 		Panel overallPanel = new Panel();
 		overallPanel.setPanelSize(500, 720);
@@ -117,6 +127,25 @@ public class UIManager implements Manager {
 		panel.setMargin(64, 64);
 		panel.boxLayout(BoxLayout.Y_AXIS);
 		panel.alignLeft();
+		
+		lms.getNetworkManagerClient()
+		.addPushHandler("modify-check-delete-quiz", new PushPacketHandler() {
+			@Override
+			public void handlePacket(ResponsePacket resp) {
+				DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
+				if(quiz.getId() == respDelQuiz.getQuizId()) {
+					panel.close();
+					JOptionPane.showMessageDialog(
+						null, 
+						"The quiz was deleted by another user. Going back to the main menu.", 
+						"Error",
+						JOptionPane.ERROR_MESSAGE
+					);
+					mainPanel.open();
+				}
+			}
+		}.addClass(DeleteQuizResponsePacket.class));
+		
 		
 		panel.add(new Heading("Quiz Session").big().margin(30));
 		panel.add(new Heading(quiz.getName()));
@@ -365,7 +394,7 @@ public class UIManager implements Manager {
 		Panel panel = new Panel();
 		
 		lms.getNetworkManagerClient()
-		.addPushHandler("modify-check-delete-quiz", new PushPacketHandler(DeleteQuizResponsePacket.class) {
+		.addPushHandler("modify-check-delete-quiz", new PushPacketHandler() {
 			@Override
 			public void handlePacket(ResponsePacket resp) {
 				DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
@@ -380,7 +409,7 @@ public class UIManager implements Manager {
 					mainPanel.open();
 				}
 			}
-		});
+		}.addClass(DeleteQuizResponsePacket.class));
 		
 		panel.setPanelSize(1000, 720);
 		panel.setMargin(96, 96);
@@ -403,7 +432,8 @@ public class UIManager implements Manager {
 					for(Answer answer: question.getAnswers()) {
 						int aid = answer.getId();
 						String prefix = "Q-" + qid + "-" + aid;
-						answer.setAnswer(map.get(prefix));
+						if(map.get(prefix) != null && !map.get(prefix).isBlank())
+							answer.setAnswer(map.get(prefix));
 						try {
 							if(map.containsKey(prefix + "-P"))
 								answer.setPointValue(Integer.parseInt(map.get(prefix + "-P")));
@@ -531,11 +561,13 @@ public class UIManager implements Manager {
 						.add(new Button("Delete Quiz")
 							.color(Aesthetics.BUTTON_WARNING)
 							.onClick((Panel p) -> {
-								panel.close();
-								mainPanel.open();
+								lms.getNetworkManagerClient()
+									.removePushHandler("modify-check-delete-quiz");
 								lms.getNetworkManagerClient()
 									.sendPacket(new DeleteQuizRequestPacket(quiz.getId()))
 									.onReceiveResponse((ResponsePacket resp) -> {
+										panel.close();
+										mainPanel.open();
 										if(resp.wasSuccess()) {
 											JOptionPane.showMessageDialog(
 												null, 
@@ -633,6 +665,8 @@ public class UIManager implements Manager {
 					})
 				).setPanelSize(400, 50)
 			);
+			
+			panel.add(new GapComponent(1000));
 			
 			panel.revalidate();
 			panel.updateBounds();
@@ -809,7 +843,44 @@ public class UIManager implements Manager {
 				}))
 			.setPanelSize(400, 200));
 		
-		mainTabPanel.addTabPanel("User Settings", (new Panel(new GridLayout(6, 1)))
+		mainPanel.addModal("user-settings-delete-verify", new Panel()
+				.add(new Heading("Delete User"))
+				.add(new Label("Are you sure you want to delete your account?"))
+				.add(new Panel()
+					.add(new Button("Cancel")
+						.onClick((Panel __) -> {
+							mainPanel.closeModal();
+						}))
+					.add(new Button("Yes, Delete my Account")
+						.color(Aesthetics.BUTTON_WARNING)
+						.onClick((Panel __) -> {
+							lms.getNetworkManagerClient()
+								.sendPacket(new DeleteUserRequestPacket(this.getCurrentUser().getID()))
+								.onReceiveResponse((ResponsePacket resp) -> {
+									mainPanel.close();
+									loginPanel.open();
+									if(resp.wasSuccess()) {
+										JOptionPane.showMessageDialog(
+											null, 
+											"Successfully deleted your account.",
+											"Success",
+											JOptionPane.INFORMATION_MESSAGE
+										);
+									} else {
+										JOptionPane.showMessageDialog(
+											null, 
+											"Unable to delete your account because it doesn't exit.",
+											"Error",
+											JOptionPane.ERROR_MESSAGE
+										);
+									}
+								});
+						}))
+					.setPanelSize(250, 50)
+				)
+				.setPanelSize(400, 200));
+		
+		mainTabPanel.addTabPanel("User Settings", (new Panel(new GridLayout(7, 1)))
 			.onOpen((Panel p) -> {
 				User user = this.getCurrentUser();
 				p.setInput("Name", user.getName());
@@ -821,6 +892,12 @@ public class UIManager implements Manager {
 			.add(new TextField("Username"))
 			.add(new TextField("Password"))
 			.add(new GapComponent())
+			.add(new Button("Delete User")
+				.color(Aesthetics.BUTTON_WARNING)
+					.onClick((Panel p) -> {
+						mainPanel.openModal("user-settings-delete-verify");
+					}).panelize()
+				)
 			.add(new Button("Save Changes")
 				.onClick((Panel p) -> {
 					Map<String, String> results = p.getResultMap();
@@ -845,6 +922,7 @@ public class UIManager implements Manager {
 							mainPanel.openModal("user-settings-error");
 							return;
 						}
+						mainPanel.runOnOpen();
 						mainPanel.openModal("user-settings-success");
 					});
 				}).panelize()
@@ -858,15 +936,16 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Take Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 			.onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-				.addPushHandler("quiz-list-take-quiz", new PushPacketHandler(QuizResponsePacket.class) {
-					@Override
-					public void handlePacket(ResponsePacket resp) {
-						lms.getNetworkManagerClient().removePushHandler("quiz-list-take-quiz");
-						SwingUtilities.invokeLater(() -> {
+				.addPushHandler("take-quiz", 
+					new PushPacketHandler() {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
 							p.runOnOpen();
-						});
+						}
 					}
-				});
+					.addClass(QuizResponsePacket.class)
+					.addClass(DeleteQuizResponsePacket.class)
+				);
 				p.getMainPanel().removeAll();
 				p.add((new Heading("Take Quiz")).big());
 				lms.getNetworkManagerClient()
@@ -944,15 +1023,16 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Modify Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 				.onOpen((Panel p) -> {
 					lms.getNetworkManagerClient()
-					.addPushHandler("quiz-list-modify-quiz", new PushPacketHandler(QuizResponsePacket.class) {
-						@Override
-						public void handlePacket(ResponsePacket resp) {
-							lms.getNetworkManagerClient().removePushHandler("quiz-list-modify-quiz");
-							SwingUtilities.invokeLater(() -> {
+					.addPushHandler("modify-quiz", 
+						new PushPacketHandler() {
+							@Override
+							public void handlePacket(ResponsePacket resp) {
 								p.runOnOpen();
-							});
+							}
 						}
-					});
+						.addClass(QuizResponsePacket.class)
+						.addClass(DeleteQuizResponsePacket.class)
+					);
 					p.getMainPanel().removeAll();
 					p.add((new Heading("Modify Quiz")).big());
 					lms.getNetworkManagerClient()
@@ -1032,25 +1112,17 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 			.onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
-					.addPushHandler("graded-quiz-list-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
+				.addPushHandler("quiz-submissions", 
+					new PushPacketHandler() {
 						@Override
 						public void handlePacket(ResponsePacket resp) {
-							lms.getNetworkManagerClient().removePushHandler("graded-quiz-list-submissions");
-							SwingUtilities.invokeLater(() -> {
-								p.runOnOpen();
-							});
-						}
-					});
-				lms.getNetworkManagerClient()
-				.addPushHandler("quiz-list-my-submissions", new PushPacketHandler(QuizResponsePacket.class) {
-					@Override
-					public void handlePacket(ResponsePacket resp) {
-						lms.getNetworkManagerClient().removePushHandler("quiz-list-my-submissions");
-						SwingUtilities.invokeLater(() -> {
 							p.runOnOpen();
-						});
+						}
 					}
-				});
+					.addClass(QuizResponsePacket.class)
+					.addClass(GradedQuizResponsePacket.class)
+					.addClass(DeleteQuizResponsePacket.class)
+				);
 				p.getMainPanel().removeAll();
 				p.add((new Heading("Submission List")).big());
 				lms.getNetworkManagerClient()
@@ -1138,30 +1210,24 @@ public class UIManager implements Manager {
 		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 				.onOpen((Panel p) -> {
 					lms.getNetworkManagerClient()
-						.addPushHandler("graded-quiz-list-my-submissions", new PushPacketHandler(GradedQuizResponsePacket.class) {
+					.addPushHandler("my-quiz-submissions", 
+						new PushPacketHandler() {
 							@Override
 							public void handlePacket(ResponsePacket resp) {
-								lms.getNetworkManagerClient().removePushHandler("graded-quiz-list-my-submissions");
-								SwingUtilities.invokeLater(() -> {
-									p.runOnOpen();
-								});
-							}
-						});
-					lms.getNetworkManagerClient()
-					.addPushHandler("quiz-list-my-submissions", new PushPacketHandler(QuizResponsePacket.class) {
-						@Override
-						public void handlePacket(ResponsePacket resp) {
-							lms.getNetworkManagerClient().removePushHandler("quiz-list-my-submissions");
-							SwingUtilities.invokeLater(() -> {
 								p.runOnOpen();
-							});
+							}
 						}
-					});
+						.addClass(QuizResponsePacket.class)
+						.addClass(GradedQuizResponsePacket.class)
+						.addClass(DeleteQuizResponsePacket.class)
+					);
 					p.getMainPanel().removeAll();
 					p.add((new Heading("My Quiz Submission List")).big());
+					
 					lms.getNetworkManagerClient()
 						.sendPacket(new GradedQuizListRequestPacket(this.getCurrentUser()))
 						.onReceiveResponse((ResponsePacket resp) -> {
+							
 							GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
 							List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
 							if(gradedQuizzes == null) {
@@ -1182,6 +1248,8 @@ public class UIManager implements Manager {
 							
 							for(GradedQuiz gradedQuiz: userSubmissions) {
 								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
+								if(quiz == null)
+									continue;
 								
 								Panel panel = (new Panel())
 									.add(new Label(quiz.getCourse()))
@@ -1228,10 +1296,10 @@ public class UIManager implements Manager {
 							}
 							
 							p.revalidate();
-							p.repaint();
-							//mainTabPanel.revalidate();
 							p.updateBounds();
 						});
+					p.revalidate();
+					p.updateBounds();
 				})
 				.setPanelSize(1000, 720)
 				.setMargin(64, 0)
@@ -1330,6 +1398,17 @@ public class UIManager implements Manager {
 									"Login In Validation",
 									JOptionPane.INFORMATION_MESSAGE
 							);
+							lms.getNetworkManagerClient()
+							.addPushHandler("user-deletion-check", new PushPacketHandler() {
+								@Override
+								public void handlePacket(ResponsePacket resp) {
+									DeleteUserResponsePacket deleteUserResp = (DeleteUserResponsePacket) resp;
+									int userId = deleteUserResp.getId();
+									if(getCurrentUser() != null && userId == getCurrentUser().getID()) {
+										
+									}
+								}
+							}.addClass(DeleteUserResponsePacket.class));
 							loginPanel.close();
 							mainPanel.open();
 						}
@@ -1418,7 +1497,7 @@ public class UIManager implements Manager {
 	public void exit() {
 		JOptionPane.showMessageDialog(
 			null, 
-			"The server disconnected. Press Okay to exit the program.", 
+			"The server disconnected. Press Ok to exit the program.", 
 			"Error",
 			JOptionPane.ERROR_MESSAGE
 		);

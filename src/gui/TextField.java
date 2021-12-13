@@ -3,7 +3,6 @@ package gui;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;

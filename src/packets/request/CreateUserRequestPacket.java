@@ -7,7 +7,6 @@ import server.LearningManagementSystemServer;
 /**
  *
  * CreateUserRequestPacket file for CS 180 Project 5
- * This file acts as that bridge between client to server communication.
  * This packet serves as a bridge for communication between the client side to server communication.
  * Information is sent from the client to the server once the user chooses the option to create a user in the GUI.
  * This class provides the server class with the information to create a new user based on user inputs.
@@ -37,12 +36,15 @@ public class CreateUserRequestPacket extends RequestPacket {
         //Generates an ID for the user
         user.setID(mainServer.getUserManager().getUniqueID());
         /*
-        Checks to see if the user already has an account or not
-        Searches for the user in the arraylist of all the users
+          Checks to see if the user already has an account or not
+          Searches for the user in the arraylist of all the users
         */
         if (mainServer.getUserManager().getUser(user.getUsername()) == null) {
-            //if the user cannot be found in that arraylist, then this new user is added to the list
-            //Operation is marked as successful
+            /*
+              if the user cannot be found in the Arraylist of all the users,
+              then this new user is created
+              Operation is marked as successful
+            */
             mainServer.getUserManager().addUser(user);
             mainServer.getUserFileManager().save();
             return new ResponsePacket(true, false);

@@ -35,6 +35,7 @@ public class GradedQuizListRequestPacket extends RequestPacket {
 					quiz.getStudentID() == user.getID()
 				))
 				.toList();
+		
 		return new GradedQuizListResponsePacket(list, lms, false);
 	}
 	

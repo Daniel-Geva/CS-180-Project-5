@@ -132,6 +132,9 @@ The manager that is responsible for keeping track of users and providing functio
 
 #### CreateUserRequestPacket
 This packet serves as a bridge for communication between the client side to server communication. Information is sent from the client to the server once the user chooses the option to create a user in the GUI. This class provides the server class with the information to create a new user based on user inputs.
+
+#### DeleteUserRequestPacket
+This communicates between the client side and the server side. Information is sent from the client to the server once the user chooses the option to delete their account in the GUI. This class provides the server class with the information to delete their account.
 #### GradedQuizListRequestPacket
 
 #### LoginUserRequestPacket
@@ -158,6 +161,8 @@ Sends the requested list of quizzes back to the client
 Returns a requested quiz to the user.  If any changes were made to the quizzes or a new quiz was created, pushes the change to all users connected.
 #### DeleteQuizResponsePacket
 Tells the client if a quiz was succesfully deleted, and if it was pushes the updated quiz list to all clients.
+#### DeleteUserResponsePacket
+This connects the server with the client and tells the client side that account deletion for the current user has been done successfully and the interface should go back to the login screen.
 #### ResponsePacket
 
 

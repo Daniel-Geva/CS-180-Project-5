@@ -122,10 +122,9 @@ public class QuizFileManager implements Manager {
 
     ///Writes the arraylist of quizzes "quizzes" to a file for storage
     private boolean writeQuizzes() {
-        System.out.println("Okay");
         ArrayList<String> writableQuizzes = new ArrayList<>();
         String path = "./data/quizzes.txt";
-        System.out.println(this.quizzes);
+
         for (int i = 0; i < quizzes.size(); i++) {
             String name = quizzes.get(i).getName();
             String author = quizzes.get(i).getAuthor();
