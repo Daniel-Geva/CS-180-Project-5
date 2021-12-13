@@ -102,6 +102,7 @@ public class NetworkManagerServer {
                             	synchronized(stacks) {
                             		stacks.remove(stack);
                             	}
+                            	thread2.interrupt();
                             	*/
                                 return;
                             } catch (ClassNotFoundException e) {

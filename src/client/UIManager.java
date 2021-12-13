@@ -64,9 +64,10 @@ import packets.response.ResponsePacket;
 /**
  *
  * The manager that is responsible for the User Interface (UI).
- * It uses the User Interface Menu System to create menus that the user then interacts with.
+ * It uses the GUI framework in the gui package to create menus that the user then interacts with.
  * In init() it creates all of the menus, which sets up the structure of the UI,
  * and then in run() it runs the start menu, which is used as the entry point to the rest of the UI.
+ * 
  *
  * @author Aryan Jain
  * @author Isaac Fleetwood
@@ -78,7 +79,7 @@ public class UIManager implements Manager {
 
 	LearningManagementSystemClient lms;
 	
-	User currentUser = new Teacher(49100, "Person 21", "username", "passa");
+	User currentUser;
 	
 	public UIManager(LearningManagementSystemClient lms) {
 		this.lms = lms;
@@ -95,7 +96,7 @@ public class UIManager implements Manager {
 	 * Takes a list of quizzes and makes an ArrayList of all the courses the quizzes are from
 	 *
 	 * @param quizzes
-	 * @return
+	 * @return courses
 	 */
 	private List<String> getCourses(List<Quiz> quizzes) {
 		ArrayList<String> courses = new ArrayList<String>();
@@ -106,7 +107,14 @@ public class UIManager implements Manager {
 		return courses;
 	}
 
-	
+	/**
+	 * 
+	 * Returns a filtered list of quizzes 
+	 * 
+	 * @param quizzes
+	 * @param course
+	 * @return quizzes with the specific course
+	 */
 	private List<Quiz> getQuizzesFromCourse(List<Quiz> quizzes, String course) {
 		return quizzes.stream().filter((Quiz q) -> (
 			q.getCourse().equals(course)
