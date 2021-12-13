@@ -566,45 +566,45 @@ public class UIManager implements Manager {
 			    .setPanelSize(350, 200)
 			);
 			panel.addModal("verify-delete", new Panel()
-				    .add(new Heading("Are you sure?"))
-				    .add(new Label("If you delete this quiz, "))
-				    .add(new Label("it cannot be recovered."))
-				    .add(new Panel()
-					    .boxLayout(BoxLayout.X_AXIS)
-					    .add(new Button("Cancel")
-						    .onClick((Panel p) -> {
-								panel.closeModal();
-							}))
-					    .add(new Button("Delete Quiz")
-						    .color(Aesthetics.BUTTON_WARNING)
-						    .onClick((Panel p) -> {
-								lms.getNetworkManagerClient()
-								    .removePushHandler("modify-check-delete-quiz");
-								lms.getNetworkManagerClient()
-								    .sendPacket(new DeleteQuizRequestPacket(quiz.getId()))
-								    .onReceiveResponse((ResponsePacket resp) -> {
-										panel.close();
-										mainPanel.open();
-										if (resp.wasSuccess()) {
-											JOptionPane.showMessageDialog(
-												null, 
-												"Successfully deleted the quiz.", 
-												"Success", 
-												JOptionPane.INFORMATION_MESSAGE
-											);
-										} else {
-											JOptionPane.showMessageDialog(
-												null, 
-												"Unable to delete the quiz.", 
-												"Error", 
-												JOptionPane.ERROR_MESSAGE
-											);
-										}
-									});
-							}))
-					)
-				    .setPanelSize(350, 200)
-				);
+			    .add(new Heading("Are you sure?"))
+			    .add(new Label("If you delete this quiz, "))
+			    .add(new Label("it cannot be recovered."))
+			    .add(new Panel()
+				    .boxLayout(BoxLayout.X_AXIS)
+				    .add(new Button("Cancel")
+					    .onClick((Panel p) -> {
+							panel.closeModal();
+						}))
+				    .add(new Button("Delete Quiz")
+					    .color(Aesthetics.BUTTON_WARNING)
+					    .onClick((Panel p) -> {
+							lms.getNetworkManagerClient()
+							    .removePushHandler("modify-check-delete-quiz");
+							lms.getNetworkManagerClient()
+							    .sendPacket(new DeleteQuizRequestPacket(quiz.getId()))
+							    .onReceiveResponse((ResponsePacket resp) -> {
+									panel.close();
+									mainPanel.open();
+									if (resp.wasSuccess()) {
+										JOptionPane.showMessageDialog(
+											null, 
+											"Successfully deleted the quiz.", 
+											"Success", 
+											JOptionPane.INFORMATION_MESSAGE
+										);
+									} else {
+										JOptionPane.showMessageDialog(
+											null, 
+											"Unable to delete the quiz.", 
+											"Error", 
+											JOptionPane.ERROR_MESSAGE
+										);
+									}
+								});
+						}))
+				)
+			    .setPanelSize(350, 200)
+			);
 
 			panel.add(new Button("Add New Question")
 			    .onClick((Panel unusedPanel2) -> {
@@ -1041,97 +1041,97 @@ public class UIManager implements Manager {
 						p.updateBounds();
 					});
 			})
-	    .setPanelSize(1000, 720)
-	    .setMargin(64, 0)
-	    .scrollize());
+		    .setPanelSize(1000, 720)
+		    .setMargin(64, 0)
+		    .scrollize());
 		
 		mainTabPanel.addTabPanel("Modify Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
-			    .onOpen((Panel p) -> {
-					lms.getNetworkManagerClient()
-				    .addPushHandler("modify-quiz", 
-						new PushPacketHandler() {
-							@Override
-							public void handlePacket(ResponsePacket resp) {
-								p.runOnOpen();
+		    .onOpen((Panel p) -> {
+				lms.getNetworkManagerClient()
+			    .addPushHandler("modify-quiz", 
+					new PushPacketHandler() {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
+							p.runOnOpen();
+						}
+					}
+				    .addClass(QuizResponsePacket.class)
+				    .addClass(DeleteQuizResponsePacket.class)
+				    .addClass(ChangeUserResponsePacket.class)
+				);
+				lms.getNetworkManagerClient()
+				    .sendPacket(new QuizListRequestPacket("All", "", false))
+				    .onReceiveResponse((ResponsePacket resp) -> {
+						p.getMainPanel().removeAll();
+						p.add((new Heading("Modify Quiz")).big());
+						QuizListResponsePacket listResp = (QuizListResponsePacket) resp;
+						List<Quiz> quizzes = listResp.getListOfQuizzesResponse();
+						if (quizzes == null) {
+							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
+							p.revalidate();
+							return;
+						}
+						List<String> courses = getCourses(quizzes);
+						for (String course: courses) {
+							p.add(new Heading(course));
+							p.compSetSize(1000, 80);
+							
+							
+							List<Quiz> quizzesCourse = getQuizzesFromCourse(quizzes, course);
+							
+							for (Quiz quiz: quizzesCourse) {
+								Panel panel = (new Panel())
+								    .add(new Label(quiz.getName()))
+								    .add(new Label("Author: " + quiz.getAuthor()))
+								    .add(new Label("Questions: " + quiz.getQuestions().size()))
+								    .onClick(mainPanel, (Panel unusedPanel) -> {
+										mainPanel.addModal("Quiz-" + quiz.getId(), 
+											(new Panel())
+										    .boxLayout(BoxLayout.Y_AXIS)
+										    .add(new Heading(quiz.getName()))
+										    .add(new Label("Course: " + quiz.getCourse()))
+										    .add(new Label("Author: " + quiz.getAuthor()))
+										    .add(new Label("Questions: " + quiz.getQuestions().size()))
+										    .add((new Panel())
+											    .boxLayout(BoxLayout.X_AXIS) 
+											    .add((new Button("Modify Quiz"))
+												    .onClick((Panel unusedPanel2) -> {
+														mainPanel.closeModal();
+														mainPanel.close();
+														mainTabPanel.openTabPanel("Take Quiz");
+														getModifyQuizPanel(quiz).open();
+													}))
+											    .add((new Button("Cancel"))
+												    .onClick((Panel unusedPanel2) -> {
+														mainPanel.closeModal();
+													}))
+											    .setPanelSize(300, 48)
+											)
+										    .setPanelSize(400, 300)
+										);
+										mainPanel.revalidate();
+										mainPanel.openModal("Quiz-"+quiz.getId());
+									});
+								panel.getMainPanel().setBorder(
+									BorderFactory.createCompoundBorder(
+										BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+										BorderFactory.createEmptyBorder(20, 20, 20, 20)
+									)
+								);
+								panel.setPanelSize(200, 100);
+								panel.setSize(200, 100);
+								p.add(panel);
+								
 							}
 						}
-					    .addClass(QuizResponsePacket.class)
-					    .addClass(DeleteQuizResponsePacket.class)
-					    .addClass(ChangeUserResponsePacket.class)
-					);
-					lms.getNetworkManagerClient()
-					    .sendPacket(new QuizListRequestPacket("All", "", false))
-					    .onReceiveResponse((ResponsePacket resp) -> {
-							p.getMainPanel().removeAll();
-							p.add((new Heading("Modify Quiz")).big());
-							QuizListResponsePacket listResp = (QuizListResponsePacket) resp;
-							List<Quiz> quizzes = listResp.getListOfQuizzesResponse();
-							if (quizzes == null) {
-								p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
-								p.revalidate();
-								return;
-							}
-							List<String> courses = getCourses(quizzes);
-							for (String course: courses) {
-								p.add(new Heading(course));
-								p.compSetSize(1000, 80);
-								
-								
-								List<Quiz> quizzesCourse = getQuizzesFromCourse(quizzes, course);
-								
-								for (Quiz quiz: quizzesCourse) {
-									Panel panel = (new Panel())
-									    .add(new Label(quiz.getName()))
-									    .add(new Label("Author: " + quiz.getAuthor()))
-									    .add(new Label("Questions: " + quiz.getQuestions().size()))
-									    .onClick(mainPanel, (Panel unusedPanel) -> {
-											mainPanel.addModal("Quiz-" + quiz.getId(), 
-												(new Panel())
-											    .boxLayout(BoxLayout.Y_AXIS)
-											    .add(new Heading(quiz.getName()))
-											    .add(new Label("Course: " + quiz.getCourse()))
-											    .add(new Label("Author: " + quiz.getAuthor()))
-											    .add(new Label("Questions: " + quiz.getQuestions().size()))
-											    .add((new Panel())
-												    .boxLayout(BoxLayout.X_AXIS) 
-												    .add((new Button("Modify Quiz"))
-													    .onClick((Panel unusedPanel2) -> {
-															mainPanel.closeModal();
-															mainPanel.close();
-															mainTabPanel.openTabPanel("Take Quiz");
-															getModifyQuizPanel(quiz).open();
-														}))
-												    .add((new Button("Cancel"))
-													    .onClick((Panel unusedPanel2) -> {
-															mainPanel.closeModal();
-														}))
-												    .setPanelSize(300, 48)
-												)
-											    .setPanelSize(400, 300)
-											);
-											mainPanel.revalidate();
-											mainPanel.openModal("Quiz-"+quiz.getId());
-										});
-									panel.getMainPanel().setBorder(
-										BorderFactory.createCompoundBorder(
-											BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
-											BorderFactory.createEmptyBorder(20, 20, 20, 20)
-										)
-									);
-									panel.setPanelSize(200, 100);
-									panel.setSize(200, 100);
-									p.add(panel);
-									
-								}
-							}
-							
-							p.revalidate();
-							p.updateBounds();
-						});
-					
-					p.revalidate();
-					p.updateBounds();
-				})
+						
+						p.revalidate();
+						p.updateBounds();
+					});
+				
+				p.revalidate();
+				p.updateBounds();
+			})
 		    .setPanelSize(1000, 720)
 		    .setMargin(64, 0)
 		    .scrollize());
@@ -1237,104 +1237,104 @@ public class UIManager implements Manager {
 		    .scrollize());
 		
 		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
-			    .onOpen((Panel p) -> {
-					lms.getNetworkManagerClient()
-				    .addPushHandler("my-quiz-submissions", 
-						new PushPacketHandler() {
-							@Override
-							public void handlePacket(ResponsePacket resp) {
-								p.runOnOpen();
-							}
+		    .onOpen((Panel p) -> {
+				lms.getNetworkManagerClient()
+			    .addPushHandler("my-quiz-submissions", 
+					new PushPacketHandler() {
+						@Override
+						public void handlePacket(ResponsePacket resp) {
+							p.runOnOpen();
 						}
-					    .addClass(QuizResponsePacket.class)
-					    .addClass(GradedQuizResponsePacket.class)
-					    .addClass(DeleteQuizResponsePacket.class)
-					    .addClass(ChangeUserResponsePacket.class)
-					);
-					
-					lms.getNetworkManagerClient()
-					    .sendPacket(new GradedQuizListRequestPacket(this.getCurrentUser()))
-					    .onReceiveResponse((ResponsePacket resp) -> {
-							p.getMainPanel().removeAll();
-							p.add((new Heading("My Quiz Submission List")).big());
-							GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
-							List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
-							if (gradedQuizzes == null) {
-								p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
-								p.revalidate();
-								return;
-							}
-							User user = this.getCurrentUser();
-							p.add(new Heading(user.getName()));
-							p.compSetSize(1000, 80);
-							
-							List<GradedQuiz> userSubmissions = gradedQuizzes
-							    .stream()
-							    .filter((GradedQuiz submission) -> (
-									submission.getStudentID() == user.getID()
-								))
-							    .toList();
-							
-							for (GradedQuiz gradedQuiz: userSubmissions) {
-								Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
-								if (quiz == null)
-									continue;
-								
-								Panel panel = (new Panel())
-								    .add(new Label(quiz.getCourse()))
-								    .add(new Label(quiz.getName()))
-								    .add(new Label("Score: " + gradedQuiz.getScore(quiz)))
-								    .add(new Label(gradedQuiz.getSubmissionTime()))
-								    .onClick(mainPanel, (Panel unusedPanel) -> {
-										mainPanel.addModal("Quiz-" + quiz.getId(), 
-											(new Panel())
-										    .boxLayout(BoxLayout.Y_AXIS)
-										    .add(new Heading(quiz.getName()))
-										    .add(new Label("Course: " + quiz.getCourse()))
-										    .add(new Label("Author: " + quiz.getAuthor()))
-										    .add(new Label("Questions: " + quiz.getQuestions().size()))
-										    .add((new Panel())
-											    .boxLayout(BoxLayout.X_AXIS) 
-											    .add((new Button("View Submission"))
-												    .onClick((Panel unusedPanel2) -> {
-														mainPanel.closeModal();
-														mainPanel.close();
-														mainTabPanel.openTabPanel("Take Quiz");
-														getSubmissionPanel(gradedQuiz, quiz, user).open();
-													}))
-											    .add((new Button("Cancel"))
-												    .onClick((Panel unusedPanel2) -> {
-														mainPanel.closeModal();
-													}))
-											    .setPanelSize(300, 48)
-											)
-										    .setPanelSize(400, 300)
-										);
-										mainPanel.revalidate();
-										mainPanel.openModal("Quiz-"+quiz.getId());
-									});
-								panel.getMainPanel().setBorder(
-									BorderFactory.createCompoundBorder(
-										BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
-										BorderFactory.createEmptyBorder(20, 20, 20, 20)
-									)
-								);
-								panel.setPanelSize(200, 100);
-								panel.setSize(200, 100);
-								p.add(panel);
-								
-							}
-							
+					}
+				    .addClass(QuizResponsePacket.class)
+				    .addClass(GradedQuizResponsePacket.class)
+				    .addClass(DeleteQuizResponsePacket.class)
+				    .addClass(ChangeUserResponsePacket.class)
+				);
+				
+				lms.getNetworkManagerClient()
+				    .sendPacket(new GradedQuizListRequestPacket(this.getCurrentUser()))
+				    .onReceiveResponse((ResponsePacket resp) -> {
+						p.getMainPanel().removeAll();
+						p.add((new Heading("My Quiz Submission List")).big());
+						GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
+						List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
+						if (gradedQuizzes == null) {
+							p.add(new Heading("Unable to get a list of quizzes. Please verify the server is up or try again later."));
 							p.revalidate();
-							p.updateBounds();
-						});
-					p.revalidate();
-					p.updateBounds();
-				})
-			    .setPanelSize(1000, 720)
-			    .setMargin(64, 0)
-			    .scrollize());
-			
+							return;
+						}
+						User user = this.getCurrentUser();
+						p.add(new Heading(user.getName()));
+						p.compSetSize(1000, 80);
+						
+						List<GradedQuiz> userSubmissions = gradedQuizzes
+						    .stream()
+						    .filter((GradedQuiz submission) -> (
+								submission.getStudentID() == user.getID()
+							))
+						    .toList();
+						
+						for (GradedQuiz gradedQuiz: userSubmissions) {
+							Quiz quiz = getQuiz(listResp.getQuizzes(), gradedQuiz.getQuizID());
+							if (quiz == null)
+								continue;
+							
+							Panel panel = (new Panel())
+							    .add(new Label(quiz.getCourse()))
+							    .add(new Label(quiz.getName()))
+							    .add(new Label("Score: " + gradedQuiz.getScore(quiz)))
+							    .add(new Label(gradedQuiz.getSubmissionTime()))
+							    .onClick(mainPanel, (Panel unusedPanel) -> {
+									mainPanel.addModal("Quiz-" + quiz.getId(), 
+										(new Panel())
+									    .boxLayout(BoxLayout.Y_AXIS)
+									    .add(new Heading(quiz.getName()))
+									    .add(new Label("Course: " + quiz.getCourse()))
+									    .add(new Label("Author: " + quiz.getAuthor()))
+									    .add(new Label("Questions: " + quiz.getQuestions().size()))
+									    .add((new Panel())
+										    .boxLayout(BoxLayout.X_AXIS) 
+										    .add((new Button("View Submission"))
+											    .onClick((Panel unusedPanel2) -> {
+													mainPanel.closeModal();
+													mainPanel.close();
+													mainTabPanel.openTabPanel("Take Quiz");
+													getSubmissionPanel(gradedQuiz, quiz, user).open();
+												}))
+										    .add((new Button("Cancel"))
+											    .onClick((Panel unusedPanel2) -> {
+													mainPanel.closeModal();
+												}))
+										    .setPanelSize(300, 48)
+										)
+									    .setPanelSize(400, 300)
+									);
+									mainPanel.revalidate();
+									mainPanel.openModal("Quiz-"+quiz.getId());
+								});
+							panel.getMainPanel().setBorder(
+								BorderFactory.createCompoundBorder(
+									BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+									BorderFactory.createEmptyBorder(20, 20, 20, 20)
+								)
+							);
+							panel.setPanelSize(200, 100);
+							panel.setSize(200, 100);
+							p.add(panel);
+							
+						}
+						
+						p.revalidate();
+						p.updateBounds();
+					});
+				p.revalidate();
+				p.updateBounds();
+			})
+		    .setPanelSize(1000, 720)
+		    .setMargin(64, 0)
+		    .scrollize()
+	    );	
 		
 		mainTabPanel.openTabPanel("Take Quiz");
 		
@@ -1392,106 +1392,107 @@ public class UIManager implements Manager {
 		);
 		
 		loginPanel
-	    .add(new JLabel(new ImageIcon("FinalLogo.png")))
-	    .add(new Heading("Darkspace").center())
-	    .add(new TextField("Username"))
-	    .add(new TextField("Password"))
-	    .add((new Panel())
-		    .boxLayout(BoxLayout.X_AXIS)
-			    .setPanelSize(300, 50)
-		    .add((new Button("Create User"))
+		    .add(new JLabel(new ImageIcon("FinalLogo.png")))
+		    .add(new Heading("Darkspace").center())
+		    .add(new TextField("Username"))
+		    .add(new TextField("Password"))
+		    .add((new Panel())
+			    .boxLayout(BoxLayout.X_AXIS)
+				    .setPanelSize(300, 50)
+			    .add((new Button("Create User"))
+					    .onClick((Panel p) -> {
+							// Open Create User menu.
+							loginPanel.openModal("Create User");
+						}))
+			    .add((new Button("Login"))
 				    .onClick((Panel p) -> {
-						// Open Create User menu.
-						loginPanel.openModal("Create User");
-					}))
-		    .add((new Button("Login"))
-			    .onClick((Panel p) -> {
-					Map<String, String> result = p.getResultMap();
-					String username = result.get("Username");
-					String password = result.get("Password");
-					lms.getNetworkManagerClient().sendPacket(
-						new LoginUserRequestPacket(username, password)	
-					).onReceiveResponse((ResponsePacket response) -> {
-						if (!response.wasSuccess()) {
-							JOptionPane.showMessageDialog(
-								null, 
-								"Invalid Username or Password.\nPlease try again or create a new user.",
-								"Error",
-								JOptionPane.ERROR_MESSAGE
-							);
-						} else {
-							NewUserResponsePacket resp = (NewUserResponsePacket) response;
-							this.setCurrentUser(resp.getUser());
-							JOptionPane.showMessageDialog(
-									null,
-									"You have successfully logged into Darkspace.",
-									"Login In Validation",
-									JOptionPane.INFORMATION_MESSAGE
-							);
-							lms.getNetworkManagerClient()
-						    .addPushHandler("user-deletion-check", new PushPacketHandler() {
-								@Override
-								public void handlePacket(ResponsePacket resp) {
-									DeleteUserResponsePacket deleteUserResp = (DeleteUserResponsePacket) resp;
-									int userId = deleteUserResp.getId();
-									if (getCurrentUser() != null && userId == getCurrentUser().getID()) {
-										
+						Map<String, String> result = p.getResultMap();
+						String username = result.get("Username");
+						String password = result.get("Password");
+						lms.getNetworkManagerClient().sendPacket(
+							new LoginUserRequestPacket(username, password)	
+						).onReceiveResponse((ResponsePacket response) -> {
+							if (!response.wasSuccess()) {
+								JOptionPane.showMessageDialog(
+									null, 
+									"Invalid Username or Password.\nPlease try again or create a new user.",
+									"Error",
+									JOptionPane.ERROR_MESSAGE
+								);
+							} else {
+								NewUserResponsePacket resp = (NewUserResponsePacket) response;
+								this.setCurrentUser(resp.getUser());
+								JOptionPane.showMessageDialog(
+										null,
+										"You have successfully logged into Darkspace.",
+										"Login In Validation",
+										JOptionPane.INFORMATION_MESSAGE
+								);
+								lms.getNetworkManagerClient()
+							    .addPushHandler("user-deletion-check", new PushPacketHandler() {
+									@Override
+									public void handlePacket(ResponsePacket resp) {
+										DeleteUserResponsePacket deleteUserResp = (DeleteUserResponsePacket) resp;
+										int userId = deleteUserResp.getId();
+										if (getCurrentUser() != null && userId == getCurrentUser().getID()) {
+											
+										}
 									}
-								}
-							}.addClass(DeleteUserResponsePacket.class));
-							loginPanel.close();
-							mainPanel.open();
-						}
-					});
-				}))
-		)
-	    .setPanelSize(500, 500)
-	    .setMargin(100, 100);
+								}.addClass(DeleteUserResponsePacket.class));
+								loginPanel.close();
+								mainPanel.open();
+							}
+						});
+					}))
+			)
+		    .setPanelSize(500, 500)
+		    .setMargin(100, 100);
 
 		connectionStatusPanel
-	    .add(new Label("Connecting to the server..."))
-	    .add(new Label("Please Wait..."))
-	    .setPanelSize(400, 200)
-	    .setMargin(100, 100);
+		    .add(new Label("Connecting to the server..."))
+		    .add(new Label("Please Wait..."))
+		    .setPanelSize(400, 200)
+		    .setMargin(100, 100);
 		
 		hostnamePanel
-	    .add(new Label("Please enter the ip address of the server."))
-	    .add(new TextField("IP Address", "ip"))
-	    .add((new Button("Connect"))
-		    .onClick((Panel p) -> {
-				String ip = p.getInput("ip");
-				NameSetter nameSetter = lms.getNetworkManagerClient().nameSetter;
-				hostnamePanel.close();
-				connectionStatusPanel.open();
-				nameSetter.setErrorRunnable(() -> {
-					connectionStatusPanel.getMainPanel().removeAll();
-					connectionStatusPanel
-					    .add(new Label("Unable to connect to the server."))
-					    .add((new Button("Try Again"))
-						    .onClick((Panel unusedPanel) -> {
-								connectionStatusPanel.close();
-								connectionStatusPanel.getMainPanel().removeAll();
-								connectionStatusPanel
-								    .add(new Label("Connecting to the server..."))
-								    .add(new Label("Please Wait..."));
-								hostnamePanel.open();
-							})
-						);
-					connectionStatusPanel.revalidate();
-				});
-				
-				nameSetter.setSuccessRunnable(() -> {
-					connectionStatusPanel.close();
-					loginPanel.open();
-				});
-				
-				synchronized(nameSetter) {
-					nameSetter.setName(ip);
-					nameSetter.notify();
-				}
-			}).panelize().setPanelSize(400, 100))
-	    .setPanelSize(500, 300)
-	    .setMargin(100, 100);
+		    .add(new Label("Please enter the ip address of the server."))
+		    .add(new TextField("IP Address", "ip"))
+		    .add((new Button("Connect"))
+			    .onClick((Panel p) -> {
+					String ip = p.getInput("ip");
+					NameSetter nameSetter = lms.getNetworkManagerClient().nameSetter;
+					hostnamePanel.close();
+					connectionStatusPanel.open();
+					nameSetter.setErrorRunnable(() -> {
+						connectionStatusPanel.getMainPanel().removeAll();
+						connectionStatusPanel
+						    .add(new Label("Unable to connect to the server."))
+						    .add((new Button("Try Again"))
+							    .onClick((Panel unusedPanel) -> {
+									connectionStatusPanel.close();
+									connectionStatusPanel.getMainPanel().removeAll();
+									connectionStatusPanel
+									    .add(new Label("Connecting to the server..."))
+									    .add(new Label("Please Wait..."));
+									hostnamePanel.open();
+								})
+							);
+						connectionStatusPanel.revalidate();
+					});
+					
+					nameSetter.setSuccessRunnable(() -> {
+						connectionStatusPanel.close();
+						loginPanel.open();
+					});
+					
+					synchronized(nameSetter) {
+						nameSetter.setName(ip);
+						nameSetter.notify();
+					}
+				}).panelize().setPanelSize(400, 100)
+		    )
+		    .setPanelSize(500, 300)
+		    .setMargin(100, 100);
 		
 	}
 
@@ -1526,10 +1527,10 @@ public class UIManager implements Manager {
 	@Override
 	public void exit() {
 		JOptionPane.showMessageDialog(
-			null, 
-			"The server disconnected. Press Ok to exit the program.", 
-			"Error",
-			JOptionPane.ERROR_MESSAGE
+		    null, 
+		    "The server disconnected. Press Ok to exit the program.", 
+		    "Error",
+		    JOptionPane.ERROR_MESSAGE
 		);
 		System.exit(0);
 	}
