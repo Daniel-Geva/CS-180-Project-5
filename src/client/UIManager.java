@@ -122,10 +122,8 @@ public class UIManager implements Manager {
 
 	/**
 	 *
-	 * This is the method that is responsible that
+	 * Method for getting the panel for taking a quiz.
 	 *
-	 * @param quiz
-	 * @return
 	 */
 	private Panel getTakeQuizPanel(Quiz quiz) {
 		Panel overallPanel = new Panel();
@@ -320,7 +318,13 @@ public class UIManager implements Manager {
 		return overallPanel;
 		
 	}
-	
+
+
+	/**
+	 *
+	 * Method for getting the panel for viewing a quiz submission.
+	 *
+	 */
 	private Panel getSubmissionPanel(GradedQuiz submission, Quiz quiz, User user) {
 		Panel overallPanel = new Panel();
 		overallPanel.setPanelSize(500, 720);
@@ -395,6 +399,10 @@ public class UIManager implements Manager {
 		return overallPanel;
 	}
 
+
+	/**
+	 * Method for adding margin to a component
+	 */
 	private JComponent addMargin(JComponent component, int... margin) {
 		component.setBorder(
 		    BorderFactory.createCompoundBorder(
@@ -405,6 +413,10 @@ public class UIManager implements Manager {
 		return component;
 	}
 
+
+	/**
+	 * Method for getting the panel for modify a quiz.
+	 */
 	public Panel getModifyQuizPanel(Quiz quiz) {
 		Panel panel = new Panel();
 		
@@ -731,7 +743,11 @@ public class UIManager implements Manager {
 		
 		mainPanel.setPanelSize(1280 + 64, 720 + 64);
 		mainPanel.setMargin(64, 64);
-		
+
+
+		/**
+		 * Add the modal for creating a quiz.
+		 */
 		mainPanel.addModal("create-quiz", new Panel(new GridLayout(5, 1))
 		    .add(new Heading("Create Quiz"))
 		    .add(new TextField("Course"))
@@ -827,7 +843,10 @@ public class UIManager implements Manager {
 			)
 		    .setPanelSize(500, 350)
 		);
-		
+
+		/**
+		 * Add the panel for the left sidebar to the main panel
+		 */
 		mainPanel.add(new Panel(new FlowLayout(FlowLayout.CENTER))
 		    .onOpen((Panel panel) -> {
 				panel.clear();
@@ -884,10 +903,16 @@ public class UIManager implements Manager {
 			})
 		    .setPanelSize(280, 720)
 	    );
-		
+
+		/**
+		 * Add the panel for the tab menu on the right side of the main menu.
+		 */
 		mainPanel.add(mainTabPanel
 		    .setPanelSize(1000, 720));
-		
+
+		/**
+		 * Add messages for attempts at chaning user settings.
+		 */
 		mainPanel.addModal("user-settings-invalid", new Panel()
 		    .add(new Label("No fields can be empty."))
 		    .add(new Label("Verify all fields have values in them."))
@@ -913,7 +938,11 @@ public class UIManager implements Manager {
 					mainPanel.closeModal();
 				}))
 		    .setPanelSize(400, 200));
-		
+
+		/**
+		 * Panel for verifying they want to delete their account.
+		 * If so, delete it.
+		 */
 		mainPanel.addModal("user-settings-delete-verify", new Panel()
 			    .add(new Heading("Delete User"))
 			    .add(new Label("Are you sure you want to delete your account?"))
@@ -953,7 +982,10 @@ public class UIManager implements Manager {
 				    .setPanelSize(399, 50)
 				)
 			    .setPanelSize(500, 200));
-		
+
+		/**
+		 * Panel for changing user settings in the main menu.
+		 */
 		mainTabPanel.addTabPanel("User Settings", (new Panel(new GridLayout(7, 1)))
 		    .onOpen((Panel p) -> {
 				User user = this.getCurrentUser();
@@ -1005,8 +1037,9 @@ public class UIManager implements Manager {
 		    .setPanelSize(300, 350)
 		);
 		
-		
-		
+		/**
+		 * Panel for showing all of the quizzes one can take.
+		 */
 		mainTabPanel.addTabPanel("Take Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
@@ -1102,6 +1135,10 @@ public class UIManager implements Manager {
 		    .setMargin(64, 0)
 		    .scrollize());
 		
+
+		/**
+		 * Panel for showing all of the quizzes one can modify.
+		 */
 		mainTabPanel.addTabPanel("Modify Quiz", (new Panel(new FlowLayout(FlowLayout.LEFT)))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
@@ -1197,7 +1234,10 @@ public class UIManager implements Manager {
 		    .setPanelSize(1000, 720)
 		    .setMargin(64, 0)
 		    .scrollize());
-		
+
+		/**
+		 * Panel for showing all of the quiz submissions one can view.
+		 */
 		mainTabPanel.addTabPanel("Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
@@ -1306,6 +1346,9 @@ public class UIManager implements Manager {
 		    .setMargin(64, 0)
 		    .scrollize());
 		
+		/**
+		 * Panel for showing a single user's specific submissions.
+		 */
 		mainTabPanel.addTabPanel("My Quiz Submissions", new Panel(new FlowLayout(FlowLayout.LEFT))
 		    .onOpen((Panel p) -> {
 				lms.getNetworkManagerClient()
@@ -1413,8 +1456,14 @@ public class UIManager implements Manager {
 		    .scrollize()
 	    );	
 		
+		/**
+		 * Open the "Take Quiz" panel in the main menu.
+		 */
 		mainTabPanel.openTabPanel("Take Quiz");
 		
+		/**
+		 * Add a "create user" modal to the login menu.
+		 */
 		loginPanel.addModal("Create User", (new Panel(new GridLayout(6, 1)))
 		    .add(new Heading("Create User"))
 		    .add(new TextField("Name", "Create-Name"))
@@ -1481,6 +1530,9 @@ public class UIManager implements Manager {
 		    .setPanelSize(350, 400)
 		);
 		
+		/**
+		 * Create the base login menu structure.
+		 */
 		loginPanel
 		    .add(new JLabel(new ImageIcon("FinalLogo.png")))
 		    .add(new Heading("Darkspace").center())
@@ -1545,12 +1597,18 @@ public class UIManager implements Manager {
 		    .setPanelSize(500, 500)
 		    .setMargin(100, 100);
 
+		/**
+		 * Panel for showing connection status to the server.
+		 */
 		connectionStatusPanel
 		    .add(new Label("Connecting to the server..."))
 		    .add(new Label("Please Wait..."))
 		    .setPanelSize(400, 200)
 		    .setMargin(100, 100);
 		
+		/**
+		 * Panel for prompting the user for a ip address to connect to.
+		 */
 		hostnamePanel
 		    .add(new Label("Please enter the ip address of the server."))
 		    .add(new TextField("IP Address", "ip"))
@@ -1620,7 +1678,10 @@ public class UIManager implements Manager {
 		}
 		return users;
 	}
-
+	
+	/**
+	 * Is ran if the server disconnects.
+	 */
 	@Override
 	public void exit() {
 		JOptionPane.showMessageDialog(
