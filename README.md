@@ -90,27 +90,26 @@ However, in the future, if we wished to debug, this class would be very importan
 ### Dropdown
 A class that representing a dropdown in a panel. It contains a JComboBox. The class allows for intertwining with the rest of the GUI.
 
-### DynamicLabel
-
-### FileInput
-
-### Frame
-
 ### GapComponent
-
-### GridBagBuilder
+An empty component used for spacing.
 
 ### Heading
+A JLabel that has a big font size and is bold.
 
 ### Label
+A JLabel with some additional functionality, such as setting margins and font size.
 
 ### Panel
+The base class for the UI. All menus are built of this class. It contains the ability for panels to be dynamically visible (via the "addTabPanel"), or the ability to add modals (overlaying panels) via the "addModal".
 
 ### PanelRunnable
+Am interface that is used for defining a callback function. The given argument is the panel that the callback function is ran from.
 
 ### RadioButton
+An extension of JRadioButton that can communicate with additional parts of the UI.
 
 ### TextField
+An extension of JTextField that adds a label and allows for additional communication with the rest of the UI.
 
 ## Server Classes
 
@@ -145,8 +144,9 @@ This packet serves as a bridge for communication between the client side to serv
 
 #### DeleteUserRequestPacket
 This communicates between the client side and the server side. Information is sent from the client to the server once the user chooses the option to delete their account in the GUI. This class provides the server class with the information to delete their account.
+
 #### GradedQuizListRequestPacket
-//TODO
+Is used for requesting the list of quiz submissions by students. Can specify for a list of submissions by a specific user.
 
 #### LoginUserRequestPacket
 Once the user enters the username and password and clicks on the submit button to log in to the system, the client side connects with the server to send the information, process that information, and authenticates the identity of the user based on their inputs.
