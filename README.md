@@ -152,7 +152,7 @@ If a quiz exists with the specified ID, deletes that quiz and all associated qui
 #### RequestPacket
 The super class for all response packets.
 #### UpdateUserRequestPacket
-//TODO
+Sends a packet from client to server so that user information can be updated in real-time on the GUI
 
 ## Response Packet Classes
 
