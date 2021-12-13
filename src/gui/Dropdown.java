@@ -17,6 +17,26 @@ public class Dropdown extends JPanel {
 	private String resultKey;
 	private JLabel label;
 	private JComboBox<String> jComboBox;
+	private List<String> options;
+	private List<Integer> optionsIds;
+	
+	public Dropdown(String resultKey, List<String> options, List<Integer> optionsIds) {
+		this.resultKey = resultKey;
+		String[] arr = new String[options.size()];
+		for(int i = 0; i < options.size(); i++)
+			arr[i] = options.get(i);
+		this.jComboBox = new JComboBox<String>(arr);
+		this.options = options;
+		this.optionsIds = optionsIds;
+
+		this.setLayout(new FlowLayout(FlowLayout.LEADING));
+		this.add(jComboBox);
+
+		this.jComboBox.setForeground(Aesthetics.TEXT_FIELD_FOREGROUND);
+		this.jComboBox.setBackground(Aesthetics.TEXT_FIELD_BACKGROUND);
+		
+		this.setBackground(Aesthetics.GENERAL_BACKGROUND);
+	}
 	
 	public Dropdown(String resultKey, String[] options) {
 		this.resultKey = resultKey;
@@ -78,7 +98,15 @@ public class Dropdown extends JPanel {
 	}
 	
 	public String getSelection() {
-		return (String) this.jComboBox.getSelectedItem();
+		String item = (String) this.jComboBox.getSelectedItem();
+		if(this.optionsIds == null) {
+			return item;
+		}
+		for(int i = 0; i < options.size(); i++) {
+			if(options.get(i).equals(item))
+				return Integer.toString(optionsIds.get(i));
+		}
+		return item;
 	}
 	
 	public String getResultKey() {

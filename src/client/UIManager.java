@@ -179,6 +179,10 @@ public class UIManager implements Manager {
 						question.getAnswers()
 							.stream()
 							.map((Answer a) -> a.getAnswer())
+							.toList(),
+						question.getAnswers()
+							.stream()
+							.map((Answer a) -> a.getId())
 							.toList()
 					);
 					dropdown.setSize(300, 30);
@@ -731,6 +735,7 @@ public class UIManager implements Manager {
 								JOptionPane.showMessageDialog(null, "Successfully imported the quiz.");
 								mainPanel.closeModal();
 								mainPanel.close();
+								mainTabPanel.openTabPanel("Take Quiz");
 								QuizResponsePacket quizResp = (QuizResponsePacket) resp;
 								getModifyQuizPanel(quizResp.getQuizResponse()).open();
 							});
@@ -752,6 +757,7 @@ public class UIManager implements Manager {
 								JOptionPane.showMessageDialog(null, "Successfully created the quiz.");
 								mainPanel.closeModal();
 								mainPanel.close();
+								mainTabPanel.openTabPanel("Take Quiz");
 								QuizResponsePacket quizResp = (QuizResponsePacket) resp;
 								getModifyQuizPanel(quizResp.getQuizResponse()).open();
 							});
@@ -808,6 +814,7 @@ public class UIManager implements Manager {
 					.add((new Button("Logout"))
 						.onClick((Panel __) -> {
 							mainPanel.close();
+							mainTabPanel.openTabPanel("Take Quiz");
 							loginPanel.open();
 						}))
 					.compSetSize(280, 35);
@@ -848,6 +855,7 @@ public class UIManager implements Manager {
 				.add(new Heading("Delete User"))
 				.add(new Label("Are you sure you want to delete your account?"))
 				.add(new Panel()
+					.boxLayout(BoxLayout.X_AXIS)
 					.add(new Button("Cancel")
 						.onClick((Panel __) -> {
 							mainPanel.closeModal();
@@ -858,7 +866,9 @@ public class UIManager implements Manager {
 							lms.getNetworkManagerClient()
 								.sendPacket(new DeleteUserRequestPacket(this.getCurrentUser().getID()))
 								.onReceiveResponse((ResponsePacket resp) -> {
+									mainPanel.closeModal();
 									mainPanel.close();
+									mainTabPanel.openTabPanel("Take Quiz");
 									loginPanel.open();
 									if(resp.wasSuccess()) {
 										JOptionPane.showMessageDialog(
@@ -877,9 +887,9 @@ public class UIManager implements Manager {
 									}
 								});
 						}))
-					.setPanelSize(250, 50)
+					.setPanelSize(399, 50)
 				)
-				.setPanelSize(400, 200));
+				.setPanelSize(500, 200));
 		
 		mainTabPanel.addTabPanel("User Settings", (new Panel(new GridLayout(7, 1)))
 			.onOpen((Panel p) -> {
@@ -948,11 +958,11 @@ public class UIManager implements Manager {
 					.addClass(DeleteQuizResponsePacket.class)
 					.addClass(ChangeUserResponsePacket.class)
 				);
-				p.getMainPanel().removeAll();
-				p.add((new Heading("Take Quiz")).big());
 				lms.getNetworkManagerClient()
 					.sendPacket(new QuizListRequestPacket("All", "", false))
 					.onReceiveResponse((ResponsePacket resp) -> {
+						p.getMainPanel().removeAll();
+						p.add((new Heading("Take Quiz")).big());
 						QuizListResponsePacket listResp = (QuizListResponsePacket) resp;
 						List<Quiz> quizzes = listResp.getListOfQuizzesResponse();
 						if(quizzes == null) {
@@ -988,6 +998,7 @@ public class UIManager implements Manager {
 													.onClick((Panel __2) -> {
 														mainPanel.closeModal();
 														mainPanel.close();
+														mainTabPanel.openTabPanel("Take Quiz");
 														getTakeQuizPanel(quiz).open();
 													}))
 												.add((new Button("Cancel"))
@@ -1036,11 +1047,11 @@ public class UIManager implements Manager {
 						.addClass(DeleteQuizResponsePacket.class)
 						.addClass(ChangeUserResponsePacket.class)
 					);
-					p.getMainPanel().removeAll();
-					p.add((new Heading("Modify Quiz")).big());
 					lms.getNetworkManagerClient()
 						.sendPacket(new QuizListRequestPacket("All", "", false))
 						.onReceiveResponse((ResponsePacket resp) -> {
+							p.getMainPanel().removeAll();
+							p.add((new Heading("Modify Quiz")).big());
 							QuizListResponsePacket listResp = (QuizListResponsePacket) resp;
 							List<Quiz> quizzes = listResp.getListOfQuizzesResponse();
 							if(quizzes == null) {
@@ -1075,6 +1086,7 @@ public class UIManager implements Manager {
 														.onClick((Panel __2) -> {
 															mainPanel.closeModal();
 															mainPanel.close();
+															mainTabPanel.openTabPanel("Take Quiz");
 															getModifyQuizPanel(quiz).open();
 														}))
 													.add((new Button("Cancel"))
@@ -1127,11 +1139,11 @@ public class UIManager implements Manager {
 					.addClass(DeleteQuizResponsePacket.class)
 					.addClass(ChangeUserResponsePacket.class)
 				);
-				p.getMainPanel().removeAll();
-				p.add((new Heading("Submission List")).big());
 				lms.getNetworkManagerClient()
 					.sendPacket(new GradedQuizListRequestPacket())
 					.onReceiveResponse((ResponsePacket resp) -> {
+						p.getMainPanel().removeAll();
+						p.add((new Heading("Submission List")).big());
 						GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
 						List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
 						if(gradedQuizzes == null) {
@@ -1175,6 +1187,7 @@ public class UIManager implements Manager {
 													.onClick((Panel __2) -> {
 														mainPanel.closeModal();
 														mainPanel.close();
+														mainTabPanel.openTabPanel("Take Quiz");
 														getSubmissionPanel(gradedQuiz, quiz, user).open();
 													}))
 												.add((new Button("Cancel"))
@@ -1226,13 +1239,12 @@ public class UIManager implements Manager {
 						.addClass(DeleteQuizResponsePacket.class)
 						.addClass(ChangeUserResponsePacket.class)
 					);
-					p.getMainPanel().removeAll();
-					p.add((new Heading("My Quiz Submission List")).big());
 					
 					lms.getNetworkManagerClient()
 						.sendPacket(new GradedQuizListRequestPacket(this.getCurrentUser()))
 						.onReceiveResponse((ResponsePacket resp) -> {
-							
+							p.getMainPanel().removeAll();
+							p.add((new Heading("My Quiz Submission List")).big());
 							GradedQuizListResponsePacket listResp = (GradedQuizListResponsePacket) resp;
 							List<GradedQuiz> gradedQuizzes = listResp.getGradedQuizzes();
 							if(gradedQuizzes == null) {
@@ -1275,6 +1287,7 @@ public class UIManager implements Manager {
 													.onClick((Panel __2) -> {
 														mainPanel.closeModal();
 														mainPanel.close();
+														mainTabPanel.openTabPanel("Take Quiz");
 														getSubmissionPanel(gradedQuiz, quiz, user).open();
 													}))
 												.add((new Button("Cancel"))
