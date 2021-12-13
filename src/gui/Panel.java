@@ -188,11 +188,13 @@ public class Panel extends JLayeredPane {
 	}
 
 	public boolean containsComponent(Container container, Component component) {
+		int x = 0;
 		for (Component c: container.getComponents()) {
 			if (c == component)
 				return true;
 			if (c instanceof Container)
 				if (containsComponent((Container) c, component))
+					x++;
 					return true;
 		}
 		return false;
