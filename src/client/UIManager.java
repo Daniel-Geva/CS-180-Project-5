@@ -489,7 +489,7 @@ public class UIManager implements Manager {
 			for (Question question: quiz.getQuestions()) {
 				addMargin(panel.getPreviousComponent(), new int[] {0, 0, 60, 0});
 				panel.add(new Label("\nQuestion #" + i));
-				Dropdown questionTypeDropdown = new Dropdown("QT-"+question.getId(), new String[] {
+				Dropdown questionTypeDropdown = new Dropdown("QT-" + question.getId(), new String[] {
 						"Multiple Choice", "True or False", "Dropdown"
 					})
 				    .onChange((String choice) -> {
@@ -699,7 +699,7 @@ public class UIManager implements Manager {
 		this.mainPanel = new Panel(new GridBagLayout());
 		this.mainTabPanel = new Panel();
 		
-		mainPanel.setPanelSize(1280+64, 720+64);
+		mainPanel.setPanelSize(1280 + 64, 720 + 64);
 		mainPanel.setMargin(64, 64);
 		
 		mainPanel.addModal("create-quiz", new Panel(new GridLayout(5, 1))
@@ -1022,7 +1022,7 @@ public class UIManager implements Manager {
 										    .setPanelSize(400, 300)
 										);
 										mainPanel.revalidate();
-										mainPanel.openModal("Quiz-"+quiz.getId());
+										mainPanel.openModal("Quiz-" + quiz.getId());
 									});
 								panel.getMainPanel().setBorder(
 									BorderFactory.createCompoundBorder(
@@ -1110,7 +1110,7 @@ public class UIManager implements Manager {
 										    .setPanelSize(400, 300)
 										);
 										mainPanel.revalidate();
-										mainPanel.openModal("Quiz-"+quiz.getId());
+										mainPanel.openModal("Quiz-" + quiz.getId());
 									});
 								panel.getMainPanel().setBorder(
 									BorderFactory.createCompoundBorder(
@@ -1211,7 +1211,7 @@ public class UIManager implements Manager {
 										    .setPanelSize(400, 300)
 										);
 										mainPanel.revalidate();
-										mainPanel.openModal("Quiz-"+quiz.getId());
+										mainPanel.openModal("Quiz-" + quiz.getId());
 									});
 								panel.getMainPanel().setBorder(
 									BorderFactory.createCompoundBorder(
@@ -1311,12 +1311,12 @@ public class UIManager implements Manager {
 									    .setPanelSize(400, 300)
 									);
 									mainPanel.revalidate();
-									mainPanel.openModal("Quiz-"+quiz.getId());
+									mainPanel.openModal("Quiz-" + quiz.getId());
 								});
 							panel.getMainPanel().setBorder(
-								BorderFactory.createCompoundBorder(
-									BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
-									BorderFactory.createEmptyBorder(20, 20, 20, 20)
+							    BorderFactory.createCompoundBorder(
+								   BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+								   BorderFactory.createEmptyBorder(20, 20, 20, 20)
 								)
 							);
 							panel.setPanelSize(200, 100);
@@ -1344,7 +1344,7 @@ public class UIManager implements Manager {
 		    .add(new TextField("Username"))
 		    .add(new TextField("Password"))
 		    .add(new Dropdown("User Type", "User Type", new String[] {
-				"Student", "Teacher"
+			   "Student", "Teacher"
 			}))
 		    .add((new Panel(new FlowLayout()))
 			    .add((new Button("Cancel"))
@@ -1368,27 +1368,28 @@ public class UIManager implements Manager {
 								break;
 						}
 						lms.getNetworkManagerClient().sendPacket(
-							new CreateUserRequestPacket(user)	
+						    new CreateUserRequestPacket(user)	
 						).onReceiveResponse((ResponsePacket response) -> {
 							if (response.wasSuccess()) {
 								JOptionPane.showMessageDialog(
-									null,
-									"Successfully created the user.",
-									"Create User",
-									JOptionPane.INFORMATION_MESSAGE
+								    null,
+								    "Successfully created the user.",
+								    "Create User",
+								    JOptionPane.INFORMATION_MESSAGE
 								);
 								loginPanel.closeModal();
 							} else {
 								JOptionPane.showMessageDialog(
-									null, 
-									"That username is already taken. Please try a different one.",
-									"Error",
-									JOptionPane.ERROR_MESSAGE
+								    null, 
+								    "That username is already taken. Please try a different one.",
+								    "Error",
+								    JOptionPane.ERROR_MESSAGE
 								);
 							}
 						});
 					}))
-			).setPanelSize(350, 400)
+			)
+		    .setPanelSize(350, 400)
 		);
 		
 		loginPanel
@@ -1410,35 +1411,36 @@ public class UIManager implements Manager {
 						String username = result.get("Username");
 						String password = result.get("Password");
 						lms.getNetworkManagerClient().sendPacket(
-							new LoginUserRequestPacket(username, password)	
+						    new LoginUserRequestPacket(username, password)	
 						).onReceiveResponse((ResponsePacket response) -> {
 							if (!response.wasSuccess()) {
 								JOptionPane.showMessageDialog(
-									null, 
-									"Invalid Username or Password.\nPlease try again or create a new user.",
-									"Error",
-									JOptionPane.ERROR_MESSAGE
+								    null, 
+								    "Invalid Username or Password.\nPlease try again or create a new user.",
+								    "Error",
+								    JOptionPane.ERROR_MESSAGE
 								);
 							} else {
 								NewUserResponsePacket resp = (NewUserResponsePacket) response;
 								this.setCurrentUser(resp.getUser());
 								JOptionPane.showMessageDialog(
-										null,
-										"You have successfully logged into Darkspace.",
-										"Login In Validation",
-										JOptionPane.INFORMATION_MESSAGE
+								    null,
+								    "You have successfully logged into Darkspace.",
+								    "Login In Validation",
+								    JOptionPane.INFORMATION_MESSAGE
 								);
 								lms.getNetworkManagerClient()
-							    .addPushHandler("user-deletion-check", new PushPacketHandler() {
-									@Override
-									public void handlePacket(ResponsePacket resp) {
-										DeleteUserResponsePacket deleteUserResp = (DeleteUserResponsePacket) resp;
-										int userId = deleteUserResp.getId();
-										if (getCurrentUser() != null && userId == getCurrentUser().getID()) {
-											
+								    .addPushHandler("user-deletion-check", new PushPacketHandler() {
+										@Override
+										public void handlePacket(ResponsePacket resp) {
+											DeleteUserResponsePacket deleteUserResp = (DeleteUserResponsePacket) resp;
+											int userId = deleteUserResp.getId();
+											if (getCurrentUser() != null && userId == getCurrentUser().getID()) {
+												
+											}
 										}
 									}
-								}.addClass(DeleteUserResponsePacket.class));
+								    .addClass(DeleteUserResponsePacket.class));
 								loginPanel.close();
 								mainPanel.open();
 							}
@@ -1485,7 +1487,7 @@ public class UIManager implements Manager {
 						loginPanel.open();
 					});
 					
-					synchronized(nameSetter) {
+					synchronized (nameSetter) {
 						nameSetter.setName(ip);
 						nameSetter.notify();
 					}
