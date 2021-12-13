@@ -20,12 +20,20 @@ public class ResponsePacketHandler {
 
     RunnableHandleResponsePacket onRecieveRunnable;
 
-    ///Sets the interpreter to the corresponding one for the received packet
+    /**
+     * Sets the interpreter to the corresponding one for the received packet
+     *
+     * @param runnable - A RunnableHandleResponsePacket interface to be used with the packet
+     */
     public void onReceiveResponse(RunnableHandleResponsePacket runnable) {
         this.onRecieveRunnable = runnable;
     }
 
-    ///Runs the handle packet method in context with the handler after confirming that the packet is not null
+    /**
+     * Runs the handle packet method in context with the handler after confirming that the packet is not null
+     *
+     * @param packet - The packet that will be handled with the provided RunnableHandleResponsePacket
+     */
     public void handlePacket(ResponsePacket packet) {
         if(this.onRecieveRunnable != null) {
             this.onRecieveRunnable.handlePacket(packet);
