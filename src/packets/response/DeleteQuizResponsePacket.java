@@ -1,8 +1,9 @@
 package packets.response;
 
-public class DeleteQuizResponsePacket extends ResponsePacket{
+public class DeleteQuizResponsePacket extends ResponsePacket {
     boolean success;
     int id;
+
     public DeleteQuizResponsePacket(boolean success, int id) {
         super(success, success);
         this.success = success;

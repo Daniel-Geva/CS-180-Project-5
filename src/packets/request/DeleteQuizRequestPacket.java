@@ -16,7 +16,7 @@ import java.util.ArrayList;
  *
  **/
 
-public class DeleteQuizRequestPacket extends RequestPacket{
+public class DeleteQuizRequestPacket extends RequestPacket {
     int id;
 
     public DeleteQuizRequestPacket(int id) {
