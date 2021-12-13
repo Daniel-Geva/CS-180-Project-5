@@ -1,7 +1,7 @@
 # CS-180-Project-5
 
 # Submission Details
-Project 5 Reflection Submitted by Liam Kelly
+Project 5 Reflection submitted by Liam Kelly
 
 Project 5 submitted on Vocareum by Sean Lee
 
