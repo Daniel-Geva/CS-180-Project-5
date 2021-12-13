@@ -1145,15 +1145,15 @@ public class UIManager implements Manager {
 				lms.getNetworkManagerClient()
 				    .addPushHandler("quiz-submissions", 
 					   new PushPacketHandler() {
-							@Override
-							public void handlePacket(ResponsePacket resp) {
-								p.runOnOpen();
-							}
-						}
-					    .addClass(QuizResponsePacket.class)
-					    .addClass(GradedQuizResponsePacket.class)
-					    .addClass(DeleteQuizResponsePacket.class)
-					    .addClass(ChangeUserResponsePacket.class)
+						   @Override
+						   public void handlePacket(ResponsePacket resp) {
+							   p.runOnOpen();
+						   }
+					   }
+					   .addClass(QuizResponsePacket.class)
+					   .addClass(GradedQuizResponsePacket.class)
+					   .addClass(DeleteQuizResponsePacket.class)
+					   .addClass(ChangeUserResponsePacket.class)
 					);
 				lms.getNetworkManagerClient()
 				    .sendPacket(new GradedQuizListRequestPacket())
