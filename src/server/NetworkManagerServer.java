@@ -48,7 +48,9 @@ public class NetworkManagerServer {
 
             while (true) {
             	final ArrayDeque<ResponsePacket> stack = new ArrayDeque<ResponsePacket>();
-            	stacks.add(stack);
+            	synchronized(stacks) {
+            		stacks.add(stack);
+            	}
                 final Socket socket = ss.accept();
                 final ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 final ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
@@ -93,6 +95,14 @@ public class NetworkManagerServer {
                                 
                             } catch (EOFException e) {
                                 // Client disconnected.
+                            	
+                            	// TODO Maybe we want to do this?
+                            	// We didn't have it, and it seems fine, but seems like a good idea?
+                            	/*
+                            	synchronized(stacks) {
+                            		stacks.remove(stack);
+                            	}
+                            	*/
                                 return;
                             } catch (ClassNotFoundException e) {
                                 continue;
@@ -119,7 +129,10 @@ public class NetworkManagerServer {
 	                                    	oos.writeObject(stack.pop());
 	                                    	oos.reset();
 	                                    }
-	                                } catch (IOException e) {}
+	                                } catch (IOException e) { 
+	                                	// TODO Does this run when client disconects?
+	                                	// If so, should we return, so the thread dies?
+	                                }
 	                            }
 	                        }
 	                    }
