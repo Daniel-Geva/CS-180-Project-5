@@ -18,17 +18,17 @@ import packets.response.ResponsePacket;
 /**
  * Runs the client for the Learning Management System
  * <p>
- * Sends information to the server about what the changes the client has made and requests information the client needs as well as receiving information from the server.
+ * Sends information to the server about what the
+ * changes the client has made and requests information the
+ * client needs as well as receiving information from the server.
  *
  * @author Daniel Geva, Isaac Fleetwood
- *
  * @version December 10, 2021
- *
  */
 
 public class NetworkManagerClient {
 
-	LearningManagementSystemClient lmsc;
+    LearningManagementSystemClient lmsc;
     HashMap<RequestPacket, ResponsePacketHandler> packetQueue;
 
     public static final boolean DEBUG_ENABLED = false;
@@ -44,7 +44,7 @@ public class NetworkManagerClient {
     Queue<ResponsePacketHandler> queue = new LinkedList<>();
     HashMap<String, PushPacketHandler> pushPacketHandlers = new HashMap<>();
 
-    public NetworkManagerClient (LearningManagementSystemClient lmsc) {
+    public NetworkManagerClient(LearningManagementSystemClient lmsc) {
         this.lmsc = lmsc;
         this.packetQueue = new HashMap<>();
         this.nameSetter = new NameSetter();
@@ -57,24 +57,24 @@ public class NetworkManagerClient {
         this.outputThread = new Thread(new Runnable() {
             @Override
             public void run() {
-            	ObjectOutputStream oos = null;
-            	boolean success = false;
+                ObjectOutputStream oos = null;
+                boolean success = false;
                 do {
                     try {
-                    	if(DEBUG_ENABLED)
-                    		nameSetter.setName("127.0.0.1");
-                    	else {
-	                        synchronized (nameSetter) {
-	                            nameSetter.wait();
-	                        }
-                    	}
+                        if (DEBUG_ENABLED)
+                            nameSetter.setName("127.0.0.1");
+                        else {
+                            synchronized (nameSetter) {
+                                nameSetter.wait();
+                            }
+                        }
                         socket = new Socket(nameSetter.getName(), 4040);
 
                         oos = new ObjectOutputStream(socket.getOutputStream());
-                        
+
                         success = true;
-                        synchronized(connectionSuccessLock) {
-                        	connectionSuccessLock.notifyAll();
+                        synchronized (connectionSuccessLock) {
+                            connectionSuccessLock.notifyAll();
                         }
                         SwingUtilities.invokeLater(nameSetter.getSuccessRunnable());
                     } catch (IOException e) {
@@ -85,23 +85,23 @@ public class NetworkManagerClient {
                 } while (!success);
 
                 while (true) {
-                	synchronized(packetQueue) {
-                		try {
-							if(packetQueue.size() == 0)
-								packetQueue.wait();
-						} catch (InterruptedException e) {
-							return;
-						}
-                	}
+                    synchronized (packetQueue) {
+                        try {
+                            if (packetQueue.size() == 0)
+                                packetQueue.wait();
+                        } catch (InterruptedException e) {
+                            return;
+                        }
+                    }
                     while (packetQueue.size() != 0) {
                         try {
-                        	synchronized (lmsc.getNetworkManagerClient()) {
+                            synchronized (lmsc.getNetworkManagerClient()) {
                                 RequestPacket request = packetQueue.keySet().iterator().next();
                                 queue.add(packetQueue.get(request));
-                                
+
                                 oos.writeObject(request);
-                            	oos.reset();
-                            	
+                                oos.reset();
+
                                 packetQueue.remove(request);
                             }
                         } catch (IOException e) {
@@ -116,25 +116,25 @@ public class NetworkManagerClient {
         this.inputThread = new Thread(new Runnable() {
             @Override
             public void run() {
-            	ObjectInputStream ois = null;
+                ObjectInputStream ois = null;
                 boolean success = false;
                 do {
                     try {
-                        synchronized(connectionSuccessLock) {
-                        	connectionSuccessLock.wait();
+                        synchronized (connectionSuccessLock) {
+                            connectionSuccessLock.wait();
                         }
                         ois = new ObjectInputStream(socket.getInputStream());
                         success = true;
                     } catch (IOException e) {
                         nameSetter.getErrorRunnable().run();
-                    } catch(InterruptedException e) {
-                    	return;
+                    } catch (InterruptedException e) {
+                        return;
                     }
                 } while (!success);
                 while (true) {
                     try {
                         Object responseObj = ois.readObject();
-                        
+
                         if (!(responseObj instanceof ResponsePacket)) {
                             continue;
                         }
@@ -156,9 +156,9 @@ public class NetworkManagerClient {
                         }
                     } catch (EOFException e) {
                         lmsc.getUIManager().exit();
-                    }catch (IOException | ClassNotFoundException e) {
+                    } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
-                    	return;
+                        return;
                     }
                 }
             }
@@ -171,7 +171,7 @@ public class NetworkManagerClient {
     /**
      * Adds the push packet handler to the HashMap
      *
-     * @param id - Identifier for the respective PushPacketHandler
+     * @param id        - Identifier for the respective PushPacketHandler
      * @param pPHandler - A PushPacketHandler to be paired with an id
      */
     public void addPushHandler(String id, PushPacketHandler pPHandler) {
@@ -191,23 +191,22 @@ public class NetworkManagerClient {
      * Closes the threads upon exit
      */
     public void exit() {
-    	this.outputThread.interrupt();
-    	this.inputThread.interrupt();
+        this.outputThread.interrupt();
+        this.inputThread.interrupt();
     }
 
     /**
      * Method used by the UIManger in order to add a packet to the packetQueue to be sent
      *
      * @param requestPacket - RequestPacket to be sent to the Server
-     *
      * @return handler - A ResponsePacketHandler to be paired with the ResponsePacket received from the server
      */
     public synchronized ResponsePacketHandler sendPacket(RequestPacket requestPacket) {
         ResponsePacketHandler handler = new ResponsePacketHandler();
         this.packetQueue.put(requestPacket, handler);
-    	synchronized(packetQueue) {
-    		packetQueue.notifyAll();
-    	}
+        synchronized (packetQueue) {
+            packetQueue.notifyAll();
+        }
         return handler;
     }
 
@@ -216,8 +215,10 @@ public class NetworkManagerClient {
      */
     class NameSetter {
         String name = "";
-        Runnable errorRunnable = () -> {};
-        Runnable successRunnable = () -> {};
+        Runnable errorRunnable = () -> {
+        };
+        Runnable successRunnable = () -> {
+        };
 
         /**
          * Sets the errorRunnable field
@@ -243,15 +244,15 @@ public class NetworkManagerClient {
          * @return successRunnable - A Runnable used for successes
          */
         public Runnable getSuccessRunnable() {
-			return successRunnable;
-		}
+            return successRunnable;
+        }
 
         /**
          * Gets the IP address
          *
          * @return name - The IP address (String) to be given to the socket
          */
-		public String getName() {
+        public String getName() {
             return name;
         }
 
@@ -269,9 +270,9 @@ public class NetworkManagerClient {
          *
          * @param runnable - A Runnable to set successRunnable
          */
-		public void setSuccessRunnable(Runnable runnable) {
-			this.successRunnable = runnable;
-		}
+        public void setSuccessRunnable(Runnable runnable) {
+            this.successRunnable = runnable;
+        }
     }
 
 
