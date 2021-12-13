@@ -11,7 +11,7 @@ import datastructures.Quiz;
  *
  **/
 
-public class QuizResponsePacket extends ResponsePacket{
+public class QuizResponsePacket extends ResponsePacket {
     
 	Quiz quizToReturn;
 
