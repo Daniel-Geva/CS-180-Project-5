@@ -28,7 +28,9 @@ public class GradedQuizFileManager implements Manager {
         this.gradedQuizzes = this.readGradedQuizzes();
     }
 
-    ///Sets the GradedQuizManger's arraylist of graded quizzes
+    /**
+     * Sets the GradedQuizManger's arraylist of graded quizzes
+     */
     @Override
     public void init() {
         lms.getGradedQuizManager().setGradedQuiz(gradedQuizzes);
@@ -39,13 +41,19 @@ public class GradedQuizFileManager implements Manager {
         this.save();
     }
 
-    ///gets the altered arraylist of graded quizzes from GradedQuizManger and writes it to a file
+    /**
+     * Gets the altered arraylist of graded quizzes from GradedQuizManger and writes it to a file
+     */
     public synchronized void save() {
         gradedQuizzes = lms.getGradedQuizManager().getGradedQuizList();
         this.writeGradedQuizzes();
     }
 
-    ///Reads the file that stores the graded quiz data and creates an arraylist of graded quizzes
+    /**
+     * Reads the file that stores the graded quiz data and creates an arraylist of graded quizzes
+     *
+     * @return tempGradQuiz - the arraylist of GradedQuizzes
+     */
     public ArrayList<GradedQuiz> readGradedQuizzes() {
         ArrayList<GradedQuiz> tempGradQuiz = new ArrayList<>();
         String path = "./data/gradedQuizzes.txt";
@@ -70,7 +78,13 @@ public class GradedQuizFileManager implements Manager {
         return tempGradQuiz;
     }
 
-    ///Used to create the Hashmap
+    /**
+     * Used to create the Hashmap
+     *
+     * @param contents - a string containing the information required to create a hashmap with separator characters
+     *
+     * @return map - constructed hashmap with all the information from contents
+     */
     public HashMap<Integer, Integer> createHashmap(String contents) {
         HashMap<Integer, Integer> map = new HashMap<>();
         String[] list = contents.split("//", -1);
@@ -87,7 +101,11 @@ public class GradedQuizFileManager implements Manager {
         return map;
     }
 
-    ///Writes the arraylist of graded quizzes to a file for storage
+    /**
+     * Writes the arraylist of graded quizzes to a file for storage
+     *
+     * @return success - boolean of whether the writing to the file succeeded
+     */
     private boolean writeGradedQuizzes() {
         ArrayList<String> writableGradedQuizzes = new ArrayList<>();
         String path = "./data/gradedQuizzes.txt";
@@ -105,7 +123,13 @@ public class GradedQuizFileManager implements Manager {
 
     }
 
-    ///Used to format the Hashmap to be written
+    /**
+     * Used to format the Hashmap to be written
+     *
+     * @param map - hashmap from the GradedQuiz containing the questions and answers
+     *
+     * @return mapList - string of all the questions and answers from the hashmap in the proper format to be written to a file
+     */
     public String formatHashmap(HashMap<Integer, Integer> map) {
         StringJoiner joiner = new StringJoiner("//");
 
