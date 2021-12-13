@@ -13,8 +13,6 @@ public class Heading extends JLabel {
 		Font f = new Font(this.getFont().getName(), Font.BOLD, 24);
 		this.setFont(f);
 		this.setForeground(Aesthetics.GENERAL_FOREGROUND);
-		// TODO Debug
-		this.addMouseListener(DebugListener.INST);
 	}
 
 	public Heading center() {

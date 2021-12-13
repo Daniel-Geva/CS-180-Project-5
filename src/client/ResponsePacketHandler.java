@@ -14,9 +14,9 @@ import packets.response.ResponsePacket;
  * @version December 10, 2021
  *
  */
-
 public class ResponsePacketHandler {
-    public ResponsePacketHandler() {}
+
+	public ResponsePacketHandler() { }
 
     RunnableHandleResponsePacket onRecieveRunnable;
 
@@ -35,7 +35,7 @@ public class ResponsePacketHandler {
      * @param packet - The packet that will be handled with the provided RunnableHandleResponsePacket
      */
     public void handlePacket(ResponsePacket packet) {
-        if(this.onRecieveRunnable != null) {
+        if (this.onRecieveRunnable != null) {
             this.onRecieveRunnable.handlePacket(packet);
         }
     }

@@ -77,7 +77,7 @@ public class Panel extends JLayeredPane {
 	public Panel() {
 		this.mainPanel = new JPanel();
 		
-		mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		
 		this.alignLeft();
 		this.alignTop();
@@ -141,8 +141,8 @@ public class Panel extends JLayeredPane {
 		} else if (component instanceof RadioButton) {
 			this.radioButtons.add((RadioButton) component);
 		} else {
-			for(Component c: component.getComponents()) {
-				if(c instanceof Container) {
+			for (Component c: component.getComponents()) {
+				if (c instanceof Container) {
 					searchContainer((Container) c);
 				}
 			}
@@ -171,7 +171,7 @@ public class Panel extends JLayeredPane {
 
 	@Override
 	public void setLayout(LayoutManager layout) {
-		if(mainPanel != null)
+		if (mainPanel != null)
 			mainPanel.setLayout(layout);
 	}
 	
@@ -188,29 +188,28 @@ public class Panel extends JLayeredPane {
 	}
 
 	public boolean containsComponent(Container container, Component component) {
-		for(Component c: container.getComponents()) {
-			if(c == component)
+		for (Component c: container.getComponents()) {
+			if (c == component)
 				return true;
-			if(c instanceof Container)
-				if(containsComponent((Container) c, component))
+			if (c instanceof Container)
+				if (containsComponent((Container) c, component))
 					return true;
 		}
 		return false;
 	}
 	
 	private boolean isPanelOpen(Panel panel) {
-		if(containsComponent(mainPanel, panel)) {
+		if (containsComponent(mainPanel, panel)) {
 			return this.currentModalId == null;
 		}
-		if(this.currentModalId != null) {
+		if (this.currentModalId != null) {
 			Panel p = this.modals.get(this.currentModalId);
-			if(p != null && containsComponent(p, panel))
+			if (p != null && containsComponent(p, panel))
 				return true;
 		}
-		if(this.currentTabId != null) {
+		if (this.currentTabId != null) {
 			Panel p = this.tabPanels.get(this.currentTabId);
-			if(p != null && containsComponent(p, panel))
-				return true;
+			return (p != null && containsComponent(p, panel));
 		}
 		return false;
 	}
@@ -219,9 +218,9 @@ public class Panel extends JLayeredPane {
 		int wid = this.getWidth();
 		int hei = this.getHeight();
 		
-		if(this.prefWidth != 0) {
-			int x = (int) ((wid-this.prefWidth)*this.getAlignmentX());
-			int y = (int) ((hei-this.prefHeight)*this.getAlignmentY()) - this.scrollHeight;
+		if (this.prefWidth != 0) {
+			int x = (int) ((wid - this.prefWidth) * this.getAlignmentX());
+			int y = (int) ((hei - this.prefHeight) * this.getAlignmentY()) - this.scrollHeight;
 			mainPanel.setBounds(x, y, prefWidth, prefHeight + this.scrollHeight);
 		} else {
 			mainPanel.setBounds(0, 0, wid, hei);
@@ -249,12 +248,12 @@ public class Panel extends JLayeredPane {
 	public void openTabPanel(String id) {
 		if (this.currentTabId != null) {
 			Panel p = tabPanels.get(this.currentTabId);
-			if(p != null)
+			if (p != null)
 				tabPanels.get(this.currentTabId).setVisible(false);
 		}
 		this.currentTabId = id;
 		Panel p = tabPanels.get(this.currentTabId);
-		if(p == null) {
+		if (p == null) {
 			return;
 		}
 		p.setVisible(true);
@@ -266,7 +265,7 @@ public class Panel extends JLayeredPane {
 		}
 		this.currentModalId = id;
 		Panel p = this.modals.get(this.currentModalId);
-		if(p == null) {
+		if (p == null) {
 			return;
 		}
 		p.setBounds(0, 0, this.getWidth(), this.getHeight());
@@ -283,15 +282,15 @@ public class Panel extends JLayeredPane {
 	}
 
 	public Panel addModal(String id, Panel panel) {
-		if(this.modals.containsKey(id)) {
+		if (this.modals.containsKey(id)) {
 			Panel p = this.modals.get(id);
 			this.modals.remove(id);
 			super.remove(p);
 		}
 		panel.setVisible(true);
 		panel.mainPanel.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createLineBorder(Color.BLACK, 2),
-			BorderFactory.createEmptyBorder(50, 50, 50, 50)
+		    BorderFactory.createLineBorder(Color.BLACK, 2),
+		    BorderFactory.createEmptyBorder(50, 50, 50, 50)
 		));
 
 		Panel p = new Panel(new GridBagLayout());
@@ -307,7 +306,7 @@ public class Panel extends JLayeredPane {
 	}
 
 	public Panel addTabPanel(String id, Panel panel) {
-		if(this.tabPanels.containsKey(id)) {
+		if (this.tabPanels.containsKey(id)) {
 			Panel p = this.tabPanels.get(id);
 			this.tabPanels.remove(id);
 			super.remove(p);
@@ -319,14 +318,14 @@ public class Panel extends JLayeredPane {
 	}
 	
 	public Panel setMargin(int x, int y) {
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(y>>1, x>>1, y>>1, x>>1));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(y >> 1, x >> 1, y >> 1, x >> 1));
 		return this;
 	}
 
 	public void registerListeners() {
 		final Panel panel = this;
 		for (Button b : this.buttons) {
-			if(b.getActionListeners().length == 0) {
+			if (b.getActionListeners().length == 0) {
 				b.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -344,8 +343,8 @@ public class Panel extends JLayeredPane {
 	}
 	
 	public void registerDebug(Container c) {
-		for(Component c2: c.getComponents()) {
-			if(c2 instanceof Container) {
+		for (Component c2: c.getComponents()) {
+			if (c2 instanceof Container) {
 				this.registerDebug((Container) c2);
 			}
 			c2.addMouseListener(DebugListener.INST);
@@ -365,7 +364,7 @@ public class Panel extends JLayeredPane {
 		f.setLocationRelativeTo(null);
 		f.setBackground(Color.DARK_GRAY);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setLayout(new GridLayout(1,1));
+		f.setLayout(new GridLayout(1, 1));
 		f.setResizable(false);
 		f.add(this);
 		f.setVisible(true);
@@ -388,7 +387,7 @@ public class Panel extends JLayeredPane {
 			resultMap.put(dropdown.getResultKey(), dropdown.getSelection());
 		}
 		for (RadioButton radioButton : this.getRadioButtons()) {
-			if(radioButton.isSelected()) {
+			if (radioButton.isSelected()) {
 				resultMap.put(radioButton.getResultKey(), radioButton.getSelectionId());
 			}
 		}
@@ -409,14 +408,14 @@ public class Panel extends JLayeredPane {
 	}
 
 	public void searchOnOpen(Container container, int i) {
-		for(Component c: container.getComponents()) {
-			if(c instanceof Panel) {
+		for (Component c: container.getComponents()) {
+			if (c instanceof Panel) {
 				Panel panel = (Panel) c;
 				panel.runOnOpen();
 				continue;
 			}
-			if(c instanceof Container) {
-				searchOnOpen((Container) c, i+1);
+			if (c instanceof Container) {
+				searchOnOpen((Container) c, i + 1);
 			}
 		}
 	}
@@ -429,17 +428,17 @@ public class Panel extends JLayeredPane {
 
 	public String getInput(String key) {
 		for (TextField textField : this.getTextFields()) {
-			if(textField.getResultKey().equals(key)) {
+			if (textField.getResultKey().equals(key)) {
 				return textField.getText();
 			}
 		}
 		for (Dropdown dropdown : this.getDropdowns()) {
-			if(dropdown.getResultKey().equals(key)) {
+			if (dropdown.getResultKey().equals(key)) {
 				return dropdown.getSelection();
 			}
 		}
 		for (RadioButton radioButton : this.getRadioButtons()) {
-			if(radioButton.getResultKey().equals(key) && radioButton.isSelected()) {
+			if (radioButton.getResultKey().equals(key) && radioButton.isSelected()) {
 				return radioButton.getSelectionId();
 			}
 		}
@@ -448,15 +447,15 @@ public class Panel extends JLayeredPane {
 
 	public void setInput(String key, String value) {
 		for (TextField textField : this.getTextFields()) {
-			if(textField.getResultKey().equals(key)) {
+			if (textField.getResultKey().equals(key)) {
 				textField.setText(value);
 			}
 		}
 	}
 	
 	public void registerClick(Container c, MouseListener l) {
-		for(Component c2: c.getComponents()) {
-			if(c2 instanceof Container) {
+		for (Component c2: c.getComponents()) {
+			if (c2 instanceof Container) {
 				registerClick((Container) c2, l);
 			}
 			c2.addMouseListener(l);
@@ -478,7 +477,7 @@ public class Panel extends JLayeredPane {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!parent.isPanelOpen(panel)) return;
+				if (!parent.isPanelOpen(panel)) return;
 				runnable.run(panel);
 			}
 		});
@@ -532,8 +531,8 @@ public class Panel extends JLayeredPane {
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
-				scrollHeight += e.getUnitsToScroll()*7;
-				if(scrollHeight < 0)
+				scrollHeight += e.getUnitsToScroll() * 7;
+				if (scrollHeight < 0)
 					scrollHeight = 0;
 				updateBounds();
 				revalidate();

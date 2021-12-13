@@ -20,8 +20,8 @@ public abstract class PushPacketHandler extends ResponsePacketHandler {
 	}
 	
 	public boolean canHandle(ResponsePacket packet) {
-		for(Class<?> clazz: classes) {
-			if(clazz.isInstance(packet))
+		for (Class<?> clazz: classes) {
+			if (clazz.isInstance(packet))
 				return true;
 		}
 		return false;
