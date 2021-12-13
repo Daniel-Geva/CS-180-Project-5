@@ -51,6 +51,7 @@ import packets.request.LoginUserRequestPacket;
 import packets.request.QuizListRequestPacket;
 import packets.request.QuizRequestPacket;
 import packets.request.UpdateUserRequestPacket;
+import packets.response.ChangeUserResponsePacket;
 import packets.response.DeleteQuizResponsePacket;
 import packets.response.DeleteUserResponsePacket;
 import packets.response.GradedQuizListResponsePacket;
@@ -945,6 +946,7 @@ public class UIManager implements Manager {
 					}
 					.addClass(QuizResponsePacket.class)
 					.addClass(DeleteQuizResponsePacket.class)
+					.addClass(ChangeUserResponsePacket.class)
 				);
 				p.getMainPanel().removeAll();
 				p.add((new Heading("Take Quiz")).big());
@@ -1032,6 +1034,7 @@ public class UIManager implements Manager {
 						}
 						.addClass(QuizResponsePacket.class)
 						.addClass(DeleteQuizResponsePacket.class)
+						.addClass(ChangeUserResponsePacket.class)
 					);
 					p.getMainPanel().removeAll();
 					p.add((new Heading("Modify Quiz")).big());
@@ -1122,6 +1125,7 @@ public class UIManager implements Manager {
 					.addClass(QuizResponsePacket.class)
 					.addClass(GradedQuizResponsePacket.class)
 					.addClass(DeleteQuizResponsePacket.class)
+					.addClass(ChangeUserResponsePacket.class)
 				);
 				p.getMainPanel().removeAll();
 				p.add((new Heading("Submission List")).big());
@@ -1220,6 +1224,7 @@ public class UIManager implements Manager {
 						.addClass(QuizResponsePacket.class)
 						.addClass(GradedQuizResponsePacket.class)
 						.addClass(DeleteQuizResponsePacket.class)
+						.addClass(ChangeUserResponsePacket.class)
 					);
 					p.getMainPanel().removeAll();
 					p.add((new Heading("My Quiz Submission List")).big());
