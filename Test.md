@@ -3,7 +3,7 @@
 Steps:
 1. User launches application.
 2. User enters correct ip into ip text box
-3. User selects enter
+3. User selects connect
 4. User selects the username textbox.
 5. User enters username via the keyboard.
 6. User selects the password textbox.
@@ -18,7 +18,7 @@ Test Status: Passed.
 Steps:
 1. User launches application
 2. User enters correct ip into ip text box
-3. User selects enter
+3. User selects connect
 4. User selects the username textbox.
 5. User enters incorrect username via the keyboard.
 6. User selects the password textbox.
@@ -33,7 +33,7 @@ Test Status: Passed.
 ## Test 3: Create a new User
 1. User launches application
 2. User enters correct ip into ip text box
-3. User selects enter
+3. User selects connect
 4. User selects create user
 5. User selects and enters name, username, and password into respective text boxes
 6. User selects Teacher for account type in the dropdown
@@ -53,7 +53,7 @@ Test Status: Passed
 Steps:
 1. User launches application.
 2. User enters correct ip into ip text box
-3. User selects enter
+3. User selects connect
 4. User selects the username textbox.
 5. User enters username via the keyboard.
 6. User selects the password textbox.
@@ -74,7 +74,7 @@ Test Result: Passed
 Steps:
 1. User launches application
 2. User enters correct ip into ip text box
-3. User selects enter
+3. User selects connect
 4. User selects the username textbox.
 5. User enters username for a teacher account via the keyboard.
 6. User selects the password textbox.
@@ -139,7 +139,7 @@ Test Result: Passed
 Steps:
 1. User launches application.
 2. User enters correct ip into ip text box
-3. User selects enter
+3. User selects connect
 4. User selects the username textbox.
 5. User enters student username via the keyboard.
 6. User selects the password textbox.
@@ -159,7 +159,7 @@ Test Result: passed
 ## Test 9: Concurrent Users
 1. User 1 launches application.
 2. User 1 enters correct ip into ip text box
-3. User 1 selects enter
+3. User 1 selects connect
 4. User 1 selects the username textbox.
 5. User 1 enters teacher username via the keyboard.
 6. User 1 selects the password textbox.
@@ -167,7 +167,7 @@ Test Result: passed
 8. User 1 selects the "Log in" button. 
 9. User 2 launches application.
 10. User 2 enters correct ip into ip text box
-11. User 2 selects enter
+11. User 2 selects connect
 12. User 2 selects the username textbox.
 13. User 2 enters student username via the keyboard.
 14. User 2 selects the password textbox.
