@@ -28,7 +28,9 @@ public class UserFileManager implements Manager {
         this.users = this.readUsers();
     }
 
-    ///Sets the UserManager's arraylist of users after reading saved data
+    /**
+     * Sets the UserManager's arraylist of users after reading saved data
+     */
     @Override
     public void init() {
         lms.getUserManager().setUsers(this.users);
@@ -39,13 +41,19 @@ public class UserFileManager implements Manager {
         this.save();
     }
 
-    ///gets the altered arraylist of users from UserManager after the program finishes, to be written to a file
+    /**
+     * Gets the altered arraylist of users from UserManager after the program finishes, to be written to a file
+     */
     public synchronized void save() {
         this.users = lms.getUserManager().getUsers();
         this.writeUsers();
     }
 
-    ///reads the file that stores the user data and constructs an arraylist of users from it
+    /**
+     * Reads the file that stores the user data and constructs an arraylist of users from it
+     *
+     * @return tempUsers - an arraylist of the users to be given to UserManager
+     */
     public ArrayList<User> readUsers() {
         ArrayList<User> tempUsers = new ArrayList<>();
         String path = "./data/users.txt";
@@ -77,7 +85,11 @@ public class UserFileManager implements Manager {
         return tempUsers;
     }
 
-    ///writes the arraylist of users "users" to a file in order to store the data
+    /**
+     * Writes the arraylist of users "users" to a file in order to store the data
+     *
+     * @return success - whether the writing to a file succeeded
+     */
     private boolean writeUsers() {
         ArrayList<String> writableUsers = new ArrayList<>();
         String path = "./data/users.txt";
