@@ -101,7 +101,6 @@ public class NetworkManagerClient {
                                 packetQueue.remove(request);
                             }
                         } catch (IOException e) {
-                            e.printStackTrace();
                             return;
                         }
                     }
