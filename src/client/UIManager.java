@@ -413,7 +413,7 @@ public class UIManager implements Manager {
 	    		new PushPacketHandler() {
 					@Override
 					public void handlePacket(ResponsePacket resp) {
-						if(!panel.isOpen())
+						if (!panel.isOpen())
 							return;
 						DeleteQuizResponsePacket respDelQuiz = (DeleteQuizResponsePacket) resp;
 						if (quiz.getId() == respDelQuiz.getQuizId()) {
@@ -644,7 +644,7 @@ public class UIManager implements Manager {
 						quiz.setCourse(map.get("Course Name"));
 						quiz.setName(map.get("Quiz Name"));
 
-						if(quiz.getName().isBlank() || quiz.getCourse().isBlank()) {
+						if (quiz.getName().isBlank() || quiz.getCourse().isBlank()) {
 							JOptionPane.showMessageDialog(
 							    null,
 							    "The quiz name or course cannot be blank.", 
@@ -653,7 +653,7 @@ public class UIManager implements Manager {
 							);
 							return;
 						}
-						if(questions.size() == 0) {
+						if (questions.size() == 0) {
 							JOptionPane.showMessageDialog(
 							    null,
 							    "There must be atleast one question.", 
@@ -667,7 +667,7 @@ public class UIManager implements Manager {
 							// Scrambled is taken care of.
 							question.setQuestionType(map.get("QT-" + qid));
 							question.setQuestion(map.get("Q-" + qid));
-							if(question.getAnswers().size() == 0) {
+							if (question.getAnswers().size() == 0) {
 								JOptionPane.showMessageDialog(
 								    null,
 								    "All questions must have atleast one answer.", 
@@ -746,7 +746,7 @@ public class UIManager implements Manager {
 						Map<String, String> map = panel.getResultMap();
 						String name = map.get("Quiz Name");
 						String course = map.get("Course");
-						if(name.isBlank() || course.isBlank()) {
+						if (name.isBlank() || course.isBlank()) {
 							JOptionPane.showMessageDialog(
 							    null, 
 							    "One of the fields are blank. Please fill all of them in.",
@@ -798,7 +798,7 @@ public class UIManager implements Manager {
 						Map<String, String> map = panel.getResultMap();
 						String name = map.get("Quiz Name");
 						String course = map.get("Course");
-						if(name.isBlank() || course.isBlank()) {
+						if (name.isBlank() || course.isBlank()) {
 							JOptionPane.showMessageDialog(
 							    null, 
 							    "One of the fields are blank. Please fill all of them in.",
@@ -1435,7 +1435,7 @@ public class UIManager implements Manager {
 						String username = result.get("Create-Username");
 						String password = result.get("Create-Password");
 						String userType = result.get("User Type");
-						if(name.isBlank() || username.isBlank() || password.isBlank()) {
+						if (name.isBlank() || username.isBlank() || password.isBlank()) {
 							JOptionPane.showMessageDialog(
 							    null, 
 							    "One or more fields are empty. Please fill them all in.",
