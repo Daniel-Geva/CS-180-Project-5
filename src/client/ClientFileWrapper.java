@@ -13,9 +13,9 @@ import java.util.ArrayList;
 /**
  * Class for importing a quiz from a file
  * <p>
- * Contains methods for reading a file and extracting the information as well as creating a quiz object with the information
+ * Contains methods for reading a file and extracting the information as well
+ * as creating a quiz object with the information
  * <p>
- *
  *
  * @author Daniel Geva
  * @version 11/14/21
@@ -27,49 +27,47 @@ public class ClientFileWrapper {
      * A version of readFile that is specific for importing quizzes in a file
      *
      * @param f - A file that contains a pre-made quiz
-     *
      * @return contents - A ArrayList of Strings that contain the information from the file
      */
     public static ArrayList<String> readImportFile(File f) {
         ArrayList<String> contents = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-                String line;
-                String readLine = "";
-                while ((line = br.readLine()) != null) {
-                    if (line.startsWith("/") && !readLine.isBlank()) {
-                        //if the line starts with a "/" (forward slash) and the buffer (readLine) is not empty,
-                        // the buffer is added to the arraylist and reset to the line
-                        contents.add(readLine);
-                        readLine = line.substring(line.indexOf("/") + 1) + "\n";
-                    } else if (!line.startsWith("#")) {
-                        //ignores any lines starting with "#" (pound), adds a read line to the buffer
-                        if (line.startsWith("/")) {
-                            readLine += line.substring(line.indexOf("/") + 1) + "\n";
-                        } else {
-                            readLine += line + "\n";
-                        }
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            String line;
+            String readLine = "";
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("/") && !readLine.isBlank()) {
+                    //if the line starts with a "/" (forward slash) and the buffer (readLine) is not empty,
+                    // the buffer is added to the arraylist and reset to the line
+                    contents.add(readLine);
+                    readLine = line.substring(line.indexOf("/") + 1) + "\n";
+                } else if (!line.startsWith("#")) {
+                    //ignores any lines starting with "#" (pound), adds a read line to the buffer
+                    if (line.startsWith("/")) {
+                        readLine += line.substring(line.indexOf("/") + 1) + "\n";
+                    } else {
+                        readLine += line + "\n";
                     }
                 }
-                if (!readLine.isBlank()) {
-                    contents.add(readLine);
-                }
-            } catch (FileNotFoundException | NullPointerException e) {
-                return null;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
             }
+            if (!readLine.isBlank()) {
+                contents.add(readLine);
+            }
+        } catch (FileNotFoundException | NullPointerException e) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
         return contents;
     }
 
     /**
      * Creates and returns a quiz object generated from a file, with some values provided by UI
      *
-     * @param lmsc - The Learning Management System Client used to get additional information for creating a quiz
-     * @param f - A file that contains a pre-made quiz
-     * @param name - The name of the author of the quiz
+     * @param lmsc   - The Learning Management System Client used to get additional information for creating a quiz
+     * @param f      - A file that contains a pre-made quiz
+     * @param name   - The name of the author of the quiz
      * @param course - The name of the course the quiz will go under
-     *
      * @return quiz - A quiz object constructed from the provided information and the information in the file
      */
     public static Quiz importQuiz(LearningManagementSystemClient lmsc, File f, String name, String course) {
