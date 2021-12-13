@@ -1,2 +1,6 @@
-main
-ui
+client
+datastructures
+gui
+packets.request
+packets.response
+server
