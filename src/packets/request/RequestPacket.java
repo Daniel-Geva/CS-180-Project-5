@@ -11,6 +11,7 @@ import server.LearningManagementSystemServer;
  * Sent from the client to the server to ask for information or to notify of a change
  *
  * @author Isaac Fleetwood
+ * @version 12/13/2021
  */
 public abstract class RequestPacket implements Serializable {
 

@@ -22,7 +22,8 @@ import packets.response.ResponsePacket;
  * changes the client has made and requests information the
  * client needs as well as receiving information from the server.
  *
- * @author Daniel Geva, Isaac Fleetwood
+ * @author Daniel Geva
+ * @author Isaac Fleetwood
  * @version December 10, 2021
  */
 
