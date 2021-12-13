@@ -57,7 +57,7 @@ public class Button extends JButton {
 		this.setBackground(bg);
 		this.setForeground(Aesthetics.BUTTON_FOREGROUND);
 		this.setBorder(
-			BorderFactory.createCompoundBorder(
+		    BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(Aesthetics.GENERAL_BACKGROUND, 5),
 				BorderFactory.createEmptyBorder(
 					Aesthetics.BUTTON_BORDER_SIZE,
