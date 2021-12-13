@@ -119,7 +119,7 @@ public class GradedQuiz implements Serializable { // should students be able to 
         int possiblePoints = 0;
         boolean error = false;
         for (Question question: quiz.getQuestions()) {
-        	if(!map.containsKey(question.getId())) {
+        	if (!map.containsKey(question.getId())) {
         		error = true;
         		break;
         	}
@@ -134,13 +134,13 @@ public class GradedQuiz implements Serializable { // should students be able to 
                     best = answer;
                 }
             }
-            if(chosen != null)
+            if (chosen != null)
             	earnedPoints += chosen.getPoints();
             else
             	error = true;
             possiblePoints += best.getPoints();
         }
-        if(error)
+        if (error)
         	return String.format("?", possiblePoints);
         return String.format("%s/%s", earnedPoints, possiblePoints);
     }
