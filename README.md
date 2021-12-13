@@ -137,6 +137,7 @@ This packet serves as a bridge for communication between the client side to serv
 #### DeleteUserRequestPacket
 This communicates between the client side and the server side. Information is sent from the client to the server once the user chooses the option to delete their account in the GUI. This class provides the server class with the information to delete their account.
 #### GradedQuizListRequestPacket
+//TODO
 
 #### LoginUserRequestPacket
 Once the user enters the username and password and clicks on the submit button to log in to the system, the client side connects with the server to send the information, process that information, and authenticates the identity of the user based on their inputs.
