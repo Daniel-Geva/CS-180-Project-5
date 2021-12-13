@@ -894,6 +894,7 @@ public class UIManager implements Manager {
 				    .compSetSize(280, 35)
 				    .add((new Button("Logout"))
 					    .onClick((Panel unusedPanel) -> {
+					    	setCurrentUser(null);
 							mainPanel.close();
 							mainTabPanel.openTabPanel("Take Quiz");
 							loginPanel.open();
@@ -955,13 +956,15 @@ public class UIManager implements Manager {
 				    .add(new Button("Yes, Delete my Account")
 					    .color(Aesthetics.BUTTON_WARNING)
 					    .onClick((Panel unusedPanel) -> {
+					    	int id = getCurrentUser().getID();
+					    	setCurrentUser(null);
+							mainPanel.closeModal();
+							mainPanel.close();
+							mainTabPanel.openTabPanel("Take Quiz");
+							loginPanel.open();
 							lms.getNetworkManagerClient()
-							    .sendPacket(new DeleteUserRequestPacket(this.getCurrentUser().getID()))
+							    .sendPacket(new DeleteUserRequestPacket(id))
 							    .onReceiveResponse((ResponsePacket resp) -> {
-									mainPanel.closeModal();
-									mainPanel.close();
-									mainTabPanel.openTabPanel("Take Quiz");
-									loginPanel.open();
 									if (resp.wasSuccess()) {
 										JOptionPane.showMessageDialog(
 										    null, 
@@ -972,7 +975,7 @@ public class UIManager implements Manager {
 									} else {
 										JOptionPane.showMessageDialog(
 										    null, 
-										    "Unable to delete your account because it doesn't exit.",
+										    "Unable to delete your account because it doesn't exit. Going back to the login menu.",
 										    "Error",
 										    JOptionPane.ERROR_MESSAGE
 										);
