@@ -128,7 +128,8 @@ public class GradedQuizFileManager implements Manager {
      * Used to format the Hashmap to be written
      *
      * @param map - hashmap from the GradedQuiz containing the questions and answers
-     * @return mapList - string of all the questions and answers from the hashmap in the proper format to be written to a file
+     * @return mapList - string of all the questions and answers from the hashmap in the
+     * proper format to be written to a file
      */
     public String formatHashmap(HashMap<Integer, Integer> map) {
         StringJoiner joiner = new StringJoiner("//");
