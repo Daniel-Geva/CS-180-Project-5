@@ -9,6 +9,7 @@ import java.io.Serializable;
  * success condition, or be a push packet to update other clients
  *
  * @author Isaac Fleetwood
+ * @version December 13, 2021
  */
 public class ResponsePacket implements Serializable {
 
