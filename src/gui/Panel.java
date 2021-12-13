@@ -56,7 +56,6 @@ public class Panel extends JLayeredPane {
 	private int prefWidth;
 	private int prefHeight;
 
-	private List<DynamicLabel> dynamicLabels;
 	private List<TextField> textFields;
 	private List<Button> buttons;
 	private List<Dropdown> dropdowns;
@@ -85,7 +84,6 @@ public class Panel extends JLayeredPane {
 		
 		super.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
 		
-		this.dynamicLabels = new ArrayList<DynamicLabel>();
 		this.textFields = new ArrayList<TextField>();
 		this.buttons = new ArrayList<Button>();
 		this.dropdowns = new ArrayList<Dropdown>();
@@ -104,10 +102,6 @@ public class Panel extends JLayeredPane {
 
 	public JPanel getMainPanel() {
 		return this.mainPanel;
-	}
-
-	public List<DynamicLabel> getDynamicLabels() {
-		return this.dynamicLabels;
 	}
 
 	public List<Button> getButtons() {
@@ -146,8 +140,6 @@ public class Panel extends JLayeredPane {
 			this.dropdowns.add((Dropdown) component);
 		} else if (component instanceof RadioButton) {
 			this.radioButtons.add((RadioButton) component);
-		} else if (component instanceof DynamicLabel) {
-			this.dynamicLabels.add((DynamicLabel) component);
 		} else {
 			for(Component c: component.getComponents()) {
 				if(c instanceof Container) {
@@ -507,14 +499,6 @@ public class Panel extends JLayeredPane {
 		this.buttons.clear();
 		this.textFields.clear();
 		searchContainer(this.getMainPanel());
-	}
-
-	public void setDynamicLabel(String id, String text) {
-		for(DynamicLabel label: this.getDynamicLabels()) {
-			if(label.getId().equals(id)) {
-				label.setText(text);
-			}
-		}
 	}
 
 	public JComponent getPreviousComponent() {

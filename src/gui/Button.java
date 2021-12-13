@@ -16,11 +16,11 @@ public class Button extends JButton {
 		this.setBackground(Aesthetics.BUTTON_BACKGROUND);
 		this.setForeground(Aesthetics.BUTTON_FOREGROUND);
 		this.setBorder(
-			BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(Aesthetics.GENERAL_BACKGROUND, 5),
-				BorderFactory.createCompoundBorder(
-					BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
-					BorderFactory.createEmptyBorder(
+		    BorderFactory.createCompoundBorder(
+				  BorderFactory.createLineBorder(Aesthetics.GENERAL_BACKGROUND, 5),
+				  BorderFactory.createCompoundBorder(
+					 BorderFactory.createLineBorder(Aesthetics.BUTTON_BORDER, 1),
+					 BorderFactory.createEmptyBorder(
 						Aesthetics.BUTTON_BORDER_SIZE,
 						Aesthetics.BUTTON_BORDER_SIZE,
 						Aesthetics.BUTTON_BORDER_SIZE,
@@ -58,14 +58,14 @@ public class Button extends JButton {
 		this.setForeground(Aesthetics.BUTTON_FOREGROUND);
 		this.setBorder(
 		    BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(Aesthetics.GENERAL_BACKGROUND, 5),
-				BorderFactory.createEmptyBorder(
-					Aesthetics.BUTTON_BORDER_SIZE,
-					Aesthetics.BUTTON_BORDER_SIZE,
-					Aesthetics.BUTTON_BORDER_SIZE,
-					Aesthetics.BUTTON_BORDER_SIZE
-				)
-			)
+			   BorderFactory.createLineBorder(Aesthetics.GENERAL_BACKGROUND, 5),
+			   BorderFactory.createEmptyBorder(
+				  Aesthetics.BUTTON_BORDER_SIZE,
+				  Aesthetics.BUTTON_BORDER_SIZE,
+				  Aesthetics.BUTTON_BORDER_SIZE,
+				  Aesthetics.BUTTON_BORDER_SIZE
+			   )
+		    )
 		);
 		return this;
 	}
